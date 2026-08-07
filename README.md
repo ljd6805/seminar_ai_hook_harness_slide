@@ -22,13 +22,15 @@ AI Agent 팀 세미나 시리즈 **3편 — Hook & Harness** 의 발표 자료 �
 | 문서 | 설명 |
 |---|---|
 | [`docs/seminar-synopsis.md`](docs/seminar-synopsis.md) | 1차 세션 시놉시스 v0.1 — 핵심 메시지, 전개 원칙, 장별 구성, 시간 배분, 데모 계획, 결정 기록. **슬라이드 작성의 기준 문서** |
+| [`slides/index.html`](slides/index.html) | 1차 세션 슬라이드 초안 v0.1 — reveal.js 자립형(오프라인 동작), 1·2편과 동일한 테마 상속. `?mode=presentation` 으로 본편·데모만 재생 |
 
 ## 진행 상태
 
 - [x] 주제 선정 및 2세션 구성 확정
 - [x] 1차 세션 논리 구조 확정 (문제 주도형 전개)
 - [x] 시놉시스 v0.1 작성
-- [ ] 1차 세션 슬라이드 작성 ← **다음 단계**
+- [x] 1차 세션 슬라이드 초안 v0.1 (21장, 클릭 fragment·리플레이·게이지 애니메이션 포함)
+- [ ] 슬라이드 검토·보강 ← **다음 단계**
 - [ ] 데모 준비 (opencode plugin: 관찰 Hook / 개입 Hook)
 - [ ] 리허설 및 시간 조정
 - [ ] 2차 세션 (Harness Quest) 기획
