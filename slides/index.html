@@ -1481,8 +1481,7 @@ section.present .sim .hh-danger { animation:asFadeUp .45s ease forwards, hhFlash
 .hh-verdict.allow { color:#3FB950; border:1.5px solid rgba(63,185,80,0.55); background:rgba(63,185,80,0.1); }
 .hh-verdict.deny  { color:#FF7A95; border:1.5px solid rgba(255,122,149,0.55); background:rgba(255,122,149,0.1); }
 .hh-verdict.ask   { color:var(--accent-4); border:1.5px solid rgba(255,212,107,0.6); background:rgba(255,212,107,0.1); }
-.reveal .fragment.hh-pop { transform:scale(0.4); }
-.reveal .fragment.hh-pop.visible { transform:scale(1); transition:all .35s cubic-bezier(.2,1.6,.4,1); }
+/* (클릭 fragment 미사용 — 모든 등장은 autoshow 자동 애니메이션) */
 
 /* --- Limits 게이지: 차오르다 상한에서 BLOCK --- */
 .hh-gauge { position:relative; height:1.5rem; border-radius:999px; background:rgba(255,255,255,0.07); overflow:hidden; border:1px solid rgba(255,255,255,0.12); }
@@ -1509,9 +1508,10 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
 .hh-lane .lane-t { font-size:0.92rem; font-weight:800; letter-spacing:0.06em; color:var(--fg-soft); text-align:right; }
 .hh-lane.core { border-color:rgba(155,130,255,0.4); background:rgba(155,130,255,0.06); }
 .hh-frame { border:2px solid rgba(43,234,208,0.0); border-radius:20px; padding:0.9rem; transition:all .6s ease; }
-.hh-frame:has(> .hh-ftrig.visible) { border-color:rgba(43,234,208,0.55); box-shadow:0 0 40px rgba(43,234,208,0.14), inset 0 0 30px rgba(43,234,208,0.04); }
+section.present .hh-frame { animation: hhFrameOn .9s ease 4.2s forwards; }
+@keyframes hhFrameOn { to { border-color:rgba(43,234,208,0.55); box-shadow:0 0 40px rgba(43,234,208,0.14), inset 0 0 30px rgba(43,234,208,0.04); } }
 .hh-frame-label { opacity:0; text-align:center; font-weight:900; font-size:1.5rem; letter-spacing:0.14em; color:var(--accent-2); margin-bottom:0.5rem; }
-.hh-frame:has(> .hh-ftrig.visible) .hh-frame-label { opacity:1; transition:opacity .6s ease .2s; }
+section.present .hh-frame-label { animation: asFadeIn .6s ease 4.6s forwards; }
 
 /* --- 대비 카드 (Hook=어디 / Policy=무엇 등) --- */
 .hh-vs { display:grid; grid-template-columns:1fr auto 1fr; gap:1.1rem; align-items:stretch; }
@@ -1522,7 +1522,6 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
 .hh-q { font-size:2.1rem; font-weight:800; line-height:1.5; }
 .hh-q .grad { font-weight:900; }
 
-.hh-ftrig { display:inline-block; width:0; height:0; overflow:hidden; }
 
 </style>
 </head>
@@ -1568,7 +1567,7 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
           <p class="quote" style="font-size:1.5rem">그리고 마지막에 보면,<br>우리가 만든 해결 구조 전체가<br><span class="grad" style="font-weight:900">Harness였다</span>는 걸 알게 됩니다.</p>
         </div>
       </div>
-      <p class="note fragment fade-up" style="margin-top:0.9rem">외울 용어는 없습니다 — 모든 요소는 <b>문제의 답</b>으로만 등장합니다.</p>
+      <p class="note autoshow fade-up" style="margin-top:0.9rem">외울 용어는 없습니다 — 모든 요소는 <b>문제의 답</b>으로만 등장합니다.</p>
     </section>
 
     <!-- 3 · 출발점 -->
@@ -1585,8 +1584,8 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
       <div class="pills autoshow fade-up" style="justify-content:center; margin-top:1.3rem">
         <span class="pill">File</span><span class="pill">Shell</span><span class="pill">Git</span><span class="pill">Test</span>
       </div>
-      <p class="fragment fade-up" style="text-align:center; font-size:1.6rem; margin-top:2.0rem">코드를 읽고, 수정하고, 명령을 실행하고, 결과를 냅니다.</p>
-      <p class="fragment fade-up quote" style="text-align:center; font-size:1.9rem; margin-top:1.0rem">"어? <span class="mint">알아서 잘하는데?</span>"</p>
+      <p class="autoshow fade-up" style="text-align:center; font-size:1.6rem; margin-top:2.0rem">코드를 읽고, 수정하고, 명령을 실행하고, 결과를 냅니다.</p>
+      <p class="autoshow fade-up quote" style="text-align:center; font-size:1.9rem; margin-top:1.0rem">"어? <span class="mint">알아서 잘하는데?</span>"</p>
     </section>
 
     <!-- 4 · 리플레이 -->
@@ -1617,15 +1616,15 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
       <h2>방금 우리는 <span class="grad">7가지 문제</span>를 목격했습니다</h2>
       <table class="risk-table" style="margin-top:0.8rem; width:100%">
         <tr class="rh"><th style="width:3rem">#</th><th>문제</th><th>핵심 질문</th><th style="width:9rem">답</th></tr>
-        <tr class="fragment fade-up"><td>1</td><td>실행 과정에 <b>개입할 수 없다</b></td><td>중요한 순간에 끼어들 수 있는가?</td><td class="mono dim">?</td></tr>
-        <tr class="fragment fade-up"><td>2</td><td>무엇을 했는지 <b>남지 않는다</b></td><td>나중에 실행 과정을 확인할 수 있는가?</td><td class="mono dim">?</td></tr>
-        <tr class="fragment fade-up"><td>3</td><td><b>해서는 안 되는 행동</b>도 한다</td><td>무엇을 허용하고 금지할 것인가?</td><td class="mono dim">?</td></tr>
-        <tr class="fragment fade-up"><td>4</td><td>현재 실행 상황을 <b>알 수 없다</b></td><td>지금 어떤 상태인가?</td><td class="mono dim">?</td></tr>
-        <tr class="fragment fade-up"><td>5</td><td><b>너무 많이</b> 실행하거나 범위를 벗어난다</td><td>어디까지 허용할 것인가?</td><td class="mono dim">?</td></tr>
-        <tr class="fragment fade-up"><td>6</td><td>Agent의 "완료"를 <b>믿을 수 없다</b></td><td>정말 완료된 것인가?</td><td class="mono dim">?</td></tr>
-        <tr class="fragment fade-up"><td>7</td><td><b>중요한 판단</b>까지 Agent가 해버린다</td><td>어디에서 사람이 결정해야 하는가?</td><td class="mono dim">?</td></tr>
+        <tr class="autoshow fade-up"><td>1</td><td>실행 과정에 <b>개입할 수 없다</b></td><td>중요한 순간에 끼어들 수 있는가?</td><td class="mono dim">?</td></tr>
+        <tr class="autoshow fade-up"><td>2</td><td>무엇을 했는지 <b>남지 않는다</b></td><td>나중에 실행 과정을 확인할 수 있는가?</td><td class="mono dim">?</td></tr>
+        <tr class="autoshow fade-up"><td>3</td><td><b>해서는 안 되는 행동</b>도 한다</td><td>무엇을 허용하고 금지할 것인가?</td><td class="mono dim">?</td></tr>
+        <tr class="autoshow fade-up"><td>4</td><td>현재 실행 상황을 <b>알 수 없다</b></td><td>지금 어떤 상태인가?</td><td class="mono dim">?</td></tr>
+        <tr class="autoshow fade-up"><td>5</td><td><b>너무 많이</b> 실행하거나 범위를 벗어난다</td><td>어디까지 허용할 것인가?</td><td class="mono dim">?</td></tr>
+        <tr class="autoshow fade-up"><td>6</td><td>Agent의 "완료"를 <b>믿을 수 없다</b></td><td>정말 완료된 것인가?</td><td class="mono dim">?</td></tr>
+        <tr class="autoshow fade-up"><td>7</td><td><b>중요한 판단</b>까지 Agent가 해버린다</td><td>어디에서 사람이 결정해야 하는가?</td><td class="mono dim">?</td></tr>
       </table>
-      <p class="note fragment fade-up" style="margin-top:0.8rem">이 표가 오늘의 <b>로드맵</b>입니다 — 지금부터 한 줄씩, "답" 칸을 채워 나갑니다.</p>
+      <p class="note autoshow fade-up" style="margin-top:0.8rem">이 표가 오늘의 <b>로드맵</b>입니다 — 지금부터 장마다 하나씩, "답" 칸을 채워 나갑니다.</p>
     </section>
 
     <!-- 6 · 1장 Hook 질문 -->
@@ -1637,16 +1636,16 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
       <p class="hh-q autoshow fade-up" style="margin-top:1.6rem; text-align:center">Agent가 Tool을 실행하려는 그 순간,<br>우리가 실행 <span class="grad">전후에 끼어들 수 없다면</span> 어떻게 통제할까요?</p>
       <div class="hh-flow" style="margin-top:2.2rem">
         <div class="hh-node">Agent</div>
-        <div class="hh-arr lit fragment hh-pop" data-fragment-index="1">→</div>
-        <div class="hh-node hook fragment hh-pop" data-fragment-index="1">Before Hook</div>
+        <div class="hh-arr lit autoshow zoom-in" style="animation-delay:0.6s" >→</div>
+        <div class="hh-node hook autoshow zoom-in" style="animation-delay:0.6s" >Before Hook</div>
         <div class="hh-arr">→</div>
         <div class="hh-node tool">Tool</div>
         <div class="hh-arr">→</div>
-        <div class="hh-node hook fragment hh-pop" data-fragment-index="2">After Hook</div>
-        <div class="hh-arr lit fragment hh-pop" data-fragment-index="2">→</div>
+        <div class="hh-node hook autoshow zoom-in" style="animation-delay:1.3s" >After Hook</div>
+        <div class="hh-arr lit autoshow zoom-in" style="animation-delay:1.3s" >→</div>
         <div class="hh-node">Agent</div>
       </div>
-      <p class="fragment fade-up" style="text-align:center; margin-top:1.6rem; font-size:1.45rem">그래서 <b class="accent">Hook</b> — 실행 과정의 <b>특정 지점에 외부 로직을 삽입</b>하는 메커니즘이 등장합니다.</p>
+      <p class="autoshow fade-up" style="text-align:center; margin-top:1.6rem; font-size:1.45rem">그래서 <b class="accent">Hook</b> — 실행 과정의 <b>특정 지점에 외부 로직을 삽입</b>하는 메커니즘이 등장합니다.</p>
     </section>
 
     <!-- 7 · Hook 용도와 핵심 구분 -->
@@ -1657,22 +1656,22 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
         <div class="panel autoshow fade-left">
           <b class="accent">Before Hook</b> — 실행 전
           <div class="pills" style="margin-top:0.7rem">
-            <span class="pill fragment hh-pop">검사</span>
-            <span class="pill fragment hh-pop">기록</span>
-            <span class="pill fragment hh-pop" style="border-color:rgba(255,122,149,0.6); color:var(--accent-3)">차단</span>
-            <span class="pill fragment hh-pop">입력 변경</span>
+            <span class="pill autoshow zoom-in">검사</span>
+            <span class="pill autoshow zoom-in">기록</span>
+            <span class="pill autoshow zoom-in" style="border-color:rgba(255,122,149,0.6); color:var(--accent-3)">차단</span>
+            <span class="pill autoshow zoom-in">입력 변경</span>
           </div>
         </div>
         <div class="panel autoshow fade-right">
           <b class="mint">After Hook</b> — 실행 후
           <div class="pills" style="margin-top:0.7rem">
-            <span class="pill fragment hh-pop">결과 기록</span>
-            <span class="pill fragment hh-pop">오류 검사</span>
-            <span class="pill fragment hh-pop">후처리</span>
+            <span class="pill autoshow zoom-in">결과 기록</span>
+            <span class="pill autoshow zoom-in">오류 검사</span>
+            <span class="pill autoshow zoom-in">후처리</span>
           </div>
         </div>
       </div>
-      <div class="panel fragment fade-up" style="margin-top:1.2rem; text-align:center; border-color:rgba(155,130,255,0.4)">
+      <div class="panel autoshow fade-up" style="margin-top:1.2rem; text-align:center; border-color:rgba(155,130,255,0.4)">
         <p style="font-size:1.55rem; font-weight:800">Hook은 <span class="accent">통제 정책 자체</span>가 아니라, <span class="grad">통제를 넣을 수 있는 지점</span>입니다.</p>
         <p class="small dim" style="margin-top:0.4rem">무엇을 검사할지는 아직 정하지 않았습니다 — 그건 다른 문제의 답입니다.</p>
       </div>
@@ -1708,7 +1707,7 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
               <div class="hh-log"><span class="sh-dim">10:32</span> <span class="sh-ok">bash</span>  pytest tests/</div>
             </div>
           </div>
-          <p class="note fragment fade-up" style="margin-top:0.8rem">아직 아무것도 막지 않았습니다 — 그런데 벌써 <b>보이기 시작</b>합니다.</p>
+          <p class="note autoshow fade-up" style="margin-top:0.8rem">아직 아무것도 막지 않았습니다 — 그런데 벌써 <b>보이기 시작</b>합니다.</p>
         </div>
       </div>
     </section>
@@ -1741,7 +1740,7 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
               <div class="hh-log"><span class="sh-dim">10:32</span> <span class="sh-agent">AGENT</span> 다른 방법을 찾습니다…</div>
             </div>
           </div>
-          <div class="panel fragment fade-up" style="margin-top:0.8rem; text-align:center">
+          <div class="panel autoshow fade-up" style="margin-top:0.8rem; text-align:center">
             <b>관찰과 개입은 같은 지점입니다.</b><br><span class="small dim">코드 몇 줄의 차이일 뿐 — 그래서 Hook이 모든 것의 토대가 됩니다.</span>
           </div>
         </div>
@@ -1770,7 +1769,7 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
             <b>기록도 진화합니다 — 오늘은 한 줄로만</b>
             <p style="margin-top:0.6rem; font-size:1.15rem; line-height:1.8">단순 로그 → 구조화된 로그 → 실행 추적·감사 기록.<br><span class="dim small">깊이는 다음에 — 오늘은 "남긴다"가 전부입니다.</span></p>
           </div>
-          <div class="panel fragment fade-up" style="margin-top:0.9rem; border-color:rgba(43,234,208,0.4); text-align:center">
+          <div class="panel autoshow fade-up" style="margin-top:0.9rem; border-color:rgba(43,234,208,0.4); text-align:center">
             <p style="font-size:1.4rem; font-weight:800">통제하려면 먼저,<br><span class="mint">무슨 일이 일어났는지 남길 수 있어야 합니다.</span></p>
           </div>
         </div>
@@ -1794,23 +1793,23 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
 <span class="t-key">net:</span>   <span class="t-str">외부 접근</span>              <span class="hh-verdict deny" style="font-size:0.8rem; padding:0.12rem 0.6rem">deny</span>
 <span class="t-key">tool:</span>  <span class="t-str">허용 목록의 Tool만</span>     <span class="hh-verdict allow" style="font-size:0.8rem; padding:0.12rem 0.6rem">allow</span></div>
           </div>
-          <p class="small dim" style="margin-top:0.5rem">지금은 <b>allow / deny 두 가지</b>로 충분해 보입니다. <span class="fragment fade-in">…정말 그럴까요? (7장에서 다시 만납니다)</span></p>
+          <p class="small dim" style="margin-top:0.5rem">지금은 <b>allow / deny 두 가지</b>로 충분해 보입니다. <span class="autoshow fade-in">…정말 그럴까요? (7장에서 다시 만납니다)</span></p>
         </div>
         <div class="autoshow fade-right">
           <div class="hh-vs" style="grid-template-columns:1fr; gap:0.8rem">
-            <div class="panel fragment fade-up" style="border-color:rgba(155,130,255,0.4)"><b class="accent">Hook</b> = <b>어디에서</b> 검사할 것인가<br><span class="small dim">지점 · 메커니즘</span></div>
-            <div class="panel fragment fade-up" style="border-color:rgba(43,234,208,0.4)"><b class="mint">Policy</b> = <b>무엇을</b> 검사할 것인가<br><span class="small dim">규칙 · 내용</span></div>
+            <div class="panel autoshow fade-up" style="border-color:rgba(155,130,255,0.4)"><b class="accent">Hook</b> = <b>어디에서</b> 검사할 것인가<br><span class="small dim">지점 · 메커니즘</span></div>
+            <div class="panel autoshow fade-up" style="border-color:rgba(43,234,208,0.4)"><b class="mint">Policy</b> = <b>무엇을</b> 검사할 것인가<br><span class="small dim">규칙 · 내용</span></div>
           </div>
-          <div class="hh-flow fragment fade-up" style="margin-top:1.1rem">
+          <div class="hh-flow autoshow fade-up" style="margin-top:1.1rem">
             <div class="hh-node ghost" style="font-size:0.95rem">Policy</div>
             <div class="hh-arr">↓</div>
           </div>
-          <div class="hh-flow fragment fade-up" style="margin-top:0.3rem">
+          <div class="hh-flow autoshow fade-up" style="margin-top:0.3rem">
             <div class="hh-node" style="font-size:1.0rem">Agent</div><div class="hh-arr lit">→</div>
             <div class="hh-node hook" style="font-size:1.0rem">Hook</div><div class="hh-arr">→</div>
             <div class="hh-node tool" style="font-size:1.0rem">Tool</div>
           </div>
-          <p class="note fragment fade-up" style="margin-top:0.9rem; text-align:center">규칙(Policy)을 실제 실행에 적용하는 자리가 <b>Hook</b>입니다.</p>
+          <p class="note autoshow fade-up" style="margin-top:0.9rem; text-align:center">규칙(Policy)을 실제 실행에 적용하는 자리가 <b>Hook</b>입니다.</p>
         </div>
       </div>
     </section>
@@ -1823,14 +1822,14 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
       <h2 style="margin-top:1.0rem">문제 4 — 현재 상황을 알 수 없다 → <span class="grad">State</span></h2>
       <p class="autoshow fade-up" style="font-size:1.25rem; margin-top:0.6rem">기록은 있습니다. 그런데 "지금 어디까지 왔지?"를 알려면 <b>매번 처음부터 재구성</b>해야 합니다.</p>
       <div class="grid-2" style="margin-top:0.9rem; align-items:stretch">
-        <div class="panel fragment fade-left">
+        <div class="panel autoshow fade-left">
           <b class="dim">Trace</b> — 지금까지 <b>무슨 일이</b> 있었는가
           <div class="term" style="margin-top:0.6rem"><div class="term-body" style="white-space:pre-wrap; line-height:1.9; font-size:0.95rem"><span class="sh-dim">10:31</span> READ src/main.cpp
 <span class="sh-dim">10:32</span> EDIT src/main.cpp
 <span class="sh-dim">10:33</span> RUN  pytest
 <span class="sh-dim">…</span> (전부 다시 읽어야 안다)</div></div>
         </div>
-        <div class="panel fragment fade-right" style="border-color:rgba(155,130,255,0.4)">
+        <div class="panel autoshow fade-right" style="border-color:rgba(155,130,255,0.4)">
           <b class="accent">State</b> — 그 결과 <b>지금 어떤 상태</b>인가
           <div class="term" style="margin-top:0.6rem"><div class="term-body" style="white-space:pre-wrap; line-height:1.9; font-size:0.95rem"><span class="t-key">current_phase:</span>     <span class="t-str">testing</span>
 <span class="t-key">modified_files:</span>    <span class="t-str">3</span>
@@ -1838,7 +1837,7 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
 <span class="t-key">validation_status:</span> <span class="t-str">pending</span></div></div>
         </div>
       </div>
-      <p class="note fragment fade-up" style="margin-top:0.9rem; text-align:center">둘은 다릅니다 — 그리고 State가 생기는 순간, <b>다음 문제를 풀 열쇠</b>가 손에 들어옵니다.</p>
+      <p class="note autoshow fade-up" style="margin-top:0.9rem; text-align:center">둘은 다릅니다 — 그리고 State가 생기는 순간, <b>다음 문제를 풀 열쇠</b>가 손에 들어옵니다.</p>
     </section>
 
     <!-- 13 · 5장 Limits -->
@@ -1860,11 +1859,11 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
         </div>
         <div style="text-align:right; margin-top:0.4rem"><button class="pill" onclick="simReplay(this)" style="cursor:pointer">↻ 다시 재생</button></div>
       </div>
-      <div class="pills fragment fade-up" style="justify-content:center; margin-top:0.9rem">
+      <div class="pills autoshow fade-up" style="justify-content:center; margin-top:0.9rem">
         <span class="pill">Tool 호출 ≤ 20회</span><span class="pill">실행 ≤ 10분</span><span class="pill">수정 파일 ≤ 10개</span><span class="pill">Token·비용 상한</span>
       </div>
-      <p class="quote fragment fade-up" style="text-align:center; font-size:1.6rem; margin-top:1.1rem">자율성을 주되, <span class="grad">무한한 자율성</span>을 주지는 않습니다.</p>
-      <p class="note fragment fade-up" style="text-align:center; margin-top:0.5rem">이쯤부터 이 구조는 Hook 모음이 아니라 — <b>실행 환경</b>처럼 보이기 시작합니다.</p>
+      <p class="quote autoshow fade-up" style="text-align:center; font-size:1.6rem; margin-top:1.1rem">자율성을 주되, <span class="grad">무한한 자율성</span>을 주지는 않습니다.</p>
+      <p class="note autoshow fade-up" style="text-align:center; margin-top:0.5rem">이쯤부터 이 구조는 Hook 모음이 아니라 — <b>실행 환경</b>처럼 보이기 시작합니다.</p>
     </section>
 
     <!-- 14 · 6장 Validation -->
@@ -1879,12 +1878,12 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
             <div class="term-bar"><span class="term-title">chat</span></div>
             <div class="term-body" style="line-height:2.0; padding:0.7rem 1.0rem">
               <div><span class="sh-agent">AGENT</span> "작업 완료했습니다."</div>
-              <div class="fragment fade-up"><span class="hh-danger">BUILD FAIL</span> <span class="sh-dim">· 실제 빌드는 깨져 있고</span></div>
-              <div class="fragment fade-up"><span class="hh-danger">TEST  FAIL</span> <span class="sh-dim">· 테스트 3개 실패</span></div>
-              <div class="fragment fade-up"><span class="hh-danger">MISSING</span>   <span class="sh-dim">· 출력 파일이 없다</span></div>
+              <div class="autoshow fade-up"><span class="hh-danger">BUILD FAIL</span> <span class="sh-dim">· 실제 빌드는 깨져 있고</span></div>
+              <div class="autoshow fade-up"><span class="hh-danger">TEST  FAIL</span> <span class="sh-dim">· 테스트 3개 실패</span></div>
+              <div class="autoshow fade-up"><span class="hh-danger">MISSING</span>   <span class="sh-dim">· 출력 파일이 없다</span></div>
             </div>
           </div>
-          <div class="panel fragment fade-up" style="margin-top:0.8rem; text-align:center; border-color:rgba(255,122,149,0.45)">
+          <div class="panel autoshow fade-up" style="margin-top:0.8rem; text-align:center; border-color:rgba(255,122,149,0.45)">
             <b style="font-size:1.35rem">Agent의 <span class="accent3">주장</span>과 실제 <span class="mint">성공</span>은 다릅니다.</b>
           </div>
         </div>
@@ -1896,11 +1895,11 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
             <div class="pills" style="justify-content:center"><span class="pill">Build</span><span class="pill">Test</span><span class="pill">Lint</span><span class="pill">Schema</span><span class="pill">요구사항</span></div>
             <div class="hh-arr">↓</div>
             <div style="display:flex; gap:1.0rem">
-              <div class="hh-verdict allow fragment hh-pop">SUCCESS</div>
-              <div class="hh-verdict deny fragment hh-pop">FAILURE</div>
+              <div class="hh-verdict allow autoshow zoom-in">SUCCESS</div>
+              <div class="hh-verdict deny autoshow zoom-in">FAILURE</div>
             </div>
           </div>
-          <p class="note fragment fade-up" style="margin-top:1.0rem; text-align:center">판정은 Agent의 말이 아니라 <b>기계가 확인한 사실</b>로 합니다.<br><span class="fragment fade-in">그런데 — <b>FAILURE면, 그다음은요?</b></span></p>
+          <p class="note autoshow fade-up" style="margin-top:1.0rem; text-align:center">판정은 Agent의 말이 아니라 <b>기계가 확인한 사실</b>로 합니다.<br><span class="autoshow fade-in">그런데 — <b>FAILURE면, 그다음은요?</b></span></p>
         </div>
       </div>
     </section>
@@ -1917,18 +1916,18 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
           <div class="hh-arr">→</div>
           <div class="hh-verdict deny">FAILURE</div>
         </div>
-        <svg class="fragment fade-in" width="620" height="70" viewBox="0 0 620 70" style="overflow:visible">
+        <svg class="autoshow fade-in" width="620" height="70" viewBox="0 0 620 70" style="overflow:visible">
           <path class="hh-loop hh-loop-anim" d="M 520 8 C 520 58, 100 58, 100 12" marker-end="url(#hhArrHead)"/>
           <defs><marker id="hhArrHead" markerWidth="10" markerHeight="10" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="#FF7A95" stroke-width="2"/></marker></defs>
           <text x="310" y="62" text-anchor="middle" fill="#FF7A95" font-size="20" font-weight="800">실패 결과를 돌려주고, 다시 시킨다 (재시도)</text>
         </svg>
       </div>
-      <p class="hh-q fragment fade-up" style="text-align:center; margin-top:0.8rem">그럼 — <span class="grad">몇 번까지</span> 다시 시키죠?</p>
-      <div class="panel fragment fade-up" style="margin-top:0.9rem; text-align:center; border-color:rgba(255,212,107,0.5)">
+      <p class="hh-q autoshow fade-up" style="text-align:center; margin-top:0.8rem">그럼 — <span class="grad">몇 번까지</span> 다시 시키죠?</p>
+      <div class="panel autoshow fade-up" style="margin-top:0.9rem; text-align:center; border-color:rgba(255,212,107,0.5)">
         <p style="font-size:1.5rem; font-weight:800">아까 만든 <span class="amber">Limits</span>가, 여기서 다시 등장합니다.</p>
         <p class="mono" style="margin-top:0.5rem; font-size:1.05rem">Validation 실패 → 재시도 → <span class="amber">Limits(재시도 상한)</span> 초과 → 중단</p>
       </div>
-      <p class="note fragment fade-up" style="text-align:center; margin-top:0.8rem"><b>요소들은 연결되어 함께 작동합니다</b> — 오늘 이야기의 결말을 방금 살짝 본 겁니다.<br><span class="small dim">재시도 "전략"(무엇을 어떻게 다르게 다시 시킬 것인가)은 2차 실습에서 직접 만듭니다.</span></p>
+      <p class="note autoshow fade-up" style="text-align:center; margin-top:0.8rem"><b>요소들은 연결되어 함께 작동합니다</b> — 오늘 이야기의 결말을 방금 살짝 본 겁니다.<br><span class="small dim">재시도 "전략"(무엇을 어떻게 다르게 다시 시킬 것인가)은 2차 실습에서 직접 만듭니다.</span></p>
     </section>
 
     <!-- 16 · 7장 Approval -->
@@ -1941,17 +1940,17 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
       <div style="display:flex; justify-content:center; gap:1.2rem; margin-top:1.2rem; align-items:center">
         <div class="hh-verdict allow">allow</div>
         <div class="hh-verdict deny">deny</div>
-        <div class="hh-verdict ask fragment hh-pop" style="font-size:1.3rem; padding:0.6rem 1.5rem">ask ✋</div>
+        <div class="hh-verdict ask autoshow zoom-in" style="font-size:1.3rem; padding:0.6rem 1.5rem">ask ✋</div>
       </div>
-      <p class="fragment fade-up" style="text-align:center; font-size:1.4rem; margin-top:1.0rem">Policy의 판정값이 <b>둘에서 셋</b>이 되는 순간 — <span class="grad" style="font-weight:900">Approval이 태어납니다.</span><br><span class="small dim">"되긴 되는데, 물어봐야 하는 일" = ask</span></p>
-      <div class="hh-flow fragment fade-up" style="margin-top:1.2rem">
+      <p class="autoshow fade-up" style="text-align:center; font-size:1.4rem; margin-top:1.0rem">Policy의 판정값이 <b>둘에서 셋</b>이 되는 순간 — <span class="grad" style="font-weight:900">Approval이 태어납니다.</span><br><span class="small dim">"되긴 되는데, 물어봐야 하는 일" = ask</span></p>
+      <div class="hh-flow autoshow fade-up" style="margin-top:1.2rem">
         <div class="hh-node" style="font-size:1.0rem">Agent</div><div class="hh-arr">→</div>
         <div class="hh-node hook" style="font-size:1.0rem">Policy: ask</div><div class="hh-arr lit">→</div>
         <div class="hh-node human" style="font-size:1.0rem">Human</div><div class="hh-arr">→</div>
         <div class="hh-verdict allow" style="font-size:0.95rem">Allow</div>
         <div class="hh-verdict deny" style="font-size:0.95rem">Reject</div>
       </div>
-      <p class="quote fragment fade-up" style="text-align:center; font-size:1.55rem; margin-top:1.2rem">통제의 목적은 자율성을 없애는 것이 아니라,<br><span class="grad" style="font-weight:900">자율성의 경계를 설계하는 것입니다.</span></p>
+      <p class="quote autoshow fade-up" style="text-align:center; font-size:1.55rem; margin-top:1.2rem">통제의 목적은 자율성을 없애는 것이 아니라,<br><span class="grad" style="font-weight:900">자율성의 경계를 설계하는 것입니다.</span></p>
     </section>
 
     <!-- 17 · 다시 처음 그림 -->
@@ -1959,28 +1958,27 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
       <div><span class="chip">다시, 처음 그림</span></div>
       <h2>처음엔 이게 전부였습니다 — 이제 하나씩 얹어봅니다</h2>
       <div class="hh-frame" style="margin-top:0.6rem">
-        <span class="fragment hh-ftrig" data-fragment-index="7" aria-hidden="true"></span>
         <div class="hh-frame-label">HARNESS</div>
-        <div class="hh-lane fragment fade-up" data-fragment-index="3"><div class="lane-t">통제 평면</div>
+        <div class="hh-lane autoshow fade-up" style="animation-delay:2.0s" ><div class="lane-t">통제 평면</div>
           <div class="hh-flow" style="justify-content:flex-start">
             <div class="hh-node ghost" style="font-size:0.92rem">Policy <span class="dim">(allow·deny·ask)</span></div>
-            <div class="hh-node ghost fragment fade-in" data-fragment-index="4" style="font-size:0.92rem">State</div>
-            <div class="hh-node ghost fragment fade-in" data-fragment-index="5" style="font-size:0.92rem">Limits</div>
+            <div class="hh-node ghost autoshow fade-in" style="animation-delay:2.5s; font-size:0.92rem">State</div>
+            <div class="hh-node ghost autoshow fade-in" style="animation-delay:3.0s; font-size:0.92rem">Limits</div>
           </div>
         </div>
         <div class="hh-lane core"><div class="lane-t">실행 경로</div>
           <div class="hh-flow" style="justify-content:flex-start">
             <div class="hh-node" style="font-size:0.92rem">User</div><div class="hh-arr">→</div>
             <div class="hh-node" style="font-size:0.92rem">Agent</div><div class="hh-arr">→</div>
-            <div class="hh-node hook fragment hh-pop" data-fragment-index="1" style="font-size:0.92rem">Hook</div><div class="hh-arr">→</div>
+            <div class="hh-node hook autoshow zoom-in" style="animation-delay:0.6s; font-size:0.92rem">Hook</div><div class="hh-arr">→</div>
             <div class="hh-node tool" style="font-size:0.92rem">Tool</div><div class="hh-arr">→</div>
-            <div class="hh-node hook fragment hh-pop" data-fragment-index="1" style="font-size:0.92rem">Hook</div>
+            <div class="hh-node hook autoshow zoom-in" style="animation-delay:0.6s; font-size:0.92rem">Hook</div>
           </div>
         </div>
-        <div class="hh-lane fragment fade-up" data-fragment-index="2"><div class="lane-t">기록</div>
+        <div class="hh-lane autoshow fade-up" style="animation-delay:1.3s" ><div class="lane-t">기록</div>
           <div class="hh-flow" style="justify-content:flex-start"><div class="hh-node ghost" style="font-size:0.92rem">Record / Trace — 모든 Hook이 남긴다</div></div>
         </div>
-        <div class="hh-lane fragment fade-up" data-fragment-index="6"><div class="lane-t">출구 게이트</div>
+        <div class="hh-lane autoshow fade-up" style="animation-delay:3.6s" ><div class="lane-t">출구 게이트</div>
           <div class="hh-flow" style="justify-content:flex-start">
             <div class="hh-node hook" style="font-size:0.92rem">Validation</div>
             <div class="hh-arr" style="color:var(--accent-3)">⟲ 실패 시 재시도(상한: Limits)</div>
@@ -1989,7 +1987,7 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
           </div>
         </div>
       </div>
-      <p class="note fragment fade-up" data-fragment-index="8" style="text-align:center; margin-top:0.7rem">클릭할 때마다, 오늘 풀었던 문제의 답이 하나씩 제자리에 놓입니다.</p>
+      <p class="note autoshow fade-up" style="animation-delay:4.8s; text-align:center; margin-top:0.7rem">오늘 풀었던 문제의 답들이, 차례로 제자리에 놓입니다.</p>
     </section>
 
     <!-- 18 · Harness 정의 -->
@@ -2013,7 +2011,7 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
         <tr><td>6</td><td>"완료"를 믿을 수 없다</td><td><b class="accent">Validation</b> <span class="dim small">＋ 재시도(상한)</span></td></tr>
         <tr><td>7</td><td>중요한 판단까지 해버린다</td><td><b class="amber">Approval</b> <span class="dim small">(ask)</span></td></tr>
       </table>
-      <p class="note fragment fade-up" style="margin-top:0.8rem; text-align:center">외운 게 아니라 — <b>필요해서 하나씩 소환</b>했습니다. 그게 오늘의 전부입니다.</p>
+      <p class="note autoshow fade-up" style="margin-top:0.8rem; text-align:center">외운 게 아니라 — <b>필요해서 하나씩 소환</b>했습니다. 그게 오늘의 전부입니다.</p>
     </section>
 
     <!-- 20 · 다루지 않은 것 + 2차 예고 -->
@@ -2031,7 +2029,7 @@ section.present .hh-loop-anim { animation:hhDash 1.2s linear infinite; }
         <div class="panel autoshow fade-right" style="border-color:rgba(155,130,255,0.45)">
           <b class="accent">2차 세션 — Harness Quest</b>
           <p style="margin-top:0.7rem; font-size:1.2rem; line-height:1.75">오늘 본 구조를, 여러분이 <b>레벨을 깨며 직접</b> 만듭니다.<br>폭주 목격 → Hook → 범위·도구 통제 → 실행 제한 → 완료 검증 → 사람 승인.</p>
-          <p class="fragment fade-up quote" style="margin-top:0.8rem; font-size:1.35rem">그리고 이번 시즌 —<br><b class="accent3">채점기는 여러분 편이 아닙니다.</b></p>
+          <p class="autoshow fade-up quote" style="margin-top:0.8rem; font-size:1.35rem">그리고 이번 시즌 —<br><b class="accent3">채점기는 여러분 편이 아닙니다.</b></p>
         </div>
       </div>
     </section>
