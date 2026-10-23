@@ -1,0 +1,5 @@
+
+> harness-quest@0.1.0 check:source
+> node quest/scripts/check-source.mjs
+
+Syntax and <=100-line source modules: PASS

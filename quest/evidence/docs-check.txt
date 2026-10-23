@@ -1,0 +1,6 @@
+
+> harness-quest@0.1.0 check:docs
+> node quest/scripts/check-docs.mjs
+
+PASS: 8 HTML documents; 99 local links/anchors; required structure; unique IDs.
+Not a browser layout, accessibility or print-rendering test.

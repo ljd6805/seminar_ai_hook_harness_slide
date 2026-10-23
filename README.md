@@ -1,51 +1,88 @@
 # seminar_ai_hook_harness_slide
 
-AI Agent 팀 세미나 시리즈 **3편 — Hook & Harness** 의 발표 자료 저장소입니다.
+AI Agent 팀 세미나 **3편 — Hook & Harness**의 이론 자료와 OpenCode 실습 키트입니다.
 
-> **핵심 메시지**: 통제의 목적은 Agent의 자율성을 없애는 것이 아니라, **자율성의 경계를 설계**하는 것이다.
+> 통제의 목적은 Agent의 자율성을 없애는 것이 아니라, 자율성의 경계를 설계하는 것이다.
 
 ## 시리즈 위치
 
 | 편 | 주제 | 형식 | 저장소 |
 |---|---|---|---|
-| 1편 | AI Agent 기본 개념 (Agent · Skill · MCP · Harness) | 이론 | [seminar_ai_agent](https://github.com/ljd6805/seminar_ai_agent) |
-| 2편 | Skill Quest — Skill 실습 | 게임형 실습 | [seminar_ai_skill_quest](https://github.com/ljd6805/seminar_ai_skill_quest) |
-| **3편** | **Hook & Harness** | 이론 + 실습 | 본 저장소 |
+| 1편 | AI Agent 기본 개념 | 이론 | [seminar_ai_agent](https://github.com/ljd6805/seminar_ai_agent) |
+| 2편 | Skill Quest | 게임형 실습 | [seminar_ai_skill_quest](https://github.com/ljd6805/seminar_ai_skill_quest) |
+| **3편** | **Hook & Harness** | 이론 + OpenCode 실습 | 본 저장소 |
 
-## 3편 구성
+1차 이론 세션은 완료됐습니다(사용자 확인). 2차 **Harness Quest**는 OpenCode에서 실제 도구 호출, 파일 변경, Hook, 검증, 승인 흐름을 경험하는 실습입니다.
 
-- **1차 세션 — Harness 이해와 설계** (이론, 90분): 통제되지 않은 Agent에서 출발해 7가지 문제를 목격하고, 각 문제의 답으로 Hook → Record → Policy → State → Limits → Validation → Approval 을 하나씩 도출한 뒤, 마지막에 그 전체 구조가 Harness였음을 확인한다.
-- **2차 세션 — Harness Quest** (실습, 별도 기획): 1차에서 본 구조를 참가자가 직접 만든다. 통제되지 않은 Agent 실행 → Hook 추가 → 범위 통제 → 도구 통제 → 실행 제한 → 완료 검증 → 사람 승인 → Harness 완성.
+## 실습 시작
+
+현재 키트는 `docs/harness-quest-plan-20261023` 브랜치의 Draft PR에 있습니다. 수업 기준은 **OpenCode 1.19.4**, Node.js 22 이상입니다. 참가자가 사용할 모델을 OpenCode에 연결해 두어야 합니다.
+
+```sh
+git clone https://github.com/ljd6805/seminar_ai_hook_harness_slide.git
+cd seminar_ai_hook_harness_slide
+git switch docs/harness-quest-plan-20261023
+npm install -g opencode-ai@1.19.4
+node quest/cli.mjs init workshops/quest --level 0
+npm install --prefix workshops/quest/.opencode
+cd workshops/quest
+opencode
+```
+
+활성 Agent가 `quest`인지 확인하세요. [참가자 교재](docs/harness-quest-guide.html)의 요청을 입력하고 `learner/rules.mjs`를 단계별로 완성합니다. 코드 작성은 저장소 루트의 별도 OpenCode 작성 세션 또는 편집기에서 진행합니다. 실습용 quest Agent는 정책 파일을 수정할 수 없습니다.
+
+레벨을 바꿀 때는 OpenCode를 종료한 뒤 **저장소 루트**에서 실행합니다.
+
+```sh
+node quest/cli.mjs checkpoint workshops/quest --level 1
+# 해당 규칙을 수정한 뒤 로컬 검사
+node quest/cli.mjs check workshops/quest
+# 실습 폴더에서 OpenCode를 재시작하고 새 세션으로 미션 수행 후
+node quest/cli.mjs check workshops/quest --evidence
+```
+
+체크포인트는 기존 규칙을 백업하고 이전 단계 완성 예제와 현재 단계 시작 코드를 제공합니다. 산출물은 보존합니다. 전체 초기화는 새 폴더에 `init`으로 진행하세요. 승인 실습에서는 자동 승인 옵션이나 ‘항상 허용’을 사용하지 않습니다.
+
+## 레벨
+
+| 레벨 | 완성할 내용 |
+|---|---|
+| Lv.0 | 잘못된 합계를 완료로 처리하는 문제 관찰 |
+| Lv.1 | 실제 Hook의 호출 전후 기록 |
+| Lv.2 | 파일 읽기·쓰기 범위 |
+| Lv.3 | 도구 허용 목록 |
+| Lv.4 | 세션별 도구 시도 예산 |
+| Lv.5 | 실제 산출물 검증과 수정·재검사 |
+| Lv.6 | 검증 해시 확인, OpenCode 승인·거절, 단일 제출 |
+
+합계는 13000원입니다. 업무 파일은 실제로 읽고 쓰며, 외부 제출은 로컬 영수증 생성으로 한정합니다. 고정 응답 서버는 실행기 연동 테스트에만 사용합니다.
 
 ## 문서
 
-새 기획·개발 자료는 [문서 허브](docs/index.html)에서 확인합니다.
+[문서 허브](docs/index.html)에서 전체 자료를 확인합니다. 새 기획·설계·개발·교육·검증 문서는 HTML입니다.
 
-| 문서 | 설명 |
+| 문서 | 용도 |
 |---|---|
-| [`docs/seminar-synopsis.md`](docs/seminar-synopsis.md) | 1차 세션 시놉시스 v0.1 — 핵심 메시지, 전개 원칙, 장별 구성, 시간 배분, 데모 계획, 결정 기록. **슬라이드 작성의 기준 문서** |
-| [`slides/index.html`](slides/index.html) | 1차 세션 슬라이드 초안 v0.1 — reveal.js 자립형(오프라인 동작), 1·2편과 동일한 테마 상속. `?mode=presentation` 으로 본편·데모만 재생 |
-| [`docs/harness-quest-plan.html`](docs/harness-quest-plan.html) | 2차 실습 기획안 v0.2 — OpenCode에서 실제 실행할 미션·권한·Hook·검증·승인, 120분/90분 운영안. 플랫폼은 확정, 세부 구성과 버전은 검토 중 |
+| [참가자 교재](docs/harness-quest-guide.html) | 단계별 명령·OpenCode 요청·힌트·통과 기준 |
+| [강사용 가이드](docs/harness-quest-instructor.html) | 120분/90분 운영안·관찰 질문·리허설 |
+| [구현 설계](docs/harness-quest-design.html) | 실행 구조와 설계 결정 |
+| [개발 구조](docs/harness-quest-development.html) | 모듈·상태·API·공식 소스·재현 명령 |
+| [검증 결과](docs/harness-quest-validation.html) | 자동 검사 결과와 미확인 항목 |
+| [트러블슈팅](docs/harness-quest-troubleshooting.html) | 증상별 확인·복구 절차 |
+| [기획안 v0.2](docs/harness-quest-plan.html) | 구현 전 기획 기록. 실행 절차는 교재를 우선 |
+| [1차 슬라이드](slides/index.html) | 기존 21장, `?mode=presentation`으로 본편·데모 재생 |
+| [기존 시놉시스](docs/seminar-synopsis.md) | 1차 세션 구성의 기준 문서 |
 
-### 2차 기획 업데이트 (2026-10-23)
+## 개발 검증
 
-- 사용자는 1차 세션이 완료되었다고 확인했고, 2차는 **실습 기획안부터** 작성하기로 선택했습니다.
-- 아래의 기존 진행 상태는 당시 기록입니다. 이번 변경에서는 1차 슬라이드와 시놉시스를 수정하지 않았습니다.
-- **2차는 OpenCode에서 진행하는 실습입니다(사용자 확정).** 참가자는 OpenCode에서 요청하고 프로젝트 설정·Hook을 수정하며 실제 도구 실행·검증·승인을 확인합니다.
-- 고정 시나리오는 채점용 보조 테스트로만 사용합니다. 별도 시뮬레이터를 본 실습으로 삼고 OpenCode 연결을 선택 사항으로 두던 v0.1 제안은 철회했습니다.
-- 운영 시간, 세부 미션, OpenCode 버전·OS·모델과 구현 언어는 검토 중입니다. 초기 시제품부터 실제 OpenCode에서 검증합니다.
+```sh
+npm test
+npm run check:source
+npm run check:docs
+```
 
-## 진행 상태
+단위 테스트 16개가 통과했습니다. 실제 OpenCode 1.19.4 실행기에서 고정 응답 제공자와 프로그램 방식의 승인 응답으로 5개 연동 시나리오를 통과했습니다. 최종 규칙 검사 19개와 실행 증거 4개도 통과했습니다.
 
-- [x] 주제 선정 및 2세션 구성 확정
-- [x] 1차 세션 논리 구조 확정 (문제 주도형 전개)
-- [x] 시놉시스 v0.1 작성
-- [x] 1차 세션 슬라이드 초안 v0.1 (21장, 클릭 fragment·리플레이·게이지 애니메이션 포함)
-- [ ] 슬라이드 검토·보강 ← **다음 단계**
-- [ ] 데모 준비 (opencode plugin: 관찰 Hook / 개입 Hook)
-- [ ] 리허설 및 시간 조정
-- [ ] 2차 세션 (Harness Quest) 기획
+**실제 모델과 사람이 조작하는 승인 화면, 수업 시간, Windows/macOS는 아직 리허설하지 않았습니다.** HTML은 구조와 링크를 정적으로 검사했으며 브라우저 시각 검증은 남아 있습니다. [검증 기록](docs/harness-quest-validation.html)에서 재현 방법과 원본 출력을 확인하세요.
 
-## 작성 원칙
-
-슬라이드는 `docs/seminar-synopsis.md` 의 장 구조를 그대로 따른다. 시놉시스와 슬라이드가 어긋나면 시놉시스를 먼저 갱신한다.
+이 키트는 신뢰하는 수업 참가자를 위한 학습 도구입니다. 정책·로그 변조 방지나 OS 격리를 제공하는 보안 제품은 아닙니다. 원본 1차 슬라이드와 시놉시스는 수정하지 않았습니다.
