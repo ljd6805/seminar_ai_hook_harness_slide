@@ -1,0 +1,147 @@
+{
+  "status": "PASS",
+  "type": "real OpenCode engine + scripted provider + programmatic approval",
+  "opencodeVersion": "1.19.4",
+  "nodeVersion": "v24.19.0",
+  "platform": "linux",
+  "realLLM": false,
+  "humanUI": false,
+  "root": "/tmp/quest-opencode-s3V1kw/course",
+  "sessions": [
+    {
+      "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ",
+      "scenario": "normal-rejected",
+      "seenPermission": true,
+      "reply": "reject"
+    },
+    {
+      "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6",
+      "scenario": "normal-approved",
+      "seenPermission": true,
+      "reply": "once"
+    },
+    {
+      "sessionId": "ses_e9898c759ffeRbQcXfVmq8iVMA",
+      "scenario": "probe-only",
+      "seenPermission": false,
+      "reply": "reject"
+    },
+    {
+      "sessionId": "ses_e9898c6b9ffezqEV6JXCO8AJhc",
+      "scenario": "path-only",
+      "seenPermission": false,
+      "reply": "reject"
+    },
+    {
+      "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF",
+      "scenario": "limit-only",
+      "seenPermission": false,
+      "reply": "reject"
+    }
+  ],
+  "events": 65,
+  "requests": 29,
+  "grade": {
+    "level": 6,
+    "runId": "d38695b5-8626-4c5c-aad3-028594246728",
+    "local": [
+      {
+        "name": "기록 활성화",
+        "pass": true
+      },
+      {
+        "name": "정상 쓰기",
+        "pass": true
+      },
+      {
+        "name": "원본 쓰기 거부",
+        "pass": true
+      },
+      {
+        "name": "접두사 우회 거부",
+        "pass": true
+      },
+      {
+        "name": "정상 읽기",
+        "pass": true
+      },
+      {
+        "name": "정상 도구 허용",
+        "pass": true
+      },
+      {
+        "name": "probe 도구 거부",
+        "pass": true
+      },
+      {
+        "name": "알 수 없는 도구 거부",
+        "pass": true
+      },
+      {
+        "name": "상한 직전·직후",
+        "pass": true
+      },
+      {
+        "name": "정상 결과 허용",
+        "pass": true
+      },
+      {
+        "name": "schemaOK 오류 거부",
+        "pass": true
+      },
+      {
+        "name": "sumOK 오류 거부",
+        "pass": true
+      },
+      {
+        "name": "reportOK 오류 거부",
+        "pass": true
+      },
+      {
+        "name": "originalsOK 오류 거부",
+        "pass": true
+      },
+      {
+        "name": "정상 제출 조건",
+        "pass": true
+      },
+      {
+        "name": "valid 제출 거부",
+        "pass": true
+      },
+      {
+        "name": "sameHash 제출 거부",
+        "pass": true
+      },
+      {
+        "name": "attemptsAllowed 제출 거부",
+        "pass": true
+      },
+      {
+        "name": "중복 제출 거부",
+        "pass": true
+      }
+    ],
+    "localPassed": true,
+    "evidence": [
+      {
+        "name": "OpenCode 플러그인 로드",
+        "pass": true
+      },
+      {
+        "name": "실제 호출 전후 연결",
+        "pass": true
+      },
+      {
+        "name": "승인·거절·제출 기록",
+        "pass": true
+      },
+      {
+        "name": "현재 산출물의 독립 검사",
+        "pass": true
+      }
+    ],
+    "livePassed": true,
+    "note": "고정 입력 검사만으로 실제 OpenCode 실행 또는 사람 승인을 증명하지 않습니다. 실행 기록은 강사와 대조하세요."
+  }
+}

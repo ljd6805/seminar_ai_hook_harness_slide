@@ -1,0 +1,28 @@
+
+> harness-quest@0.1.0 test
+> node --test quest/tests/*.test.mjs
+
+✔ evidence requires the current checkpoint, without repeating earlier level missions (8.388556ms)
+✔ previous checkpoint evidence cannot satisfy a new checkpoint (4.385617ms)
+✔ path: prefix, traversal and absolute paths are refused; normal write succeeds (16.990795ms)
+✔ symlink and dangling symlink writes are refused (3.104521ms)
+✔ tool policy rejects probe but normal read still runs (4.630316ms)
+✔ budget includes denied attempts and is isolated by session (7.502667ms)
+✔ simultaneous reservations never allow a ninth operation (12.412376ms)
+✔ all solutions pass, each current starter fails, checkpoints preserve previous source (12.28553ms)
+✔ unit-test events cannot pass the actual OpenCode evidence gate (5.024442ms)
+✔ validator rejects missing and incorrect artifacts and accepts corrected files (17.630517ms)
+✔ changed original and extra schema keys cannot pass (6.89921ms)
+✔ invalid validation cannot request approval (9.684804ms)
+✔ native approval rejection creates no receipt (8.045698ms)
+✔ one approved matching artifact submits once; duplicate is rejected (7.361444ms)
+✔ files changed before or during approval invalidate the request (13.692681ms)
+✔ validation from a different session is not reused (6.301402ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 186.988539
