@@ -16,12 +16,11 @@ AI Agent 팀 세미나 **3편 — Hook & Harness**의 이론 자료와 OpenCode 
 
 ## 실습 시작
 
-현재 키트는 `docs/harness-quest-plan-20261023` 브랜치의 Draft PR에 있습니다. 수업 기준은 **OpenCode 1.19.4**, Node.js 22 이상입니다. 참가자가 사용할 모델을 OpenCode에 연결해 두어야 합니다.
+실습 키트는 `main`에 있으며 [공개 문서 허브](https://ljd6805.github.io/seminar_ai_hook_harness_slide/docs/)에서 교재를 볼 수 있습니다. 수업 기준은 **OpenCode 1.19.4**, Node.js 22 이상입니다. 참가자가 사용할 모델을 OpenCode에 연결해 두어야 합니다.
 
 ```sh
 git clone https://github.com/ljd6805/seminar_ai_hook_harness_slide.git
 cd seminar_ai_hook_harness_slide
-git switch docs/harness-quest-plan-20261023
 npm install -g opencode-ai@1.19.4
 node quest/cli.mjs init workshops/quest --level 0
 npm install --prefix workshops/quest/.opencode
