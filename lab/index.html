@@ -17,11 +17,12 @@ header .sub{font-size:12px;color:var(--faint)}
 .badge{margin-left:auto;font-size:12px;border:1px solid var(--line);border-radius:30px;padding:3px 12px;color:var(--sub)}
 .badge.live{color:var(--mint);border-color:#316459}.badge.sim{color:var(--amber);border-color:#6a5437}.badge.err{color:var(--coral);border-color:#7a3d3d}
 .badge i{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px}
-main{flex:1;min-height:0;display:grid;grid-template-columns:340px minmax(0,1fr) 430px;gap:14px;padding:14px 20px}
+main{flex:1;min-height:0;display:grid;grid-template-columns:clamp(270px,21vw,330px) minmax(0,1fr) clamp(300px,25vw,420px);gap:14px;padding:14px 20px}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0;min-height:0;overflow:auto}
-.panel h2{font-size:11.5px;letter-spacing:.14em;color:var(--violet);margin:0 0 10px;font-weight:700}
+.panel h2{font-size:12px;letter-spacing:.08em;color:var(--faint);margin:0 0 8px;font-weight:700}
+.panel h2:not(:first-child){margin-top:16px}
 .tabs{display:flex;gap:4px;margin:-4px 0 12px;border-bottom:1px solid var(--line)}
-.tabs button{all:unset;cursor:pointer;padding:6px 11px 8px;font-size:14px;color:var(--sub);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button{all:unset;cursor:pointer;padding:6px 9px 8px;font-size:14px;white-space:nowrap;color:var(--sub);border-bottom:2px solid transparent;margin-bottom:-1px}
 .tabs button.on{color:var(--text);border-bottom-color:var(--mint);font-weight:700}
 .tab{display:none}.tab.on{display:block}
 label.f{display:block;font-size:12.5px;color:var(--sub);margin:10px 0 5px}
@@ -37,8 +38,8 @@ textarea.code{font:12px/1.55 var(--mono);min-height:240px;white-space:pre;tab-si
 .btn.warn{border-color:var(--amber);color:var(--amber)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .small{font-size:12px;color:var(--faint);overflow-wrap:anywhere}
-.reply{margin-top:12px;background:#0d1222;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;min-height:52px;white-space:pre-wrap;color:var(--sub);max-height:170px;overflow:auto}
-.reply b{color:var(--violet);font-weight:600;font-size:12px;display:block;margin-bottom:3px}
+.reply{margin-top:14px;background:#0d1222;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;min-height:52px;white-space:pre-wrap;color:var(--sub);max-height:170px;overflow:auto}
+.reply b{color:var(--faint);font-weight:600;font-size:12px;display:block;margin-bottom:3px}
 .grp{border:1px solid var(--line);border-radius:11px;padding:9px 12px;margin-bottom:9px;background:var(--card2)}
 .grp h3{margin:0 0 4px;font-size:14px;display:flex;align-items:center;gap:8px}
 .grp h3 small{font-weight:400;color:var(--faint);font-size:12px}
@@ -117,6 +118,57 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .center span{display:block;font-size:12px;color:var(--faint);line-height:1.45}
 .verdict{position:absolute;left:360px;top:432px;transform:translateX(-50%);width:300px;text-align:center;font-size:13.5px;line-height:1.45;z-index:1}
 .verdict.good{color:var(--mint)}.verdict.no{color:var(--coral)}.verdict.hold{color:var(--amber)}
+.gbtn{background:#1b2240;color:var(--violet);border:1px solid #4b3f86;border-radius:30px;padding:3px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.gbtn:hover{background:#262055}
+.guide{position:fixed;inset:0;z-index:50;display:none}
+.guide.on{display:block}
+.guide .veil{position:absolute;inset:0;background:#05070dcc}
+.guide .hole{position:absolute;border-radius:14px;box-shadow:0 0 0 9999px #05070dc4;border:2px solid var(--violet);transition:all .35s cubic-bezier(.5,0,.2,1);pointer-events:none}
+.guide .card{position:absolute;width:min(420px,calc(100vw - 32px));background:#161c30;border:1px solid #4b3f86;border-radius:14px;padding:16px 18px 14px;box-shadow:0 18px 50px #000a;transition:left .35s,top .35s}
+.guide .card small{font:11px var(--mono);letter-spacing:.12em;color:var(--violet)}
+.guide .card h3{margin:4px 0 6px;font-size:17px}
+.guide .card p{margin:0 0 6px;font-size:14px;color:var(--sub);line-height:1.6}
+.guide .card ol,.guide .card ul{margin:4px 0 6px;padding-left:20px;font-size:13.5px;color:var(--sub);line-height:1.6}
+.guide .card li{margin:3px 0}
+.guide .card b{color:var(--text)}
+.guide .card .gnav{display:flex;align-items:center;gap:8px;margin-top:10px}
+.guide .card .gnav .dots{flex:1;display:flex;gap:4px}
+.guide .card .gnav .dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.guide .card .gnav .dots i.on{background:var(--violet)}
+.guide .card.wide{width:min(560px,calc(100vw - 32px))}
+.stepbar{position:sticky;bottom:-14px;z-index:5;box-shadow:0 -10px 20px var(--card);display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}
+.stepbar .sb{background:#1e2640;color:var(--text);border:1.5px solid var(--line);border-radius:10px;padding:10px 18px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap}
+.stepbar .sb:disabled{opacity:.35;cursor:default}
+.stepbar .sb.next{border-color:var(--mint);color:var(--mint)}
+.stepbar .sb.next.ready{background:#13302c;box-shadow:0 0 0 3px #61dec622;animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{50%{box-shadow:0 0 0 6px #61dec611}}
+.stepbar .sbi{min-width:0;text-align:center;line-height:1.35}
+.stepbar .sbi b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stepbar .sbi small{display:block;font-size:12px;color:var(--faint)}
+.stepbar .sbi label{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--sub);cursor:pointer;margin-top:2px}
+.stepbar .sbi small.go{color:var(--mint)}
+
+
+/* ---------- 왼쪽 패널 정리 ---------- */
+.btn.send{width:100%;margin-top:10px;padding:10px 12px;font-size:15px;font-weight:700;background:#13302c}
+.sect{margin:16px 0 6px;font-size:12px;font-weight:700;color:var(--faint);letter-spacing:.04em}
+.sect span{font-weight:400;margin-left:6px;color:#5d6681}
+.examples{display:flex;flex-direction:column;gap:4px}
+.examples button{all:unset;cursor:pointer;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 10px;padding:7px 10px;border:1px solid transparent;border-radius:8px;font-size:13.5px}
+.examples button:hover{background:#ffffff08}
+.examples button.on{border-color:var(--line);background:#1b2240}
+.examples button b{white-space:nowrap}
+.examples button small{font-size:11.5px;color:var(--faint);white-space:nowrap;margin-left:auto}
+.examples button small.t-ok{color:#7fc9b8}.examples button small.t-bad{color:#d99a91}
+.mgmt{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.mgmt button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:8px;padding:6px 8px;text-align:center;line-height:1.3}
+.mgmt button:hover{border-color:#47507a;background:#ffffff06}
+.mgmt b{display:block;font-size:12.5px}
+.mgmt small{display:block;font-size:10.5px;color:var(--faint)}
+details.note{margin-top:12px}
+details.note summary{font-size:12.5px;color:var(--faint)}
+.insp details summary{font-size:11.5px;color:var(--faint);margin:6px 0 0;cursor:pointer}
+#tPrev,#tNext{display:none}
 
 /* ---------- 레지스터·인스펙터·로그 ---------- */
 .regs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;margin-bottom:12px}
@@ -170,7 +222,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .dialinfo b{color:var(--text);font-size:15px;font-weight:600}
 .dialinfo .mode{color:var(--mint)}
 .keys{font-size:11px;color:#59627e}
-@media(max-width:1300px){main{grid-template-columns:320px minmax(0,1fr)}main>.panel:last-child{grid-column:1/-1}}
+@media(max-width:1150px){main{grid-template-columns:280px minmax(0,1fr)}main>.panel:last-child{grid-column:1/-1}}
 @media(max-width:900px){main{grid-template-columns:1fr}.transport{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -179,8 +231,8 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 <header>
   <a class="home" href="../docs/index.html">← 문서 허브</a>
   <h1>Hook·Harness 실험실</h1>
-  <span class="sub">요청 → Agent → Hook → 실행 → 검증 → 승인을 한 단계씩 돌려 보는 에뮬레이터</span>
   <span class="badge sim" id="badge"><i></i>미리보기 · 브라우저 모의 실행</span>
+  <button class="gbtn" id="gBtn" title="화면 둘러보기와 해 볼 실험">? 가이드</button>
 </header>
 <main>
   <!-- 왼쪽: 입력 -->
@@ -194,15 +246,17 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
       <div id="modelWrap" style="display:none"><label class="f" for="model">모델</label><select id="model"></select></div>
       <label class="f" for="prompt">Agent에게 보낼 요청</label>
       <textarea id="prompt" rows="4">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
-      <div class="chips" id="presetReq"></div>
-      <div class="btns">
-        <button class="btn pri" id="send">요청 보내기</button>
-        <button class="btn" id="newSession" title="예산·검증 횟수를 처음부터 다시 셉니다">새 세션</button>
-        <button class="btn" id="abort">중단</button>
-        <button class="btn" id="resetFiles" title="lab/output·submissions를 비웁니다">작업 파일 비우기</button>
-      </div>
+      <button class="btn pri send" id="send">요청 보내기</button>
+      <div class="sect">예시 요청 <span>누르면 위 칸에 채워집니다</span></div>
+      <div class="examples" id="presetReq"></div>
       <div class="reply"><b>Agent 응답</b><span id="replyText">아직 요청을 보내지 않았습니다.</span></div>
-      <p class="small" id="modeNote"></p>
+      <div class="sect">실행 관리</div>
+      <div class="mgmt">
+        <button id="newSession" title="시도 횟수와 검증 횟수를 0부터 다시 셉니다"><b>새 세션</b><small>횟수 초기화</small></button>
+        <button id="abort" title="돌고 있는 Agent를 멈춥니다"><b>중단</b><small>Agent 멈춤</small></button>
+        <button id="resetFiles" title="지난 실험에서 만든 lab/output 파일을 지웁니다"><b>파일 비우기</b><small>결과 초기화</small></button>
+      </div>
+      <details class="note"><summary>지금 무엇이 실행하나요?</summary><p class="small" id="modeNote"></p></details>
     </div>
     <div class="tab" id="tab-cfg">
       <div class="btns" style="margin:0 0 10px">
@@ -246,7 +300,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 
   <!-- 가운데: 머신 -->
   <section class="panel">
-    <h2>HARNESS 머신 · Agent 루프</h2>
+    <h2>HARNESS 머신</h2>
     <div class="loopwrap" id="loopwrap">
     <div class="machine" id="machine">
       <svg class="wire" viewBox="0 0 720 804" aria-hidden="true">
@@ -294,31 +348,38 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
       <div class="verdict" id="verdict" style="top:440px"></div>
     </div>
     </div>
+    <div class="stepbar">
+      <button class="sb" id="sPrev" title="한 단계 뒤 (←)">◀ 이전 단계</button>
+      <div class="sbi"><b id="sInfo">처음 위치</b><small id="sWait">요청을 보내면 단계가 쌓입니다</small>
+        <label title="켜 두면 요청을 보내도 저절로 재생하지 않고, 다음 단계 버튼을 누를 때만 움직입니다"><input type="checkbox" id="sMode"> 한 단계씩 보기 (자동 재생 끄기)</label></div>
+      <button class="sb next" id="sNext" title="한 단계 앞 (→)">다음 단계 ▶</button>
+    </div>
   </section>
 
   <!-- 오른쪽: 레지스터·인스펙터·로그 -->
   <section class="panel">
-    <h2>레지스터</h2>
-    <div class="regs">
-      <div class="reg" id="rTool"><small>TOOL</small><b>-</b></div>
-      <div class="reg" id="rArg"><small>ARGS</small><b>-</b></div>
-      <div class="reg" id="rAtt"><small>ATTEMPT / BUDGET</small><b>0 / 8</b></div>
-      <div class="reg" id="rVal"><small>VALIDATION / 3</small><b>0 / 3</b></div>
-      <div class="reg" id="rLast"><small>LAST CHECK</small><b>-</b></div>
-      <div class="reg" id="rSub"><small>SUBMIT</small><b>아직</b></div>
-    </div>
     <h2>현재 단계</h2>
-    <div class="insp" id="insp"><div class="k" id="iK">STEP 0 / 0</div><div class="h" id="iH">테이프가 비어 있습니다</div><div class="p" id="iP">요청을 보내면 OpenCode와 Hook이 만드는 사건이 이 테이프에 쌓이고, 아래 컨트롤로 한 단계씩 돌려 볼 수 있습니다.</div><pre id="iRaw"></pre></div>
-    <h2>테이프 로그</h2>
+    <div class="insp" id="insp"><div class="k" id="iK">STEP 0 / 0</div><div class="h" id="iH">테이프가 비어 있습니다</div><div class="p" id="iP">요청을 보내면 OpenCode와 Hook이 만드는 사건이 이 테이프에 쌓이고, 아래 컨트롤로 한 단계씩 돌려 볼 수 있습니다.</div><details><summary>원본 사건</summary><pre id="iRaw"></pre></details></div>
+    <h2>상태</h2>
+    <div class="regs">
+      <div class="reg" id="rTool"><small>도구</small><b>-</b></div>
+      <div class="reg" id="rArg"><small>인자</small><b>-</b></div>
+      <div class="reg" id="rAtt"><small>시도 / 예산</small><b>0 / 8</b></div>
+      <div class="reg" id="rVal"><small>검증 / 3</small><b>0 / 3</b></div>
+      <div class="reg" id="rLast"><small>마지막 검사</small><b>-</b></div>
+      <div class="reg" id="rSub"><small>제출</small><b>아직</b></div>
+    </div>
+    <h2>로그</h2>
     <div class="term-ctl">
       <label><input type="checkbox" id="fHook" checked> hook</label>
       <label><input type="checkbox" id="fAgent" checked> agent</label>
-      <label><input type="checkbox" id="fFuture" checked> 앞으로 올 단계도 흐리게 보기</label>
+      <label><input type="checkbox" id="fFuture" checked> 다음 단계 미리 보기</label>
     </div>
     <div class="term" id="term"></div>
   </section>
 </main>
 
+<div class="guide" id="guide"><div class="veil" id="gVeil"></div><div class="hole" id="gHole"></div><div class="card" id="gCard"></div></div>
 <footer class="transport">
   <div class="tbtns">
     <button class="tb" id="tFirst" title="처음 (Home)">⏮</button>
@@ -328,7 +389,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
     <button class="tb live" id="tLive" title="실시간 위치로 (End)">LIVE</button>
   </div>
   <div class="tl">
-    <div class="tl-top"><span>STEP <b id="tlStep">0</b> / <b id="tlTotal">0</b></span><span id="tlBehind"></span><span class="keys">Space 재생 · ←/→ 한 단계 · ↑/↓ 간격 · 다이얼 드래그·휠</span></div>
+    <div class="tl-top"><span>STEP <b id="tlStep">0</b> / <b id="tlTotal">0</b></span><span id="tlBehind"></span><span class="keys">Space 재생 · ← → 한 단계</span></div>
     <div class="track" id="track"><div class="buf" id="tlBuf"></div><div class="head" id="tlHead"></div></div>
   </div>
   <div class="dialbox">
@@ -352,11 +413,11 @@ const PRESETS = {
     checks: ['schemaOK'], submit: [], approval: 'allow' },
 };
 const REQUESTS = [
-  ['합계 계산 후 제출', 'lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.'],
-  ['보호 파일 수정', 'lab/protected/settings.json의 setting 값을 changed로 바꿔 줘.'],
-  ['금지 도구 시도', 'quest_probe 도구를 한 번 실행해 봐.'],
-  ['예산 초과', 'lab/input/orders.json을 10번 반복해서 읽어 줘.'],
-  ['상태 확인', 'quest_status로 지금 상태를 알려 줘.'],
+  ['합계 계산 후 제출', 'lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.', '정상 흐름 · 검증과 승인까지', 'ok'],
+  ['보호 파일 수정', 'lab/protected/settings.json의 setting 값을 changed로 바꿔 줘.', 'Policy가 경로를 막음', 'bad'],
+  ['금지 도구 시도', 'quest_probe 도구를 한 번 실행해 봐.', 'Policy가 도구를 막음', 'bad'],
+  ['예산 초과', 'lab/input/orders.json을 10번 반복해서 읽어 줘.', 'Limit이 횟수를 막음', 'bad'],
+  ['상태 확인', 'quest_status로 지금 상태를 알려 줘.', '시도 횟수에 넣지 않는 도구', ''],
 ];
 let mode = 'sim';           // sim | live
 let config = structuredClone(PRESETS.full);
@@ -684,8 +745,8 @@ function drawWires() {
 }
 function fitMachine() {
   const w = $('loopwrap').clientWidth, panel = $('loopwrap').parentElement;
-  const h = panel.clientHeight - 60;
-  $('machine').style.zoom = Math.max(0.55, Math.min(1, w / 720, h / 804));
+  const h = panel.clientHeight - 60 - (panel.querySelector('.stepbar')?.offsetHeight || 0);
+  $('machine').style.zoom = Math.max(0.55, Math.min(1, w / 720, Math.max(h / 804, 0.78)));
 }
 const PK = { cur: null, raf: 0 };
 function placePk(p) { const c = xy(p); const pk = $('packet'); pk.style.left = (c.x - 11.5) + 'px'; pk.style.top = (c.y - 11.5) + 'px'; }
@@ -804,6 +865,15 @@ function renderTimeline() {
   const behind = visualAhead();
   $('tlBehind').textContent = behind ? '실제 실행보다 ' + behind + '단계 뒤에서 보는 중' : (n ? '실시간 위치' : '');
   $('tLive').classList.toggle('on', behind === 0 && tape === labTape && n > 0);
+  // 단계 버튼
+  let vi = player.cur; while (vi >= 0 && !isVisual(tape.steps[vi])) vi--;
+  $('sInfo').textContent = vi >= 0 ? 'STEP ' + (vi + 1) + ' / ' + n + ' · ' + $('iH').textContent : '처음 위치';
+  const blocked = behind > 0 && !canAdvance();
+  $('sWait').textContent = !n ? '요청을 보내면 단계가 쌓입니다' : behind ? (blocked ? '다음 판정을 기다리는 중…' : '다음 단계 ' + behind + '개가 기다립니다') : '마지막 단계입니다. 새 사건이 오면 이어집니다';
+  $('sWait').className = behind && !blocked ? 'go' : '';
+  $('sPrev').disabled = vi < 0;
+  $('sNext').disabled = !canAdvance();
+  $('sNext').classList.toggle('ready', !player.playing && canAdvance());
 }
 function visualAhead() { let c = 0; for (let i = player.cur + 1; i < tape.steps.length; i++) if (isVisual(tape.steps[i])) c++; return c; }
 $('track').onclick = e => {
@@ -843,6 +913,14 @@ function schedule() {
 function play() { player.playing = true; $('tPlay').textContent = '⏸'; dialMode(); schedule(); }
 function pause() { player.playing = false; $('tPlay').textContent = '▶'; clearTimeout(player.timer); dialMode(); }
 $('tPlay').onclick = () => player.playing ? pause() : play();
+// 한 단계씩 보기: 켜 두면 새 사건이 와도 저절로 재생하지 않고, 사람이 다음 단계를 누를 때만 움직입니다.
+let stepMode = false;
+try { stepMode = localStorage.getItem('lab.stepMode') === '1'; } catch {}
+const autoPlay = () => stepMode ? pause() : play();
+$('sMode').checked = stepMode;
+$('sMode').onchange = () => { stepMode = $('sMode').checked; try { localStorage.setItem('lab.stepMode', stepMode ? '1' : '0'); } catch {} if (stepMode) pause(); renderTimeline(); };
+$('sNext').onclick = () => { pause(); stepForward(); };
+$('sPrev').onclick = () => { pause(); stepBack(); };
 $('tNext').onclick = () => { pause(); stepForward(); };
 $('tPrev').onclick = () => { pause(); stepBack(); };
 $('tFirst').onclick = () => { pause(); seek(-1); };
@@ -1154,13 +1232,18 @@ async function onStatus(s) {
 }
 
 /* ---------- 버튼 ---------- */
-$('presetReq').innerHTML = REQUESTS.map(([l], i) => `<button data-i="${i}">${l}</button>`).join('');
-$('presetReq').onclick = e => { const i = e.target.dataset.i; if (i != null) $('prompt').value = REQUESTS[i][1]; };
+$('presetReq').innerHTML = REQUESTS.map(([l, , scene, tone], i) => `<button data-i="${i}"><b>${l}</b><small class="${tone ? 't-' + tone : ''}">${scene}</small></button>`).join('');
+$('presetReq').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  $('prompt').value = REQUESTS[b.dataset.i][1];
+  $('presetReq').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+};
+$('prompt').addEventListener('input', () => $('presetReq').querySelectorAll('button').forEach(x => x.classList.remove('on')));
 $('send').onclick = async () => {
   const text = $('prompt').value.trim(); if (!text) return;
   if (tape !== labTape) backToLab();
   push('lab', { type: 'request', text });
-  if (!player.playing) play();
+  if (!player.playing) autoPlay();
   if (mode === 'live') {
     try { await api('/api/prompt', { text, model: $('model').value }); }
     catch (e) { sys('요청 실패: ' + e.message); }
@@ -1218,7 +1301,7 @@ function loadTape(k) {
   const tp = makeTape(k);
   addStep(tp, { type: 'request', text: '(기록 재생) ' + (names[k] || k), t: Date.parse(sessions[k][0].time) });
   for (const e of sessions[k]) ingest(tp, 'hook', e, Date.parse(e.time));
-  tape = tp; player.cur = -1; render(false); play();
+  tape = tp; player.cur = -1; render(false); autoPlay();
 }
 function backToLab() {
   if (tape === labTape) return;
@@ -1232,8 +1315,79 @@ $('rFile').onchange = async ev => {
   names = {}; loadReplay(evs); renderScen();
 };
 
+
+/* ---------- 가이드 ----------
+   화면의 각 영역을 차례로 밝혀 주고, 마지막에 해 볼 실험을 안내합니다. 처음 열 때 한 번 저절로 뜹니다. */
+const GUIDE = [
+  { t: null, k: '시작하기', h: 'Hook·Harness 실험실입니다',
+    b: '<p>요청 하나를 보내면 OpenCode의 Agent가 도구를 부르고, Harness의 Hook이 그 호출을 어떻게 판단하는지 한 단계씩 볼 수 있습니다.</p><p>1분이면 화면을 다 둘러볼 수 있습니다. 오른쪽 위 <b>? 가이드</b>로 언제든 다시 열 수 있습니다.</p>' },
+  { t: '#tab-req', k: '1 · 요청', h: '여기서 요청을 보냅니다',
+    b: '<p>예시 요청을 고르거나 직접 써서 <b>요청 보내기</b>를 누릅니다. 오른쪽 위 배지가 지금 무엇이 실행하는지 알려 줍니다.</p><ul><li><b>미리보기</b>: 브라우저 안 모의 실행기</li><li><b>라이브</b>: 실제 OpenCode (<code>node lab/server.mjs</code>)</li></ul>' },
+  { t: '#machine', k: '2 · 머신', h: 'Agent 루프와 Harness',
+    b: '<p>패킷이 원을 시계 방향으로 한 바퀴 돌면 도구 호출 한 번입니다.</p><ol><li>Agent가 도구를 고릅니다</li><li><b>before Hook</b>이 Record → Limit → Policy 순서로 판정합니다</li><li>허용되면 실행하고, <b>after Hook</b>이 결과를 기록합니다</li><li>Agent가 결과를 보고 다음 도구를 고릅니다</li></ol><p>Hook이 막으면 실행 없이 안쪽 점선을 따라 Agent로 돌아갑니다. 바깥 점선이 Harness 경계입니다.</p>' },
+  { t: '.stepbar', k: '3 · 단계 버튼', h: '한 단계씩 넘겨 봅니다',
+    b: '<p>실제 실행은 순식간에 끝나지만 사건은 모두 테이프에 쌓입니다. <b>다음 단계 ▶</b>로 하나씩 넘기고, <b>◀ 이전 단계</b>로 되돌아갈 수 있습니다. 키보드 ← → 도 같습니다.</p><p><b>한 단계씩 보기</b>를 켜 두면 요청을 보내도 저절로 재생하지 않고, 버튼을 누를 때만 움직입니다.</p>' },
+  { t: '#insp', k: '4 · 현재 단계', h: '왜 그렇게 판정했는지',
+    b: '<p>지금 단계에서 무슨 일이 일어났는지, 규칙 함수가 왜 통과나 차단을 냈는지 풀어서 보여 줍니다. 아래에는 OpenCode나 플러그인이 남긴 원본 사건이 그대로 나옵니다.</p>' },
+  { t: '.regs', k: '5 · 레지스터', h: '지금 상태를 한눈에',
+    b: '<p>도구 이름, 인자, 시도 횟수와 예산, 검증 횟수, 마지막 검사, 제출 여부입니다. 단계를 넘길 때 바뀐 칸이 반짝입니다. ATTEMPT가 예산에 가까워지면 색이 바뀝니다.</p>' },
+  { t: '#term', k: '6 · 테이프 로그', h: '사건 기록',
+    b: '<p><b>hook</b>은 플러그인이 남긴 기록, <b>agent</b>는 OpenCode가 보낸 사건입니다. 줄을 누르면 그 단계로 이동합니다. 흐리게 보이는 줄은 아직 재생하지 않은 앞으로 올 단계입니다.</p>' },
+  { t: '.transport', k: '7 · 재생 컨트롤', h: '재생과 조그 다이얼',
+    b: '<p>▶로 자동 재생하고, 다이얼로 단계 사이 간격(0~5초)을 늘려 천천히 볼 수 있습니다. 멈춘 상태에서는 다이얼 한 칸이 한 단계입니다. <b>LIVE</b>는 실제 실행 위치로 바로 갑니다.</p>' },
+  { t: '#tabs', k: '8 · Harness 꾸미기', h: '규칙을 바꿔 봅니다',
+    b: '<p><b>Harness 꾸미기</b> 탭에서 Record, 허용 도구, 경로, 예산, 검증 조건, 승인 방식을 바꾸고 <b>적용하기</b>를 누릅니다. 만들어지는 <code>rules.mjs</code>를 직접 고칠 수도 있습니다. 바꾼 뒤 같은 요청을 다시 보내 차이를 봅니다.</p>' },
+  { t: null, k: '해 볼 실험', h: '이렇게 시작해 보세요', wide: true,
+    b: '<ol><li><b>정상 흐름</b>: 예시 <b>합계 계산 후 제출</b>을 보냅니다. 검증을 지나 Approval에서 멈추면 <b>한 번 허용</b>을 누릅니다.</li><li><b>Policy 차단</b>: <b>보호 파일 수정</b>을 보냅니다. before Hook의 ③ Policy가 막고 패킷이 안쪽 점선으로 돌아갑니다.</li><li><b>Limit 차단</b>: 꾸미기에서 예산을 3으로 줄이고 합계 요청을 보냅니다. 네 번째 시도에서 ② Limit이 막습니다.</li><li><b>맨몸 Agent</b>: 꾸미기에서 <b>맨몸 Agent</b>를 적용하고 합계 요청을 보냅니다. 검증이 느슨해 틀린 합계도 통과합니다.</li><li><b>기록이 없으면</b>: Record를 끄고 요청을 보냅니다. Hook 칸이 움직이지 않아 무슨 판단이 있었는지 알 수 없습니다.</li></ol><p>처음에는 <b>한 단계씩 보기</b>를 켜고 다음 단계 버튼으로 넘기면 각 판정을 놓치지 않습니다.</p>' },
+];
+const guide = { i: 0, open: false };
+function guideShow(i) {
+  guide.i = Math.max(0, Math.min(GUIDE.length - 1, i));
+  const g = GUIDE[guide.i], card = $('gCard'), hole = $('gHole');
+  if (g.t === '#tab-req' || g.t === '#tabs') $('tabs').querySelector('[data-tab=req]').click();
+  card.className = 'card' + (g.wide ? ' wide' : '');
+  card.innerHTML = `<small>${g.k}</small><h3>${g.h}</h3>${g.b}<div class="gnav"><div class="dots">${GUIDE.map((_, j) => `<i class="${j === guide.i ? 'on' : ''}"></i>`).join('')}</div>`
+    + (guide.i ? '<button class="btn" id="gPrev">이전</button>' : '<button class="btn" id="gSkip">건너뛰기</button>')
+    + `<button class="btn pri" id="gNext">${guide.i === GUIDE.length - 1 ? '시작하기' : '다음'}</button></div>`;
+  $('gPrev') && ($('gPrev').onclick = () => guideShow(guide.i - 1));
+  $('gSkip') && ($('gSkip').onclick = guideClose);
+  $('gNext').onclick = () => guide.i === GUIDE.length - 1 ? guideClose() : guideShow(guide.i + 1);
+  const el = g.t && document.querySelector(g.t);
+  const vw = innerWidth, vh = innerHeight, cw = card.offsetWidth, ch = card.offsetHeight;
+  if (!el) {
+    $('gVeil').style.display = ''; hole.style.opacity = 0;
+    card.style.left = (vw - cw) / 2 + 'px'; card.style.top = Math.max(16, (vh - ch) / 2) + 'px'; return;
+  }
+  el.scrollIntoView({ block: 'nearest' });
+  const r = el.getBoundingClientRect(), pad = 6;
+  $('gVeil').style.display = 'none'; hole.style.opacity = 1;
+  Object.assign(hole.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.width + pad * 2 + 'px', height: r.height + pad * 2 + 'px' });
+  // 카드는 대상의 오른쪽 → 왼쪽 → 아래 → 위 순서로 자리가 나는 곳에 둡니다.
+  const gap = 16, clampY = y => Math.max(16, Math.min(vh - ch - 16, y)), clampX = x => Math.max(16, Math.min(vw - cw - 16, x));
+  let x, y;
+  if (r.right + gap + cw < vw) { x = r.right + gap; y = clampY(r.top); }
+  else if (r.left - gap - cw > 0) { x = r.left - gap - cw; y = clampY(r.top); }
+  else if (r.bottom + gap + ch < vh) { x = clampX(r.left + r.width / 2 - cw / 2); y = r.bottom + gap; }
+  else { x = clampX(r.left + r.width / 2 - cw / 2); y = Math.max(16, r.top - gap - ch); }
+  card.style.left = x + 'px'; card.style.top = y + 'px';
+}
+function guideOpen(i = 0) { guide.open = true; $('guide').classList.add('on'); guideShow(i); }
+function guideClose() { guide.open = false; $('guide').classList.remove('on'); try { localStorage.setItem('lab.guideSeen', '1'); } catch {} }
+$('gBtn').onclick = () => guideOpen(0);
+$('gVeil').onclick = guideClose;
+window.addEventListener('resize', () => guide.open && guideShow(guide.i));
+document.addEventListener('keydown', e => {
+  if (!guide.open) return;
+  e.stopImmediatePropagation();
+  if (e.key === 'Escape') guideClose();
+  else if (e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); $('gNext').click(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); guideShow(guide.i - 1); }
+}, true);
+
 /* ---------- 시작 ---------- */
-drawWires(); fitMachine(); loadReplay(DATA.events); renderForm(); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); play();
+drawWires(); fitMachine(); loadReplay(DATA.events); renderForm(); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); autoPlay();
+let guideSeen = false; try { guideSeen = localStorage.getItem('lab.guideSeen') === '1'; } catch {}
+if (!guideSeen) setTimeout(() => guideOpen(0), 600);
 window.addEventListener('resize', () => { fitMachine(); render(false); });
 connectLive().then(live => {
   if (!live) {
