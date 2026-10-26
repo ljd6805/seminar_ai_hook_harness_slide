@@ -19,6 +19,7 @@ header .sub{font-size:12px;color:var(--faint)}
 .badge i{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px}
 main{flex:1;min-height:0;display:grid;grid-template-columns:clamp(270px,21vw,330px) minmax(0,1fr) clamp(300px,25vw,420px);gap:14px;padding:14px 20px}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0;min-height:0;overflow:auto}
+.term:empty::before{content:'요청을 보내면 OpenCode와 Hook이 남기는 사건이 여기에 한 줄씩 쌓입니다.';color:var(--faint);font-family:inherit;font-size:12.5px;display:block;padding:6px 4px}
 .panel h2{font-size:12px;letter-spacing:.08em;color:var(--faint);margin:0 0 8px;font-weight:700}
 .panel h2:not(:first-child){margin-top:16px}
 .tabs{display:flex;gap:4px;margin:-4px 0 12px;border-bottom:1px solid var(--line)}
@@ -50,17 +51,28 @@ textarea.code{font:12px/1.55 var(--mono);min-height:240px;white-space:pre;tab-si
 .dirty{color:var(--amber);font-size:12px}
 body.building main{grid-template-columns:minmax(600px,47vw) minmax(0,1fr) clamp(270px,21vw,360px)}
 @media(max-width:1500px){body.building main{grid-template-columns:minmax(560px,52vw) minmax(0,1fr)}body.building main>.panel:last-child{display:none}}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
-.seg button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--card2)}
-.seg button b{display:block;font-size:14px}
-.seg button small{display:block;font-size:11.5px;color:var(--faint);margin-top:2px}
-.seg button.on{border-color:var(--violet);background:rgba(177,155,255,.1)}
-.seg button.on small{color:var(--sub)}
+.stephead{display:flex;align-items:center;gap:9px;margin:0 0 6px}
+.stephead b{font-size:15px;letter-spacing:-.01em}
+.stephead .sub{font-size:12px;color:var(--faint)}
+.stephead .num{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:700 12px var(--mono);color:#0b0f1a;background:var(--mint);flex:none}
+.stepdesc{margin:0 0 12px 31px;font-size:12.5px;color:var(--faint)}
+.seg{display:inline-flex;margin-left:auto;background:#0d1222;border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px}
+.seg button{all:unset;cursor:pointer;border-radius:7px;padding:5px 12px;font-size:13px;color:var(--sub);white-space:nowrap}
+.seg button.on{background:var(--card);color:var(--text);font-weight:700;box-shadow:0 0 0 1px var(--line)}
 .seg button:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
 .build{display:grid;grid-template-columns:minmax(210px,.72fr) minmax(0,1.5fr);gap:12px;align-items:start}
 .build[hidden]{display:none}
-.presets{margin:0 0 9px!important;flex-wrap:nowrap!important;gap:5px!important}
-.presets .btn{padding:5px 9px;font-size:12.5px;white-space:nowrap}
+.build>*{min-width:0}
+.build.adv{grid-template-columns:minmax(230px,.8fr) minmax(0,1.45fr)}
+.build.adv .codepane{position:static}
+.missions{max-height:calc(100vh - 330px);overflow:auto;padding-right:4px;scrollbar-width:thin}
+.missions .mhead{position:sticky;top:0;background:var(--card);z-index:1;padding-bottom:4px}
+#tab-cfg{container-type:inline-size}
+@container (max-width:820px){.build.adv{grid-template-columns:1fr}.missions{max-height:260px}}
+.presets{display:flex;align-items:center;gap:6px;margin:0 0 9px;font-size:12px;color:var(--faint);flex-wrap:nowrap;white-space:nowrap}
+.presets button{all:unset;cursor:pointer;font-size:12px;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.presets button:hover{border-color:#4a557a;color:var(--text)}
+.apprline{margin-top:6px}.apprline label{white-space:nowrap}.apprline select{width:auto;padding:3px 6px;font-size:12.5px}
 .grp{transition:border-color .2s}
 .grp:hover,.grp:focus-within{border-color:#4a557a}
 .grp.dim .row,.grp.dim .pathcols,.grp.dim>.small{opacity:.4}
@@ -103,14 +115,14 @@ textarea.code.edit{min-height:max(260px,calc(100vh - 560px));font:11.5px/1.62 va
 .apprrow{margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .apprrow select{width:auto;padding:3px 6px;font-size:12.5px}
 .runbar{position:sticky;bottom:-14px;margin:12px -14px -14px;padding:10px 14px 8px;background:var(--card);border-top:1px solid var(--line);z-index:2;box-shadow:0 -10px 18px -12px #000}
-.rb-head{display:flex;align-items:baseline;gap:10px;margin-bottom:5px;font-size:12px;color:var(--faint)}
-.rb-head b{font-size:13.5px;color:var(--text)}
-.rb-head .dirty{margin-left:auto}
+.runbar .stephead .dirty{margin-left:auto}
+.rb-send{display:flex;gap:8px;align-items:stretch;margin-top:6px}
+.rb-send textarea{flex:1}
+#runbar .rb-send #send{margin:0;width:auto;flex:none;padding:0 20px;white-space:nowrap}
 .runbar textarea{min-height:0;font-size:13.5px;padding:7px 10px;resize:vertical}
-.rb-row{display:flex;gap:8px;align-items:center;margin-top:6px}
+.rb-row{display:flex;gap:8px;align-items:center}
 .rb-row select{padding:6px 8px;font-size:13px;width:auto;min-width:0}
 #modelWrap select{max-width:220px}
-#runbar .rb-row #send{margin:0;padding:8px 18px;width:auto;flex:none;white-space:nowrap}
 #runbar #tReq{flex:1 1 auto;width:auto;min-width:120px}
 #modelCustom{margin-top:6px;width:100%;background:#0d1222;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:6px 10px;font:inherit;font-size:13px}
 .rb-reply{margin-top:7px;font-size:12.5px;color:var(--sub);max-height:3.2em;overflow:auto;line-height:1.55;white-space:pre-wrap}
@@ -212,14 +224,14 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .guide .card .gnav .dots i.on{background:var(--violet)}
 .guide .card.wide{width:min(560px,calc(100vw - 32px))}
 .stepbar{position:sticky;bottom:-14px;z-index:5;box-shadow:0 -10px 20px var(--card);display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}
-.stepbar .sb{background:#1e2640;color:var(--text);border:1.5px solid var(--line);border-radius:10px;padding:10px 18px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap}
+.stepbar .sb{background:#1e2640;color:var(--text);border:1.5px solid var(--line);border-radius:10px;padding:9px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
 .stepbar .sb:disabled{opacity:.35;cursor:default}
 .stepbar .sb.next{border-color:var(--mint);color:var(--mint)}
 .stepbar .sb.next.ready{background:#13302c;box-shadow:0 0 0 3px #61dec622;animation:nudge 1.6s ease-in-out infinite}
 @keyframes nudge{50%{box-shadow:0 0 0 6px #61dec611}}
 .stepbar .sbi{min-width:0;text-align:center;line-height:1.35}
 .stepbar .sbi b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stepbar .sbi small{display:block;font-size:12px;color:var(--faint)}
+.stepbar .sbi small{display:block;font-size:12px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stepbar .sbi label{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--sub);cursor:pointer;margin-top:2px}
 .stepbar .sbi small.go{color:var(--mint)}
 
@@ -305,15 +317,18 @@ details.note summary{font-size:12.5px;color:var(--faint)}
       <button data-tab="rep">기록 재생</button>
     </div>
     <div class="tab on" id="tab-cfg">
-      <div class="seg" id="courseSeg">
-        <button data-course="basic" class="on"><b>기본 과정</b><small>설정을 고르면 코드가 바뀝니다</small></button>
-        <button data-course="advanced"><b>고급 과정</b><small>코드를 직접 쓰고 검사합니다</small></button>
+      <div class="stephead"><span class="num">1</span><b>Harness 만들기</b>
+        <div class="seg" id="courseSeg" role="tablist">
+          <button data-course="basic" class="on" role="tab">기본 과정</button>
+          <button data-course="advanced" role="tab">고급 과정</button>
+        </div>
       </div>
+      <p class="stepdesc" id="courseDesc">설정을 고르면 오른쪽 <code>harness.js</code>가 그대로 바뀝니다.</p>
       <div class="build" id="buildBasic">
         <div class="form">
-          <div class="btns presets"><span class="small">빠른 설정</span>
-            <button class="btn" data-preset="naked">맨몸 Agent</button>
-            <button class="btn" data-preset="full">완성 Harness</button></div>
+          <div class="presets"><span>빠른 설정</span>
+            <button data-preset="naked" title="Policy·Limit 없이 검증도 느슨한 상태">맨몸 Agent</button>
+            <button data-preset="full" title="모든 장치를 켠 상태">완성 Harness</button></div>
           <div class="grp" data-region="record"><h3>Record <small>기록</small><label class="switch"><input type="checkbox" id="cRecordOn"> 켜기</label></h3>
             <div class="small">Hook이 본 것과 판단을 <code>.quest/events.jsonl</code>에 남깁니다.</div></div>
           <div class="grp" data-region="limit"><h3>Limit <small>시도 횟수</small><label class="switch"><input type="checkbox" id="cLimitOn"> 켜기</label></h3>
@@ -326,8 +341,8 @@ details.note summary{font-size:12.5px;color:var(--faint)}
           <div class="grp" data-region="validation"><h3>Validation <small>통과로 볼 검사</small></h3><div class="row" id="cChecks"></div></div>
           <div class="grp" data-region="submit"><h3>Approval <small>제출 조건과 사람 승인</small></h3>
             <div class="row" id="cSubmit"></div>
-            <div class="row" style="margin-top:6px"><label>제출할 때 사람에게
-              <select id="cApproval" style="width:auto;padding:3px 6px"><option value="ask">묻기 (ask)</option><option value="allow">묻지 않고 허용 (allow)</option><option value="deny">항상 거절 (deny)</option></select></label></div></div>
+            <div class="row apprline"><label>사람에게
+              <select id="cApproval"><option value="ask">묻기 (ask)</option><option value="allow">묻지 않고 허용 (allow)</option><option value="deny">항상 거절 (deny)</option></select></label></div></div>
         </div>
         <div class="codepane">
           <div class="codehead"><code>.opencode/plugins/harness.js</code><span id="diffNote"></span></div>
@@ -355,12 +370,14 @@ details.note summary{font-size:12.5px;color:var(--faint)}
         </div>
       </div>
       <div class="runbar" id="runbar">
-        <div class="rb-head"><b>요청</b><span>보내면 위 코드가 그대로 Harness가 됩니다</span><span class="dirty" id="dirty"></span></div>
-        <textarea id="prompt" rows="2">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
+        <div class="stephead"><span class="num">2</span><b>요청 보내기</b><span class="dirty" id="dirty"></span></div>
         <div class="rb-row">
-          <select id="tReq" title="예시 요청을 고르면 위 칸에 채워집니다"></select>
+          <select id="tReq" title="예시 요청을 고르면 아래 칸에 채워집니다"></select>
           <span id="modelWrap" style="display:none"><select id="model" title="모델"></select></span>
-          <button class="btn pri send" id="send">보내기 ▶</button>
+        </div>
+        <div class="rb-send">
+          <textarea id="prompt" rows="2">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
+          <button class="btn pri send" id="send" title="코드가 바뀌었으면 먼저 적용하고 보냅니다">보내기 ▶</button>
         </div>
         <input id="modelCustom" placeholder="공급자/모델 (예: myprovider/gpt-6-luna)" spellcheck="false" autocomplete="off" style="display:none">
         <div class="rb-reply"><b>Agent 응답</b> <span id="replyText">아직 요청을 보내지 않았습니다.</span></div>
@@ -385,7 +402,7 @@ details.note summary{font-size:12.5px;color:var(--faint)}
 
   <!-- 가운데: 머신 -->
   <section class="panel">
-    <h2>HARNESS 머신</h2>
+    <div class="stephead"><span class="num">3</span><b>실행 보기</b><span class="sub">패킷 한 바퀴가 도구 호출 한 번입니다</span></div>
     <div class="loopwrap" id="loopwrap">
     <div class="machine" id="machine">
       <svg class="wire" viewBox="0 0 720 804" aria-hidden="true">
@@ -436,7 +453,7 @@ details.note summary{font-size:12.5px;color:var(--faint)}
     <div class="stepbar">
       <button class="sb" id="sPrev" title="한 단계 뒤 (←)">◀ 이전 단계</button>
       <div class="sbi"><b id="sInfo">처음 위치</b><small id="sWait">요청을 보내면 단계가 쌓입니다</small>
-        <label title="켜 두면 요청을 보내도 저절로 재생하지 않고, 다음 단계 버튼을 누를 때만 움직입니다"><input type="checkbox" id="sMode"> 한 단계씩 보기 (자동 재생 끄기)</label></div>
+        <label title="켜 두면 요청을 보내도 저절로 재생하지 않고, 다음 단계 버튼을 누를 때만 움직입니다"><input type="checkbox" id="sMode"> 한 단계씩 보기</label></div>
       <button class="sb next" id="sNext" title="한 단계 앞 (→)">다음 단계 ▶</button>
     </div>
   </section>
@@ -1205,6 +1222,8 @@ function setCourse(c) {
   course = c;
   document.querySelectorAll('#courseSeg button').forEach(b => b.classList.toggle('on', b.dataset.course === c));
   $('buildBasic').hidden = c !== 'basic'; $('buildAdv').hidden = c !== 'advanced';
+  $('courseDesc').innerHTML = c === 'basic' ? '설정을 고르면 오른쪽 <code>harness.js</code>가 그대로 바뀝니다. 상자에 마우스를 올리면 그 상자가 만든 줄이 밝아집니다.'
+    : '빈 뼈대에서 <code>harness.js</code>를 직접 씁니다. 왼쪽 미션을 보고 고친 뒤 <b>검사하기</b>로 확인합니다.';
   if (c === 'advanced') { $('advCode').value = advSource; renderMissions(); }
   markDirty();
 }
