@@ -17,14 +17,7 @@ header .sub{font-size:12px;color:var(--faint)}
 .badge{margin-left:auto;font-size:12px;border:1px solid var(--line);border-radius:30px;padding:3px 12px;color:var(--sub)}
 .badge.live{color:var(--mint);border-color:#316459}.badge.sim{color:var(--amber);border-color:#6a5437}.badge.err{color:var(--coral);border-color:#7a3d3d}
 .badge i{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px}
-main{flex:1;min-height:0;display:grid;grid-template-columns:clamp(270px,21vw,330px) minmax(0,1fr) clamp(300px,25vw,420px);gap:14px;padding:14px 20px}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0;min-height:0;overflow:auto}
 .term:empty::before{content:'요청을 보내면 OpenCode와 Hook이 남기는 사건이 여기에 한 줄씩 쌓입니다.';color:var(--faint);font-family:inherit;font-size:12.5px;display:block;padding:6px 4px}
-.panel h2{font-size:12px;letter-spacing:.08em;color:var(--faint);margin:0 0 8px;font-weight:700}
-.panel h2:not(:first-child){margin-top:16px}
-.tabs{display:flex;gap:4px;margin:-4px 0 12px;border-bottom:1px solid var(--line)}
-.tabs button{all:unset;cursor:pointer;padding:6px 9px 8px;font-size:14px;white-space:nowrap;color:var(--sub);border-bottom:2px solid transparent;margin-bottom:-1px}
-.tabs button.on{color:var(--text);border-bottom-color:var(--mint);font-weight:700}
 .tab{display:none}.tab.on{display:block}
 label.f{display:block;font-size:12.5px;color:var(--sub);margin:10px 0 5px}
 textarea,select,input[type=number],#modelCustom{width:100%;background:#0d1222;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px}
@@ -49,12 +42,10 @@ textarea.code{font:12px/1.55 var(--mono);min-height:240px;white-space:pre;tab-si
 .grp textarea{font:12px/1.5 var(--mono);min-height:46px;margin-top:4px}
 .switch{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);font-weight:400}
 .dirty{color:var(--amber);font-size:12px}
-body.building main{grid-template-columns:minmax(600px,47vw) minmax(0,1fr) clamp(270px,21vw,360px)}
-@media(max-width:1500px){body.building main{grid-template-columns:minmax(560px,52vw) minmax(0,1fr)}body.building main>.panel:last-child{display:none}}
 .stephead{display:flex;align-items:center;gap:9px;margin:0 0 6px}
 .stephead b{font-size:15px;letter-spacing:-.01em}
 .stephead .sub{font-size:12px;color:var(--faint)}
-.stephead .num{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:700 12px var(--mono);color:#0b0f1a;background:var(--mint);flex:none}
+.num{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:700 12px var(--mono);color:#0b0f1a;background:var(--mint);flex:none}
 .stepdesc{margin:0 0 12px 31px;font-size:12.5px;color:var(--faint)}
 .seg{display:inline-flex;margin-left:auto;background:#0d1222;border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px}
 .seg button{all:unset;cursor:pointer;border-radius:7px;padding:5px 12px;font-size:13px;color:var(--sub);white-space:nowrap}
@@ -67,9 +58,8 @@ body.building main{grid-template-columns:minmax(600px,47vw) minmax(0,1fr) clamp(
 .build.adv .codepane{position:static}
 .missions{max-height:calc(100vh - 330px);overflow:auto;padding-right:4px;scrollbar-width:thin}
 .missions .mhead{position:sticky;top:0;background:var(--card);z-index:1;padding-bottom:4px}
-#tab-cfg{container-type:inline-size}
 @container (max-width:820px){.build.adv{grid-template-columns:1fr}.missions{max-height:260px}}
-.presets{display:flex;align-items:center;gap:6px;margin:0 0 9px;font-size:12px;color:var(--faint);flex-wrap:nowrap;white-space:nowrap}
+.presets{display:flex;align-items:center;gap:6px;margin:0 0 9px;font-size:12px;color:var(--faint);flex-wrap:wrap;white-space:nowrap}
 .presets button{all:unset;cursor:pointer;font-size:12px;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:3px 10px;white-space:nowrap}
 .presets button:hover{border-color:#4a557a;color:var(--text)}
 .apprline{margin-top:6px}.apprline label{white-space:nowrap}.apprline select{width:auto;padding:3px 6px;font-size:12.5px}
@@ -114,16 +104,11 @@ textarea.code.edit{min-height:max(260px,calc(100vh - 560px));font:11.5px/1.62 va
 .checkres.bad{border-color:rgba(255,138,122,.5);color:var(--coral)}
 .apprrow{margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .apprrow select{width:auto;padding:3px 6px;font-size:12.5px}
-.runbar{position:sticky;bottom:-14px;margin:12px -14px -14px;padding:10px 14px 8px;background:var(--card);border-top:1px solid var(--line);z-index:2;box-shadow:0 -10px 18px -12px #000}
-.runbar .stephead .dirty{margin-left:auto}
 .rb-send{display:flex;gap:8px;align-items:stretch;margin-top:6px}
 .rb-send textarea{flex:1}
-#runbar .rb-send #send{margin:0;width:auto;flex:none;padding:0 20px;white-space:nowrap}
-.runbar textarea{min-height:0;font-size:13.5px;padding:7px 10px;resize:vertical}
 .rb-row{display:flex;gap:8px;align-items:center}
 .rb-row select{padding:6px 8px;font-size:13px;width:auto;min-width:0}
 #modelWrap select{max-width:220px}
-#runbar #tReq{flex:1 1 auto;width:auto;min-width:120px}
 #modelCustom{margin-top:6px;width:100%;background:#0d1222;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:6px 10px;font:inherit;font-size:13px}
 .rb-reply{margin-top:7px;font-size:12.5px;color:var(--sub);max-height:3.2em;overflow:auto;line-height:1.55;white-space:pre-wrap}
 .rb-reply b{color:var(--faint);font-weight:600;margin-right:4px}
@@ -131,7 +116,6 @@ textarea.code.edit{min-height:max(260px,calc(100vh - 560px));font:11.5px/1.62 va
 .rb-tools>button{all:unset;cursor:pointer;font-size:12px;color:var(--sub);border:1px solid var(--line);border-radius:7px;padding:3px 9px}
 .rb-tools>button:hover{border-color:#4a557a;color:var(--text)}
 .rb-tools details{margin-left:auto;font-size:12px}
-.rb-tools details p{position:absolute;right:14px;bottom:100%;max-width:420px;background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin:0 0 6px}
 #applyNote{margin:5px 0 0}
 #applyNote:empty{display:none}
 
@@ -142,7 +126,6 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .scen button.on{border-color:var(--mint);background:#13302c}
 
 /* ---------- 머신(Agent 루프) ---------- */
-.loopwrap{position:relative;display:flex;justify-content:center}
 .machine{position:relative;width:720px;height:804px;flex:none}
 .machine svg.wire{position:absolute;inset:0;width:720px;height:804px;overflow:visible}
 .wire .ln{fill:none;stroke:var(--line);stroke-width:3;transition:stroke .25s,filter .25s}
@@ -223,17 +206,16 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .guide .card .gnav .dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
 .guide .card .gnav .dots i.on{background:var(--violet)}
 .guide .card.wide{width:min(560px,calc(100vw - 32px))}
-.stepbar{position:sticky;bottom:-14px;z-index:5;box-shadow:0 -10px 20px var(--card);display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}
-.stepbar .sb{background:#1e2640;color:var(--text);border:1.5px solid var(--line);border-radius:10px;padding:9px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
-.stepbar .sb:disabled{opacity:.35;cursor:default}
-.stepbar .sb.next{border-color:var(--mint);color:var(--mint)}
-.stepbar .sb.next.ready{background:#13302c;box-shadow:0 0 0 3px #61dec622;animation:nudge 1.6s ease-in-out infinite}
+.nctl .sb{background:#1e2640;color:var(--text);border:1.5px solid var(--line);border-radius:10px;padding:9px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.nctl .sb:disabled{opacity:.35;cursor:default}
+.nctl .sb.next{border-color:var(--mint);color:var(--mint)}
+.nctl .sb.next.ready{background:#13302c;box-shadow:0 0 0 3px #61dec622;animation:nudge 1.6s ease-in-out infinite}
 @keyframes nudge{50%{box-shadow:0 0 0 6px #61dec611}}
-.stepbar .sbi{min-width:0;text-align:center;line-height:1.35}
-.stepbar .sbi b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stepbar .sbi small{display:block;font-size:12px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stepbar .sbi label{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--sub);cursor:pointer;margin-top:2px}
-.stepbar .sbi small.go{color:var(--mint)}
+.nctl .sbi{min-width:0;text-align:center;line-height:1.35}
+.nctl .sbi b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nctl .sbi small{display:block;font-size:12px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nctl .sbi label{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--sub);cursor:pointer;margin-top:2px}
+.nctl .sbi small.go{color:var(--mint)}
 
 
 /* ---------- 왼쪽 패널 정리 ---------- */
@@ -242,7 +224,6 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .sect span{font-weight:400;margin-left:6px;color:#5d6681}
 details.note{margin-top:12px}
 details.note summary{font-size:12.5px;color:var(--faint)}
-.insp details summary{font-size:11.5px;color:var(--faint);margin:6px 0 0;cursor:pointer}
 #tPrev,#tNext{display:none}
 
 /* ---------- 레지스터·인스펙터·로그 ---------- */
@@ -252,13 +233,10 @@ details.note summary{font-size:12.5px;color:var(--faint)}
 .reg b{font:500 13px var(--mono);color:var(--text);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .reg.flash{border-color:var(--violet);background:#1d1a33}
 .reg.warn b{color:var(--amber)}.reg.bad b{color:var(--coral)}.reg.good b{color:var(--mint)}
-.insp{background:#0d1222;border:1px solid var(--line);border-left:3px solid var(--violet);border-radius:10px;padding:9px 12px;margin-bottom:12px}
 .insp .k{font:11px var(--mono);color:var(--faint)}
 .insp .h{font-weight:700;font-size:14.5px;margin:2px 0}
 .insp .p{font-size:13.5px;color:var(--sub)}
-.insp pre{margin:6px 0 0;font:11px/1.5 var(--mono);color:var(--faint);white-space:pre-wrap;word-break:break-all;max-height:96px;overflow:auto}
 .insp.bad{border-left-color:var(--coral)}.insp.ok{border-left-color:var(--mint)}.insp.wait{border-left-color:var(--amber)}
-.term{background:#080b14;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:11.5px/1.6 var(--mono);height:300px;overflow:auto}
 .term .l{white-space:pre-wrap;word-break:break-all;padding:0 4px;border-radius:4px;cursor:pointer}
 .term .l:hover{background:#ffffff08}
 .term .l.cur{background:#b19bff1f;outline:1px solid #b19bff55}
@@ -297,8 +275,87 @@ details.note summary{font-size:12.5px;color:var(--faint)}
 .dialinfo b{color:var(--text);font-size:15px;font-weight:600}
 .dialinfo .mode{color:var(--mint)}
 .keys{font-size:11px;color:#59627e}
-@media(max-width:1150px){main,body.building main{grid-template-columns:280px minmax(0,1fr)}main>.panel:last-child{grid-column:1/-1}body.building main>.panel:first-child{grid-column:1/-1}}
-@media(max-width:900px){main,body.building main{grid-template-columns:1fr}.build{grid-template-columns:1fr}.transport{grid-template-columns:1fr}}
+/* ---------- 배치 v2: 실행 보기가 주인공 ----------
+   ① Harness 패널은 펼치면 편집, 접으면 한 줄 요약. ②요청과 ③실행은 가운데 무대.
+   로그·상태는 필요할 때만 여는 서랍입니다. 무대가 넓으면 요청·해설을 머신 오른쪽에 둡니다. */
+body{--hw:clamp(560px,44vw,860px);--dw:0px}
+body.hclosed{--hw:190px}
+body.replay{--hw:340px}
+body.dopen{--dw:clamp(320px,23vw,400px)}
+main{flex:1;min-height:0;display:grid;grid-template-columns:var(--hw) minmax(0,1fr) var(--dw);gap:14px;padding:12px 16px}
+.card-s,.hpanel,.composer,.view,.narr,.drawer{background:var(--card);border:1px solid var(--line);border-radius:14px;min-width:0;min-height:0}
+.hpanel{display:flex;flex-direction:column;overflow:hidden}
+.hbody{flex:1;min-height:0;overflow:auto;padding:14px;container-type:inline-size}
+.hrail{all:unset;box-sizing:border-box;display:none;cursor:pointer;flex-direction:column;gap:10px;padding:16px 14px;height:100%}
+.hrail:hover{background:#192038}
+.hrail b{font-size:15px}
+.hrail .hgo{color:var(--mint);font-size:13px;font-weight:700;border:1px solid #316459;border-radius:8px;padding:5px 10px;align-self:flex-start}
+.hsum{display:flex;flex-direction:column;gap:6px}
+.hsum i{font-style:normal;font:12px var(--mono);color:var(--sub);border:1px solid var(--line);border-radius:7px;padding:4px 8px;background:#0d1222}
+.hsum i.off{color:var(--faint);border-style:dashed;opacity:.7}
+.hsum i.mode{font-family:inherit;color:var(--violet);border-color:#4b3f86}
+body.hclosed:not(.replay) .hrail{display:flex}
+body.hclosed:not(.replay) .hbody{display:none}
+.hrail .rt{display:flex;align-items:center;gap:8px}
+.fold{all:unset;cursor:pointer;margin-left:auto;font-size:12.5px;color:var(--sub);border:1px solid var(--line);border-radius:8px;padding:4px 10px;white-space:nowrap}
+.fold:hover{color:var(--text);border-color:#4a557a}
+.fold.on{color:var(--mint);border-color:#316459}
+.stephead .seg{margin-left:auto}
+.stephead .seg+.fold{margin-left:6px}
+header .seg{margin-left:10px}
+header .badge{margin-left:auto}
+.tab{display:none}.tab.on{display:block}
+
+.stage{min-width:0;min-height:0;container:stage/inline-size}
+.sgrid{height:100%;display:grid;gap:12px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"composer" "view" "narr"}
+.composer{grid-area:composer;padding:12px 14px}
+.view{grid-area:view;display:flex;flex-direction:column;padding:12px 14px 8px;overflow:hidden}
+.narr{grid-area:narr;padding:10px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
+.loopwrap{position:relative;flex:1;min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden}
+body.replay .composer{display:none}
+body.replay .sgrid{grid-template-areas:"view" "view" "narr"}
+.stephead .dirty{margin-left:auto}
+.rb-row{margin-top:2px}
+.rb-row #tReq{flex:1 1 auto;width:auto;min-width:120px}
+.rb-send #send{margin:0;width:auto;flex:none;padding:0 20px;white-space:nowrap}
+.composer textarea{min-height:0;font-size:13.5px;padding:7px 10px;resize:vertical}
+.rb-tools details{position:relative}
+.rb-tools details p{position:absolute;right:0;top:100%;width:min(420px,70vw);background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin:6px 0 0;z-index:9}
+.insp{border-left:3px solid var(--violet);padding:2px 0 2px 12px;min-width:0;background:transparent!important}
+#sInfo{display:none!important}
+.insp .h{font-size:16px}
+.insp .p{line-height:1.55}
+.nctl{display:grid;grid-template-columns:auto minmax(0,auto) auto;gap:10px;align-items:center}
+.nctl .sbi{max-width:200px}
+
+/* 무대가 넓으면: 머신 왼쪽, 요청·해설 오른쪽 */
+@container stage (min-width:1000px){
+  .sgrid{grid-template-columns:minmax(0,1fr) clamp(330px,30cqi,430px);grid-template-rows:auto minmax(0,1fr);grid-template-areas:"view composer" "view narr"}
+  body.replay .sgrid{grid-template-areas:"view narr" "view narr"}
+  .narr{grid-template-columns:1fr;align-content:start;align-self:start}
+  .nctl{grid-template-columns:auto minmax(0,1fr) auto}
+  .nctl .sbi{max-width:none}
+  .insp .h{font-size:17px}
+  .insp .p{font-size:14.5px}
+}
+
+.drawer{display:none;flex-direction:column;padding:12px 14px;overflow:auto}
+body.dopen .drawer{display:flex}
+.drawer h2{font-size:12px;letter-spacing:.08em;color:var(--faint);margin:10px 0 8px;font-weight:700}
+.term{background:#080b14;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:11.5px/1.6 var(--mono);flex:1;min-height:200px;overflow:auto}
+.raw summary{font-size:12px;color:var(--faint)}
+.raw pre{margin:4px 0 0;font:11px/1.5 var(--mono);color:var(--faint);white-space:pre-wrap;word-break:break-all;max-height:140px;overflow:auto}
+
+/* 좁은 화면: 펼친 Harness 패널과 서랍은 무대 위에 겹쳐 뜹니다 */
+@media(max-width:1700px){
+  body{--hw:190px}
+  body.replay{--hw:300px}
+  body.dopen{--dw:0px}
+  body:not(.replay) .hrail{display:flex}
+  body:not(.hclosed):not(.replay) .hbody{position:fixed;left:16px;top:58px;bottom:96px;width:max(min(560px,calc(100vw - 32px)),min(900px,calc(100vw - 480px)));z-index:20;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 60px #000c}
+  body.dopen .drawer{position:fixed;right:16px;top:58px;bottom:96px;width:min(420px,calc(100vw - 32px));z-index:20;box-shadow:0 20px 60px #000c}
+}
+@media(max-width:900px){main{grid-template-columns:1fr}.hpanel{display:none}.build{grid-template-columns:1fr}.transport{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -306,24 +363,29 @@ details.note summary{font-size:12.5px;color:var(--faint)}
 <header>
   <a class="home" href="../docs/index.html">← 문서 허브</a>
   <h1>Hook·Harness 실험실</h1>
+  <div class="seg" id="tabs" role="tablist">
+    <button data-tab="cfg" class="on" role="tab">실험</button>
+    <button data-tab="rep" role="tab">기록 재생</button>
+  </div>
   <span class="badge sim" id="badge"><i></i>미리보기 · 브라우저 모의 실행</span>
   <button class="gbtn" id="gBtn" title="화면 둘러보기와 해 볼 실험">? 가이드</button>
 </header>
 <main>
-  <!-- 왼쪽: 입력 -->
-  <section class="panel">
-    <div class="tabs" id="tabs">
-      <button data-tab="cfg" class="on">실험</button>
-      <button data-tab="rep">기록 재생</button>
-    </div>
-    <div class="tab on" id="tab-cfg">
-      <div class="stephead"><span class="num">1</span><b>Harness 만들기</b>
-        <div class="seg" id="courseSeg" role="tablist">
-          <button data-course="basic" class="on" role="tab">기본 과정</button>
-          <button data-course="advanced" role="tab">고급 과정</button>
+  <!-- ① Harness: 펼치면 편집, 접으면 요약 -->
+  <aside class="hpanel" id="hpanel">
+    <button class="hrail" id="hOpen" title="Harness 편집 패널 펼치기">
+      <span class="rt"><span class="num">1</span><b>Harness</b></span><span class="hgo">편집 ▸</span><span class="hsum" id="hSum"></span>
+    </button>
+    <div class="hbody">
+      <div class="tab on" id="tab-cfg">
+        <div class="stephead"><span class="num">1</span><b>Harness 만들기</b>
+          <div class="seg" id="courseSeg" role="tablist">
+            <button data-course="basic" class="on" role="tab">기본 과정</button>
+            <button data-course="advanced" role="tab">고급 과정</button>
+          </div>
+          <button class="fold" id="hClose" title="패널을 접고 실행 화면을 크게 봅니다">◂ 접기</button>
         </div>
-      </div>
-      <p class="stepdesc" id="courseDesc">설정을 고르면 오른쪽 <code>harness.js</code>가 그대로 바뀝니다.</p>
+        <p class="stepdesc" id="courseDesc">설정을 고르면 오른쪽 <code>harness.js</code>가 그대로 바뀝니다.</p>
       <div class="build" id="buildBasic">
         <div class="form">
           <div class="presets"><span>빠른 설정</span>
@@ -369,40 +431,45 @@ details.note summary{font-size:12.5px;color:var(--faint)}
             <select id="advApproval"><option value="ask">묻기 (ask)</option><option value="allow">묻지 않고 허용 (allow)</option><option value="deny">항상 거절 (deny)</option></select></div>
         </div>
       </div>
-      <div class="runbar" id="runbar">
-        <div class="stephead"><span class="num">2</span><b>요청 보내기</b><span class="dirty" id="dirty"></span></div>
-        <div class="rb-row">
-          <select id="tReq" title="예시 요청을 고르면 아래 칸에 채워집니다"></select>
-          <span id="modelWrap" style="display:none"><select id="model" title="요청을 보낼 모델입니다. 기본값은 OpenCode 설정의 기본 모델이고, 로그인(SSO 포함)은 OpenCode가 그대로 씁니다."></select></span>
-        </div>
-        <div class="rb-send">
-          <textarea id="prompt" rows="2">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
-          <button class="btn pri send" id="send" title="코드가 바뀌었으면 먼저 적용하고 보냅니다">보내기 ▶</button>
-        </div>
-        <input id="modelCustom" placeholder="공급자/모델 (예: myprovider/gpt-6-luna)" spellcheck="false" autocomplete="off" style="display:none">
-        <div class="rb-reply"><b>Agent 응답</b> <span id="replyText">아직 요청을 보내지 않았습니다.</span></div>
-        <div class="rb-tools">
-          <button id="newSession" title="시도 횟수와 검증 횟수를 0부터 다시 셉니다">새 세션</button>
-          <button id="abort" title="돌고 있는 Agent를 멈춥니다">중단</button>
-          <button id="resetFiles" title="지난 실험에서 만든 lab/output 파일을 지웁니다">파일 비우기</button>
-          <details class="note"><summary>무엇이 실행하나요?</summary><p class="small" id="modeNote"></p></details>
-        </div>
-        <p class="small" id="applyNote"></p>
       </div>
-    </div>
-    <div class="tab" id="tab-rep">
+      <div class="tab" id="tab-rep">
+        <div class="stephead"><b>기록 재생</b></div>
       <p class="small" style="margin-top:0">실제 OpenCode 1.19.4 실행기에서 남긴 기록을 테이프에 올려 재생합니다(모델은 고정 응답기).</p>
       <div class="scen" id="scen"></div>
       <div class="btns">
         <button class="btn" id="backToLab">실험 테이프로 돌아가기</button>
         <label class="small">다른 기록 <input type="file" id="rFile" accept=".jsonl,.json,.txt" style="width:150px"></label>
       </div>
+      </div>
     </div>
-  </section>
+  </aside>
 
-  <!-- 가운데: 머신 -->
-  <section class="panel">
-    <div class="stephead"><span class="num">3</span><b>실행 보기</b><span class="sub">패킷 한 바퀴가 도구 호출 한 번입니다</span></div>
+  <!-- ②·③ 요청과 실행 -->
+  <section class="stage" id="stage"><div class="sgrid">
+    <div class="composer" id="runbar">
+      <div class="stephead"><span class="num">2</span><b>요청 보내기</b><span class="dirty" id="dirty"></span></div>
+      <div class="rb-row">
+        <select id="tReq" title="예시 요청을 고르면 아래 칸에 채워집니다"></select>
+        <span id="modelWrap" style="display:none"><select id="model" title="요청을 보낼 모델입니다. 기본값은 OpenCode 설정의 기본 모델이고, 로그인(SSO 포함)은 OpenCode가 그대로 씁니다."></select></span>
+      </div>
+      <input id="modelCustom" placeholder="공급자/모델 (예: myprovider/gpt-6-luna)" spellcheck="false" autocomplete="off" style="display:none">
+      <div class="rb-send">
+        <textarea id="prompt" rows="2">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
+        <button class="btn pri send" id="send" title="코드가 바뀌었으면 먼저 적용하고 보냅니다">보내기 ▶</button>
+      </div>
+      <p class="small" id="applyNote"></p>
+      <div class="rb-reply"><b>Agent 응답</b> <span id="replyText">아직 요청을 보내지 않았습니다.</span></div>
+      <div class="rb-tools">
+        <button id="newSession" title="시도 횟수와 검증 횟수를 0부터 다시 셉니다">새 세션</button>
+        <button id="abort" title="돌고 있는 Agent를 멈춥니다">중단</button>
+        <button id="resetFiles" title="지난 실험에서 만든 lab/output 파일을 지웁니다">파일 비우기</button>
+        <details class="note"><summary>무엇이 실행하나요?</summary><p class="small" id="modeNote"></p></details>
+      </div>
+    </div>
+
+    <div class="view" id="view">
+      <div class="stephead"><span class="num">3</span><b>실행 보기</b><span class="sub">패킷 한 바퀴가 도구 호출 한 번입니다</span>
+        <button class="fold" id="logBtn" title="상태 칸과 사건 로그를 엽니다">로그·상태 ▸</button></div>
     <div class="loopwrap" id="loopwrap">
     <div class="machine" id="machine">
       <svg class="wire" viewBox="0 0 720 804" aria-hidden="true">
@@ -450,18 +517,22 @@ details.note summary{font-size:12.5px;color:var(--faint)}
       <div class="verdict" id="verdict" style="top:440px"></div>
     </div>
     </div>
-    <div class="stepbar">
-      <button class="sb" id="sPrev" title="한 단계 뒤 (←)">◀ 이전 단계</button>
-      <div class="sbi"><b id="sInfo">처음 위치</b><small id="sWait">요청을 보내면 단계가 쌓입니다</small>
-        <label title="켜 두면 요청을 보내도 저절로 재생하지 않고, 다음 단계 버튼을 누를 때만 움직입니다"><input type="checkbox" id="sMode"> 한 단계씩 보기</label></div>
-      <button class="sb next" id="sNext" title="한 단계 앞 (→)">다음 단계 ▶</button>
     </div>
-  </section>
 
-  <!-- 오른쪽: 레지스터·인스펙터·로그 -->
-  <section class="panel">
-    <h2>현재 단계</h2>
-    <div class="insp" id="insp"><div class="k" id="iK">STEP 0 / 0</div><div class="h" id="iH">테이프가 비어 있습니다</div><div class="p" id="iP">요청을 보내면 OpenCode와 Hook이 만드는 사건이 이 테이프에 쌓이고, 아래 컨트롤로 한 단계씩 돌려 볼 수 있습니다.</div><details><summary>원본 사건</summary><pre id="iRaw"></pre></details></div>
+    <div class="narr" id="narr">
+      <div class="insp" id="insp"><div class="k" id="iK">STEP 0 / 0</div><div class="h" id="iH">테이프가 비어 있습니다</div><div class="p" id="iP">요청을 보내면 OpenCode와 Hook이 만드는 사건이 쌓이고, 여기서 한 단계씩 설명합니다.</div></div>
+      <div class="nctl">
+        <button class="sb" id="sPrev" title="한 단계 뒤 (←)">◀ 이전</button>
+        <div class="sbi"><b id="sInfo" hidden></b><small id="sWait">요청을 보내면 단계가 쌓입니다</small>
+          <label title="켜 두면 요청을 보내도 저절로 재생하지 않고, 다음 버튼을 누를 때만 움직입니다"><input type="checkbox" id="sMode"> 한 단계씩 보기</label></div>
+        <button class="sb next" id="sNext" title="한 단계 앞 (→)">다음 ▶</button>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- 로그·상태 서랍 -->
+  <aside class="drawer" id="drawer">
+    <div class="stephead"><b>로그·상태</b><button class="fold" id="logClose" title="닫기">닫기 ✕</button></div>
     <h2>상태</h2>
     <div class="regs">
       <div class="reg" id="rTool"><small>도구</small><b>-</b></div>
@@ -478,7 +549,8 @@ details.note summary{font-size:12.5px;color:var(--faint)}
       <label><input type="checkbox" id="fFuture" checked> 다음 단계 미리 보기</label>
     </div>
     <div class="term" id="term"></div>
-  </section>
+    <details class="raw"><summary>지금 단계의 원본 사건</summary><pre id="iRaw"></pre></details>
+  </aside>
 </main>
 
 <div class="guide" id="guide"><div class="veil" id="gVeil"></div><div class="hole" id="gHole"></div><div class="card" id="gCard"></div></div>
@@ -525,9 +597,19 @@ const appliedCfg = () => ({ ...applied.info, approval: applied.config.approval }
 document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.id === 'tab-' + b.dataset.tab));
-  document.body.classList.toggle('building', b.dataset.tab === 'cfg');
-  requestAnimationFrame(() => { if (typeof fitMachine === 'function') fitMachine(); });
+  document.body.classList.toggle('replay', b.dataset.tab === 'rep');
+  refit();
 });
+// 패널을 접고 펴거나 서랍을 열면 무대 크기가 바뀌므로 머신 배율을 다시 맞춥니다. 고른 상태는 브라우저에 기억합니다.
+const remember = (k, v) => { try { localStorage.setItem(k, v ? '1' : '0'); } catch {} };
+const recall = k => { try { return localStorage.getItem(k); } catch { return null; } };
+function refit() { requestAnimationFrame(() => typeof fitMachine === 'function' && fitMachine()); setTimeout(() => typeof fitMachine === 'function' && fitMachine(), 300); }
+function setHarnessOpen(open) { document.body.classList.toggle('hclosed', !open); remember('lab.hOpen', open); refit(); }
+function setDrawer(open) { document.body.classList.toggle('dopen', open); $('logBtn').classList.toggle('on', open); $('logBtn').textContent = open ? '로그·상태 ◂' : '로그·상태 ▸'; remember('lab.drawer', open); refit(); }
+$('hOpen').onclick = () => setHarnessOpen(true);
+$('hClose').onclick = () => setHarnessOpen(false);
+$('logBtn').onclick = () => setDrawer(!document.body.classList.contains('dopen'));
+$('logClose').onclick = () => setDrawer(false);
 
 /* =====================================================================
    테이프: 들어온 사건을 "단계(step)"로 펼쳐 쌓습니다.
@@ -846,9 +928,9 @@ function drawWires() {
   head('hCall', -90, 0); head('hRun', 0, 90); head('hRes', 90, 180); head('hObs', 180, 270); head('hDeny', -40, -90, denyR);
 }
 function fitMachine() {
-  const w = $('loopwrap').clientWidth, panel = $('loopwrap').parentElement;
-  const h = panel.clientHeight - 60 - (panel.querySelector('.stepbar')?.offsetHeight || 0);
-  $('machine').style.zoom = Math.max(0.55, Math.min(1, w / 720, Math.max(h / 804, 0.78)));
+  // 머신은 720×804 좌표로 그려 두고, 무대에 꽉 차도록 배율만 바꿉니다.
+  const wrap = $('loopwrap');
+  $('machine').style.zoom = Math.max(0.3, Math.min(1.45, (wrap.clientWidth - 8) / 720, (wrap.clientHeight - 8) / 804));
 }
 const PK = { cur: null, raf: 0 };
 function placePk(p) { const c = xy(p); const pk = $('packet'); pk.style.left = (c.x - 11.5) + 'px'; pk.style.top = (c.y - 11.5) + 'px'; }
@@ -1194,6 +1276,7 @@ function renderMissions() {
   }).join('');
   const passed = lastCheck && !lastCheck.error ? Object.values(lastCheck.missions).filter(x => x.pass).length : null;
   $('missionScore').textContent = passed === null ? '' : passed + ' / ' + MISSIONS.length + ' 통과';
+  renderHSum();
 }
 async function runCheck() {
   lastCheck = await probeHarness(advSource);
@@ -1233,6 +1316,17 @@ const needsApply = () => course !== applied.mode || currentSource() !== applied.
 function markDirty() {
   const dirty = course !== applied.mode || currentSource() !== applied.source || config.approval !== applied.config.approval;
   $('dirty').textContent = dirty ? '코드가 바뀜 · 보낼 때 적용' : '';
+  renderHSum();
+}
+// 접힌 Harness 패널에 보이는 한 줄 요약입니다. 편집 중인 코드 기준입니다.
+function renderHSum() {
+  const c = config, item = (on, text) => `<i class="${on ? '' : 'off'}">${esc(text)}</i>`;
+  $('hSum').innerHTML = course === 'basic'
+    ? '<i class="mode">기본 과정</i>' + item(c.record, 'Record') + item(c.limitOn, c.limitOn ? 'Limit ' + c.budget + '회' : 'Limit 없음')
+      + item(c.toolsOn, 'Policy 도구') + item(c.pathOn, 'Policy 경로') + item(c.checks.length === 4, 'Validation ' + c.checks.length + '/4')
+      + item(c.approval === 'ask', 'Approval ' + c.approval)
+    : '<i class="mode">고급 과정</i>' + item(true, '직접 쓴 harness.js') + item(config.approval === 'ask', 'Approval ' + config.approval)
+      + ($('missionScore').textContent ? item(true, '미션 ' + $('missionScore').textContent) : '');
 }
 
 /* ---------- 브라우저 모의 실행기 (미리보기) ----------
@@ -1470,6 +1564,8 @@ $('prompt').addEventListener('input', () => { $('tReq').value = ''; });
 let liveReady = false;
 $('send').onclick = async () => {
   const text = $('prompt').value.trim(); if (!text) return;
+  // 좁은 화면에서는 편집 패널이 머신을 가리므로, 보내면 접어서 실행을 보여 줍니다.
+  if (matchMedia('(max-width:1700px)').matches && !document.body.classList.contains('hclosed')) setHarnessOpen(false);
   $('send').disabled = true;
   try {
     if (needsApply()) {
@@ -1588,31 +1684,29 @@ $('rFile').onchange = async ev => {
    화면의 각 영역을 차례로 밝혀 주고, 마지막에 해 볼 실험을 안내합니다. 처음 열 때 한 번 저절로 뜹니다. */
 const GUIDE = [
   { t: null, k: '시작하기', h: 'Hook·Harness 실험실입니다',
-    b: '<p>요청 하나를 보내면 OpenCode의 Agent가 도구를 부르고, Harness의 Hook이 그 호출을 어떻게 판단하는지 한 단계씩 볼 수 있습니다.</p><p>1분이면 화면을 다 둘러볼 수 있습니다. 오른쪽 위 <b>? 가이드</b>로 언제든 다시 열 수 있습니다.</p>' },
-  { t: '#tab-cfg', k: '1 · Harness 코드', h: '여기서 Harness를 만듭니다',
-    b: '<p>Harness는 OpenCode 플러그인 <code>harness.js</code> 한 파일입니다.</p><ul><li><b>기본 과정</b>: Record, Limit, Policy, 검증 조건을 고르면 옆의 실제 코드가 바뀌고, 바뀐 줄이 강조됩니다.</li><li><b>고급 과정</b>: 빈 뼈대에서 직접 쓰고 <b>검사하기</b>로 미션 8개를 확인합니다.</li></ul>' },
-  { t: '#runbar', k: '2 · 요청', h: '보이는 코드로 바로 테스트합니다',
-    b: '<p>예시를 고르거나 직접 써서 <b>보내기</b>를 누릅니다. 코드가 바뀌었으면 보내기 전에 그 코드를 먼저 적용합니다. 그래서 <b>화면에 보이는 코드가 언제나 실행되는 Harness</b>입니다.</p><p>오른쪽 위 배지가 지금 무엇이 실행하는지 알려 줍니다. 미리보기는 브라우저 안 모의 실행기, 라이브는 실제 OpenCode입니다.</p>' },
-  { t: '#machine', k: '3 · 머신', h: 'Agent 루프와 Harness',
+    b: '<p>요청 하나를 보내면 OpenCode의 Agent가 도구를 부르고, Harness의 Hook이 그 호출을 어떻게 판단하는지 한 단계씩 볼 수 있습니다.</p><p>화면은 세 가지뿐입니다. <b>① Harness</b>를 만들고, <b>② 요청</b>을 보내고, <b>③ 실행</b>을 봅니다. 오른쪽 위 <b>? 가이드</b>로 언제든 다시 열 수 있습니다.</p>' },
+  { t: '#hpanel', k: '① Harness', h: '여기서 Harness를 만듭니다',
+    b: '<p>Harness는 OpenCode 플러그인 <code>harness.js</code> 한 파일입니다.</p><ul><li><b>기본 과정</b>: 상자를 고르면 옆의 실제 코드가 바뀌고, 바뀐 줄이 강조됩니다.</li><li><b>고급 과정</b>: 빈 뼈대에서 직접 쓰고 <b>검사하기</b>로 미션 8개를 확인합니다.</li></ul><p>다 만들었으면 <b>◂ 접기</b>로 접어 실행 화면을 크게 보세요. 접어도 지금 설정이 요약으로 남습니다.</p>' },
+  { t: '#runbar', k: '② 요청', h: '보이는 코드로 바로 테스트합니다',
+    b: '<p>예시를 고르거나 직접 써서 <b>보내기</b>를 누릅니다. 코드가 바뀌었으면 보내기 전에 그 코드를 먼저 적용하므로, <b>편집 중인 코드가 언제나 실행되는 Harness</b>입니다.</p><p>오른쪽 위 배지가 지금 무엇이 실행하는지 알려 줍니다. 미리보기는 브라우저 안 모의 실행기, 라이브는 실제 OpenCode입니다.</p>' },
+  { t: '#machine', k: '③ 실행', h: 'Agent 루프와 Harness',
     b: '<p>패킷이 원을 시계 방향으로 한 바퀴 돌면 도구 호출 한 번입니다.</p><ol><li>Agent가 도구를 고릅니다</li><li><b>before Hook</b>이 Record → Limit → Policy 순서로 판정합니다</li><li>허용되면 실행하고, <b>after Hook</b>이 결과를 기록합니다</li><li>Agent가 결과를 보고 다음 도구를 고릅니다</li></ol><p>Hook이 막으면 실행 없이 안쪽 점선을 따라 Agent로 돌아갑니다. 바깥 점선이 Harness 경계입니다.</p>' },
-  { t: '.stepbar', k: '4 · 단계 버튼', h: '한 단계씩 넘겨 봅니다',
-    b: '<p>실제 실행은 순식간에 끝나지만 사건은 모두 테이프에 쌓입니다. <b>다음 단계 ▶</b>로 하나씩 넘기고, <b>◀ 이전 단계</b>로 되돌아갈 수 있습니다. 키보드 ← → 도 같습니다.</p><p><b>한 단계씩 보기</b>를 켜 두면 요청을 보내도 저절로 재생하지 않고, 버튼을 누를 때만 움직입니다.</p>' },
-  { t: '#insp', k: '5 · 현재 단계', h: '왜 그렇게 판정했는지',
-    b: '<p>지금 단계에서 무슨 일이 일어났는지, 규칙 함수가 왜 통과나 차단을 냈는지 풀어서 보여 줍니다. 아래에는 OpenCode나 플러그인이 남긴 원본 사건이 그대로 나옵니다.</p>' },
-  { t: '.regs', k: '6 · 레지스터', h: '지금 상태를 한눈에',
-    b: '<p>도구 이름, 인자, 시도 횟수와 예산, 검증 횟수, 마지막 검사, 제출 여부입니다. 단계를 넘길 때 바뀐 칸이 반짝입니다. ATTEMPT가 예산에 가까워지면 색이 바뀝니다.</p>' },
-  { t: '#term', k: '7 · 테이프 로그', h: '사건 기록',
-    b: '<p><b>hook</b>은 플러그인이 남긴 기록, <b>agent</b>는 OpenCode가 보낸 사건입니다. 줄을 누르면 그 단계로 이동합니다. 흐리게 보이는 줄은 아직 재생하지 않은 앞으로 올 단계입니다.</p>' },
-  { t: '.transport', k: '8 · 재생 컨트롤', h: '재생과 조그 다이얼',
+  { t: '#narr', k: '해설', h: '지금 무슨 일이 일어났는지',
+    b: '<p>지금 단계에서 일어난 일과, Hook이 왜 통과나 차단을 냈는지 한 문장으로 풀어 줍니다.</p><p><b>다음 ▶</b>과 <b>◀ 이전</b>으로 한 단계씩 넘기고, 키보드 ← → 도 같습니다. <b>한 단계씩 보기</b>를 켜면 요청을 보내도 저절로 재생하지 않습니다.</p>' },
+  { t: '#logBtn', k: '로그·상태', h: '더 자세히 보고 싶을 때',
+    b: '<p>시도 횟수, 검증 횟수 같은 상태 칸과 사건 로그는 평소에는 접혀 있습니다. 이 버튼을 누르면 서랍이 열립니다. 로그 줄을 누르면 그 단계로 이동합니다.</p>' },
+  { t: '.transport', k: '재생 컨트롤', h: '재생과 조그 다이얼',
     b: '<p>▶로 자동 재생하고, 다이얼로 단계 사이 간격(0~5초)을 늘려 천천히 볼 수 있습니다. 멈춘 상태에서는 다이얼 한 칸이 한 단계입니다. <b>LIVE</b>는 실제 실행 위치로 바로 갑니다.</p>' },
   { t: null, k: '해 볼 실험', h: '이렇게 시작해 보세요', wide: true,
-    b: '<ol><li><b>정상 흐름</b>: 예시 <b>합계 계산 후 제출</b>을 보냅니다. 검증을 지나 Approval에서 멈추면 <b>한 번 허용</b>을 누릅니다.</li><li><b>Policy 차단</b>: <b>보호 파일 수정</b>을 보냅니다. before Hook의 ③ Policy가 막고 패킷이 안쪽 점선으로 돌아갑니다.</li><li><b>Limit 차단</b>: 기본 과정에서 Limit을 3회로 줄이고 합계 요청을 보냅니다. 네 번째 시도에서 ② Limit이 막습니다.</li><li><b>맨몸 Agent</b>: 기본 과정에서 <b>맨몸 Agent</b>를 고르고 합계 요청을 보냅니다. 검증이 느슨해 틀린 합계도 통과합니다.</li><li><b>기록이 없으면</b>: Record를 끄고 요청을 보냅니다. Hook 칸이 움직이지 않아 무슨 판단이 있었는지 알 수 없습니다.</li></ol><p>처음에는 <b>한 단계씩 보기</b>를 켜고 다음 단계 버튼으로 넘기면 각 판정을 놓치지 않습니다.</p>' },
+    b: '<ol><li><b>정상 흐름</b>: 예시 <b>합계 계산 후 제출</b>을 보냅니다. 검증을 지나 Approval에서 멈추면 <b>한 번 허용</b>을 누릅니다.</li><li><b>Policy 차단</b>: <b>보호 파일 수정</b>을 보냅니다. before Hook의 ③ Policy가 막고 패킷이 안쪽 점선으로 돌아갑니다.</li><li><b>Limit 차단</b>: 기본 과정에서 Limit을 3회로 줄이고 합계 요청을 보냅니다. 네 번째 시도에서 ② Limit이 막습니다.</li><li><b>맨몸 Agent</b>: 기본 과정에서 <b>맨몸 Agent</b>를 고르고 합계 요청을 보냅니다. 검증이 느슨해 틀린 합계도 통과합니다.</li><li><b>기록이 없으면</b>: Record를 끄고 요청을 보냅니다. Hook 칸이 움직이지 않아 무슨 판단이 있었는지 알 수 없습니다.</li></ol><p>처음에는 <b>한 단계씩 보기</b>를 켜고 다음 버튼으로 넘기면 각 판정을 놓치지 않습니다.</p>' },
 ];
 const guide = { i: 0, open: false };
 function guideShow(i) {
   guide.i = Math.max(0, Math.min(GUIDE.length - 1, i));
   const g = GUIDE[guide.i], card = $('gCard'), hole = $('gHole');
-  if (g.t === '#tab-cfg' || g.t === '#runbar') $('tabs').querySelector('[data-tab=cfg]').click();
+  if (g.t === '#hpanel' || g.t === '#runbar') $('tabs').querySelector('[data-tab=cfg]').click();
+  if (g.t === '#hpanel' && document.body.classList.contains('hclosed')) setHarnessOpen(true);
+  else if (g.t && g.t !== '#hpanel' && g.t !== '#runbar' && matchMedia('(max-width:1700px)').matches && !document.body.classList.contains('hclosed')) setHarnessOpen(false);
   card.className = 'card' + (g.wide ? ' wide' : '');
   card.innerHTML = `<small>${g.k}</small><h3>${g.h}</h3>${g.b}<div class="gnav"><div class="dots">${GUIDE.map((_, j) => `<i class="${j === guide.i ? 'on' : ''}"></i>`).join('')}</div>`
     + (guide.i ? '<button class="btn" id="gPrev">이전</button>' : '<button class="btn" id="gSkip">건너뛰기</button>')
@@ -1653,10 +1747,13 @@ document.addEventListener('keydown', e => {
 }, true);
 
 /* ---------- 시작 ---------- */
-document.body.classList.add('building'); drawWires(); fitMachine(); loadReplay(DATA.events); renderForm(); renderBasicCode(false); setCourse('basic'); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); autoPlay();
+if (recall('lab.hOpen') === '0') document.body.classList.add('hclosed');
+if (recall('lab.drawer') === '1') setDrawer(true);
+new ResizeObserver(() => fitMachine()).observe($('loopwrap'));
+drawWires(); fitMachine(); loadReplay(DATA.events); renderForm(); renderBasicCode(false); setCourse('basic'); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); autoPlay();
 let guideSeen = false; try { guideSeen = localStorage.getItem('lab.guideSeen') === '1'; } catch {}
 if (!guideSeen) setTimeout(() => guideOpen(0), 600);
-window.addEventListener('resize', () => { fitMachine(); render(false); });
+window.addEventListener('resize', () => render(false));
 connectLive().then(live => {
   if (!live) {
     $('modeNote').innerHTML = '지금은 <b>미리보기</b>입니다. 적용한 <code>harness.js</code> 코드를 브라우저 안에서 그대로 실행하고, Agent는 요청 문장의 낱말로 고르는 고정 시나리오입니다. <b>실제 OpenCode</b>로 돌리려면 저장소 루트에서 <code>node lab/server.mjs</code>를 실행하고 <code>http://127.0.0.1:4300/</code>을 여세요.';
