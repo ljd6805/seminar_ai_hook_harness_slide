@@ -4,60 +4,98 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hook·Harness 실험실</title>
 <style>
-:root{color-scheme:dark;--bg:#0e1220;--card:#171d30;--line:#303951;--text:#edf0fa;--sub:#b2bbd2;--faint:#7d87a3;--mint:#61dec6;--coral:#ff8a7a;--amber:#ffcc7a;--violet:#b19bff}
+:root{color-scheme:dark;--bg:#0e1220;--card:#171d30;--card2:#141a2b;--line:#303951;--text:#edf0fa;--sub:#b2bbd2;--faint:#7d87a3;--mint:#61dec6;--coral:#ff8a7a;--amber:#ffcc7a;--violet:#b19bff;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.65 "Apple SD Gothic Neo","Malgun Gothic",sans-serif;word-break:keep-all}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 "Pretendard Variable","Apple SD Gothic Neo","Malgun Gothic",sans-serif;word-break:keep-all}
 a{color:var(--mint);text-underline-offset:4px}
-header{display:flex;align-items:center;gap:18px;padding:16px 26px;border-bottom:1px solid var(--line)}
+code{font-family:var(--mono);font-size:.92em}
+header{display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 header .home{border:1px solid var(--line);border-radius:8px;padding:5px 12px;text-decoration:none;font-size:13px}
 header h1{font-size:19px;margin:0}
-header .mode{margin-left:auto;font-size:12px;color:var(--amber);border:1px solid #6a5437;border-radius:30px;padding:2px 11px}
-main{display:grid;grid-template-columns:300px 1fr 430px;gap:18px;padding:18px 26px;min-height:calc(100vh - 62px)}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
-.panel h2{font-size:12px;letter-spacing:.12em;color:var(--violet);margin:0 0 12px}
-.scen{display:flex;flex-direction:column;gap:8px}
-.scen button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
+.badge{margin-left:auto;font-size:12px;border:1px solid var(--line);border-radius:30px;padding:3px 12px;color:var(--sub)}
+.badge.live{color:var(--mint);border-color:#316459}.badge.sim{color:var(--amber);border-color:#6a5437}.badge.err{color:var(--coral);border-color:#7a3d3d}
+.badge i{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px}
+main{display:grid;grid-template-columns:360px minmax(0,1fr) 440px;gap:16px;padding:16px 24px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
+.panel h2{font-size:12px;letter-spacing:.12em;color:var(--violet);margin:0 0 10px;font-weight:700}
+.tabs{display:flex;gap:4px;margin:-4px 0 14px;border-bottom:1px solid var(--line)}
+.tabs button{all:unset;cursor:pointer;padding:7px 12px 9px;font-size:14px;color:var(--sub);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--text);border-bottom-color:var(--mint);font-weight:700}
+.tab{display:none}.tab.on{display:block}
+label.f{display:block;font-size:12.5px;color:var(--sub);margin:12px 0 5px}
+textarea,select,input[type=number]{width:100%;background:#0f1424;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px}
+textarea{resize:vertical}
+textarea.code{font:12px/1.55 var(--mono);min-height:260px;white-space:pre;tab-size:2}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips button{background:#1d2440;color:var(--sub);border:1px solid var(--line);border-radius:20px;padding:4px 10px;font:inherit;font-size:12.5px;cursor:pointer;text-align:left}
+.chips button:hover{color:var(--text);border-color:var(--violet)}
+.btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.btn{background:#20283f;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 13px;cursor:pointer;font:inherit;font-size:13.5px}
+.btn.pri{border-color:var(--mint);color:var(--mint)}
+.btn.warn{border-color:var(--amber);color:var(--amber)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.small{font-size:12px;color:var(--faint);overflow-wrap:anywhere}
+.reply{margin-top:12px;background:#0f1424;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px;min-height:56px;white-space:pre-wrap;color:var(--sub);max-height:180px;overflow:auto}
+.reply b{color:var(--violet);font-weight:600;font-size:12px;display:block;margin-bottom:3px}
+.state{margin-top:14px;border-top:1px solid var(--line);padding-top:12px;font-size:13px}
+.state div{display:flex;justify-content:space-between;padding:2px 0;color:var(--sub)}
+.state b{color:var(--text);font-family:var(--mono);font-weight:500}
+.meter{height:7px;border-radius:5px;background:#252d45;overflow:hidden;margin:3px 0 8px}
+.meter i{display:block;height:100%;width:0;background:var(--mint);transition:width .3s,background .3s}
+/* 꾸미기 */
+.grp{border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin-bottom:10px;background:var(--card2)}
+.grp h3{margin:0 0 4px;font-size:14px;display:flex;align-items:center;gap:8px}
+.grp h3 small{font-weight:400;color:var(--faint);font-size:12px}
+.grp .row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;color:var(--sub)}
+.grp .row label{display:flex;align-items:center;gap:5px;cursor:pointer}
+.grp textarea{font:12px/1.5 var(--mono);min-height:48px;margin-top:4px}
+.switch{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);font-weight:400}
+.dirty{color:var(--amber);font-size:12px}
+details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
+/* 재생 */
+.scen{display:flex;flex-direction:column;gap:7px}
+.scen button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px}
 .scen button small{display:block;color:var(--faint);font-size:12px}
 .scen button.on{border-color:var(--mint);background:#13302c}
-.ctrl{display:flex;gap:8px;margin:16px 0 6px;flex-wrap:wrap}
-.ctrl button{background:#20283f;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 13px;cursor:pointer;font:inherit;font-size:13px}
-.ctrl button.pri{border-color:var(--mint);color:var(--mint)}
-.ctrl label{font-size:12px;color:var(--sub);display:flex;align-items:center;gap:6px}
-.state{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;font-size:13px}
-.state div{display:flex;justify-content:space-between;padding:3px 0;color:var(--sub)}
-.state b{color:var(--text);font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:500}
-.meter{height:7px;border-radius:5px;background:#252d45;overflow:hidden;margin:4px 0 8px}
-.meter i{display:block;height:100%;width:0;background:var(--mint);transition:width .3s,background .3s}
-.hint{font-size:12px;color:var(--faint);margin-top:14px}
 /* 흐름도 */
-.flow{display:flex;flex-direction:column;align-items:center;gap:0}
-.node{position:relative;width:min(100%,430px);border:1.5px solid var(--line);border-radius:12px;padding:10px 16px;background:#141a2b;transition:border-color .25s,background .25s,box-shadow .25s}
+.legend{display:flex;gap:12px;font-size:12px;color:var(--sub);margin-bottom:10px;flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+.flow{display:flex;flex-direction:column;align-items:center}
+.node{position:relative;width:min(100%,460px);border:1.5px solid var(--line);border-radius:12px;padding:9px 15px;background:var(--card2);transition:border-color .25s,background .25s,box-shadow .25s,opacity .25s}
 .node .t{font-weight:700;font-size:15px}
 .node .d{font-size:12px;color:var(--faint)}
-.node .msg{font-size:12.5px;font-family:"JetBrains Mono",ui-monospace,monospace;color:var(--sub);min-height:0;margin-top:2px}
+.node .msg{font-size:12.5px;font-family:var(--mono);color:var(--sub);margin-top:2px;word-break:break-all}
 .node.hook{border-style:dashed}
-.node.group{padding:10px 12px}
 .node .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
-.chip{border:1.5px solid var(--line);border-radius:9px;padding:6px 8px;text-align:center;font-size:13px;transition:all .25s}
+.chip{border:1.5px solid var(--line);border-radius:9px;padding:5px 8px;text-align:center;font-size:13px;transition:all .25s}
 .chip small{display:block;font-size:11px;color:var(--faint)}
-.arrow{width:2px;height:20px;background:var(--line);position:relative}
+.chip.off{opacity:.4;border-style:dotted}
+.arrow{width:2px;height:18px;background:var(--line);position:relative}
 .arrow::after{content:"";position:absolute;left:-4px;bottom:-2px;border:5px solid transparent;border-top-color:var(--line)}
 .active{border-color:var(--violet)!important;box-shadow:0 0 0 3px #b19bff30;background:#1d1a33!important}
 .ok{border-color:var(--mint)!important;background:#12302b!important}
 .bad{border-color:var(--coral)!important;background:#3a1d1d!important;box-shadow:0 0 0 3px #ff8a7a30}
 .wait{border-color:var(--amber)!important;background:#3a2e17!important;box-shadow:0 0 0 3px #ffcc7a30}
 .skip{opacity:.35}
-.verdict{margin-top:16px;text-align:center;font-size:15px;min-height:26px}
+.pulse{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px #b19bff20}}
+.approve{display:none;margin-top:8px;gap:8px}
+.approve.on{display:flex}
+.verdict{margin-top:14px;text-align:center;font-size:15px;min-height:24px}
 .verdict.good{color:var(--mint)}.verdict.no{color:var(--coral)}.verdict.hold{color:var(--amber)}
 /* 터미널 */
-.term{background:#0a0d17;border:1px solid var(--line);border-radius:10px;padding:12px 14px;height:calc(100vh - 190px);min-height:380px;overflow:auto;font:12.5px/1.7 "JetBrains Mono",ui-monospace,monospace}
+.term{background:#0a0d17;border:1px solid var(--line);border-radius:10px;padding:10px 12px;height:calc(100vh - 170px);min-height:420px;overflow:auto;font:12px/1.65 var(--mono)}
 .term .l{white-space:pre-wrap;word-break:break-all;animation:in .25s ease-out}
 @keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
-.term .tm{color:#5b6585}.term .evn{display:inline-block;min-width:9.5em}.term .ev{color:var(--violet)}.term .tool{color:var(--text)}
-.term .okc{color:var(--mint)}.term .badc{color:var(--coral)}.term .waitc{color:var(--amber)}.term .dim{color:var(--faint)}
-.legend{display:flex;gap:12px;font-size:12px;color:var(--sub);margin-bottom:10px;flex-wrap:wrap}
-.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c)}
-@media(max-width:1200px){main{grid-template-columns:1fr}.term{height:420px}}
+.term .tm{color:#5b6585}.term .src{display:inline-block;min-width:3.4em;color:#5b6585}
+.term .src.h{color:var(--violet)}.term .src.a{color:#8fb7ff}.term .src.s{color:var(--faint)}
+.term .evn{display:inline-block;min-width:9.5em}
+.term .tool{color:var(--text)}
+.term .okc{color:var(--mint)}.term .badc{color:var(--coral)}.term .waitc{color:var(--amber)}.term .dim{color:var(--faint)}.term .ev{color:var(--violet)}
+.term-ctl{display:flex;gap:10px;align-items:center;margin-bottom:8px;font-size:12px;color:var(--sub)}
+.term-ctl label{display:flex;gap:4px;align-items:center}
+.term-ctl button{margin-left:auto}
+@media(max-width:1250px){main{grid-template-columns:1fr}.term{height:440px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -65,37 +103,90 @@ main{display:grid;grid-template-columns:300px 1fr 430px;gap:18px;padding:18px 26
 <header>
   <a class="home" href="../docs/index.html">← 문서 허브</a>
   <h1>Hook·Harness 실험실</h1>
-  <span class="mode">1단계 · 기록 재생 모드</span>
+  <span class="badge sim" id="badge"><i></i>미리보기 · 브라우저 모의 실행</span>
 </header>
 <main>
+  <!-- 왼쪽: 요청 · 꾸미기 · 재생 -->
   <section class="panel">
-    <h2>시나리오</h2>
-    <div class="scen" id="scen"></div>
-    <div class="ctrl">
-      <button class="pri" id="play">▶ 재생</button>
-      <button id="step">한 단계</button>
-      <button id="reset">↺ 처음부터</button>
-      <label>속도 <select id="speed"><option value="1400">느리게</option><option value="800" selected>보통</option><option value="350">빠르게</option></select></label>
+    <div class="tabs" id="tabs">
+      <button data-tab="req" class="on">요청</button>
+      <button data-tab="cfg">Harness 꾸미기</button>
+      <button data-tab="rep">기록 재생</button>
     </div>
-    <div class="state">
-      <div>도구 시도 (예산 8)<b id="sAtt">0 / 8</b></div>
-      <div class="meter"><i id="mAtt"></i></div>
-      <div>검증 시도 (최대 3)<b id="sVal">0 / 3</b></div>
-      <div class="meter"><i id="mVal"></i></div>
-      <div>마지막 검증<b id="sLast">없음</b></div>
-      <div>제출<b id="sSub">아직</b></div>
+
+    <div class="tab on" id="tab-req">
+      <div id="modelWrap" style="display:none"><label class="f" for="model">모델</label><select id="model"></select></div>
+      <label class="f" for="prompt">Agent에게 보낼 요청</label>
+      <textarea id="prompt" rows="4">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
+      <div class="chips" id="presetReq"></div>
+      <div class="btns">
+        <button class="btn pri" id="send">요청 보내기</button>
+        <button class="btn" id="newSession" title="예산·검증 횟수가 처음부터 다시 셉니다">새 세션</button>
+        <button class="btn" id="abort">중단</button>
+        <button class="btn" id="resetFiles" title="lab/output·submissions를 비웁니다">작업 파일 비우기</button>
+      </div>
+      <div class="reply" id="reply"><b>Agent 응답</b><span id="replyText">아직 요청을 보내지 않았습니다.</span></div>
+      <div class="state">
+        <div><span>도구 시도 (예산 <span id="sBudget">8</span>회)</span><b id="sAtt">0 / 8</b></div>
+        <div class="meter"><i id="mAtt"></i></div>
+        <div>검증 시도 (최대 3)<b id="sVal">0 / 3</b></div>
+        <div class="meter"><i id="mVal"></i></div>
+        <div>마지막 검증<b id="sLast">없음</b></div>
+        <div>제출<b id="sSub">아직</b></div>
+      </div>
+      <p class="small" id="modeNote"></p>
     </div>
-    <p class="hint">실제 OpenCode 1.19.4 실행기에서 남긴 <code>events.jsonl</code> 기록을 다시 재생합니다. 모델은 고정 응답 제공자입니다. 다른 기록은 아래에서 불러올 수 있습니다.</p>
-    <input type="file" id="file" accept=".jsonl,.json,.txt" style="font-size:12px;color:var(--sub)">
+
+    <div class="tab" id="tab-cfg">
+      <div class="btns" style="margin:0 0 10px">
+        <span class="small">빠른 설정</span>
+        <button class="btn" data-preset="naked">맨몸 Agent</button>
+        <button class="btn" data-preset="full">완성 Harness</button>
+      </div>
+      <div class="grp"><h3>Record <small>기록</small><label class="switch"><input type="checkbox" id="cRecordOn"> 켜기</label></h3>
+        <div class="small">Hook 판단을 <code>.quest/events.jsonl</code>에 남깁니다. 끄면 흐름도의 Hook 칸이 움직이지 않습니다.</div></div>
+      <div class="grp"><h3>Policy <small>허용 도구</small></h3><div class="row" id="cTools"></div></div>
+      <div class="grp"><h3>Policy <small>경로 (한 줄에 하나, 앞부분 일치)</small></h3>
+        <div class="small">읽기 허용</div><textarea id="cRead"></textarea>
+        <div class="small" style="margin-top:6px">쓰기 허용</div><textarea id="cWrite"></textarea></div>
+      <div class="grp"><h3>Limit <small>세션당 도구 시도 예산</small><label class="switch"><input type="checkbox" id="cLimitOn"> 켜기</label></h3>
+        <div class="row"><label>예산 <input type="number" id="cBudget" min="1" max="50" style="width:80px"> 회</label></div></div>
+      <div class="grp"><h3>Validation <small>통과로 볼 검사</small></h3><div class="row" id="cChecks"></div></div>
+      <div class="grp"><h3>Approval <small>제출 조건과 사람 승인</small></h3>
+        <div class="row" id="cSubmit"></div>
+        <div class="row" style="margin-top:6px"><label>제출 시 사람에게
+          <select id="cApproval" style="width:auto;padding:3px 6px"><option value="ask">묻기 (ask)</option><option value="allow">묻지 않고 허용 (allow)</option><option value="deny">항상 거절 (deny)</option></select></label></div></div>
+      <details id="codeBox"><summary>만들어지는 <code>learner/rules.mjs</code> 보기 · 직접 고치기</summary>
+        <textarea class="code" id="code" spellcheck="false"></textarea>
+        <div class="small">코드를 직접 고치면 위 설정 대신 이 코드가 그대로 적용됩니다. 설정을 다시 바꾸면 코드가 새로 만들어집니다.</div>
+      </details>
+      <div class="btns">
+        <button class="btn pri" id="apply">적용하기</button>
+        <label class="small"><input type="checkbox" id="applyReset" checked> 작업 파일도 비우기</label>
+        <span class="dirty" id="dirty"></span>
+      </div>
+      <p class="small" id="applyNote"></p>
+    </div>
+
+    <div class="tab" id="tab-rep">
+      <p class="small" style="margin-top:0">실제 OpenCode 1.19.4 실행기에서 남긴 기록을 다시 재생합니다(모델은 고정 응답기).</p>
+      <div class="scen" id="scen"></div>
+      <div class="btns">
+        <button class="btn pri" id="rPlay">▶ 재생</button>
+        <button class="btn" id="rStep">한 단계</button>
+        <label class="small">다른 기록 <input type="file" id="rFile" accept=".jsonl,.json,.txt" style="width:150px"></label>
+      </div>
+    </div>
   </section>
 
+  <!-- 가운데: 흐름도 -->
   <section class="panel">
     <h2>HARNESS 흐름</h2>
     <div class="legend"><span style="--c:var(--violet)">진행 중</span><span style="--c:var(--mint)">통과</span><span style="--c:var(--coral)">거부·실패</span><span style="--c:var(--amber)">사람 확인 대기</span></div>
     <div class="flow">
       <div class="node" id="nAgent"><div class="t">Agent가 도구를 호출합니다</div><div class="d">LLM이 quest_* 도구 중 하나를 고릅니다</div><div class="msg" id="mAgent"></div></div>
       <div class="arrow"></div>
-      <div class="node hook group" id="nBefore"><div class="t">Hook · tool.execute.before</div><div class="d">실행 전에 끼어들어 규칙으로 판단합니다</div>
+      <div class="node hook" id="nBefore"><div class="t">Hook · tool.execute.before</div><div class="d">실행 전에 끼어들어 규칙으로 판단합니다</div>
         <div class="row">
           <div class="chip" id="cRecord">Record<small>기록</small></div>
           <div class="chip" id="cLimit">Limit<small>예산</small></div>
@@ -110,133 +201,572 @@ main{display:grid;grid-template-columns:300px 1fr 430px;gap:18px;padding:18px 26
       <div class="arrow"></div>
       <div class="node" id="nVal"><div class="t">Validation · 산출물 검증</div><div class="d">스키마·합계·보고서·원본 보존을 검사합니다</div><div class="msg" id="mVal"></div></div>
       <div class="arrow"></div>
-      <div class="node" id="nAppr"><div class="t">Approval · 사람 승인</div><div class="d">제출 전에 OpenCode가 사람에게 묻습니다</div><div class="msg" id="mAppr"></div></div>
+      <div class="node" id="nAppr"><div class="t">Approval · 사람 승인</div><div class="d">제출 전에 OpenCode가 사람에게 묻습니다</div><div class="msg" id="mAppr"></div>
+        <div class="approve" id="approve"><button class="btn pri" id="apOnce">한 번 허용</button><button class="btn warn" id="apReject">거절</button></div></div>
       <div class="arrow"></div>
       <div class="node" id="nSub"><div class="t">제출</div><div class="d">로컬 영수증을 한 번만 만듭니다</div><div class="msg" id="mSub"></div></div>
     </div>
     <div class="verdict" id="verdict"></div>
   </section>
 
+  <!-- 오른쪽: 로그 -->
   <section class="panel">
-    <h2>EVENTS.JSONL</h2>
-    <div class="term" id="term"><div class="l dim">▶ 재생을 누르면 기록이 한 줄씩 나타납니다.</div></div>
+    <h2>실행 로그</h2>
+    <div class="term-ctl">
+      <label><input type="checkbox" id="fHook" checked> hook 기록</label>
+      <label><input type="checkbox" id="fAgent" checked> agent 이벤트</label>
+      <label>속도 <select id="speed" style="width:auto;padding:2px 4px"><option value="900">느리게</option><option value="450" selected>보통</option><option value="150">빠르게</option></select></label>
+      <button class="btn" id="clearLog" style="padding:3px 9px;font-size:12px">지우기</button>
+    </div>
+    <div class="term" id="term"></div>
   </section>
 </main>
+
+<script id="evidence" type="application/json">{"names": {"kxjDUQ": "정상 흐름 · 승인 거절", "Qk6lI6": "정상 흐름 · 승인 허용", "q8iVMA": "허용되지 않은 도구", "O8AJhc": "금지된 경로 쓰기", "Fl7nNF": "예산 초과"}, "events": [{"time": "2026-10-23T06:16:18.552Z", "level": 6, "event": "plugin_loaded", "pluginVersion": "0.1.0", "apiTarget": "1.19.4"}, {"time": "2026-10-23T06:16:19.459Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-1", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:19.461Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-1", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:19.497Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-2", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.498Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.498Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-2", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.538Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-3", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.538Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/report.md"}, {"time": "2026-10-23T06:16:19.539Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-3", "tool": "quest_write", "output": "{\"written\":\"lab/output/report.md\"}"}, {"time": "2026-10-23T06:16:19.566Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-4", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:19.567Z", "level": 6, "event": "validation", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "checks": {"schemaOK": true, "sumOK": false, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba780eb2d", "errors": ["sumOK"], "ok": false, "remaining": 2}, {"time": "2026-10-23T06:16:19.567Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-4", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":false,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba7"}, {"time": "2026-10-23T06:16:19.616Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-5", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.617Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.617Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-5", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.644Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-6", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:19.645Z", "level": 6, "event": "validation", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "checks": {"schemaOK": true, "sumOK": true, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd", "errors": [], "ok": true, "remaining": 1}, {"time": "2026-10-23T06:16:19.645Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-6", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":true,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968"}, {"time": "2026-10-23T06:16:19.671Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-7", "tool": "quest_submit", "event": "before"}, {"time": "2026-10-23T06:16:19.672Z", "level": 6, "event": "approval_requested", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:19.749Z", "level": 6, "event": "approval_rejected", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:19.749Z", "level": 6, "event": "tool_error", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "tool": "quest_submit", "reason": "The user rejected permission to use this specific tool call."}, {"time": "2026-10-23T06:16:19.930Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-8", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:19.930Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-8", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:19.951Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-9", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.952Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.952Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-9", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-10", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/report.md"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-10", "tool": "quest_write", "output": "{\"written\":\"lab/output/report.md\"}"}, {"time": "2026-10-23T06:16:20.004Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-11", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:20.005Z", "level": 6, "event": "validation", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "checks": {"schemaOK": true, "sumOK": false, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba780eb2d", "errors": ["sumOK"], "ok": false, "remaining": 2}, {"time": "2026-10-23T06:16:20.005Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-11", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":false,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba7"}, {"time": "2026-10-23T06:16:20.032Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-12", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:20.032Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:20.033Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-12", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:20.060Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-13", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:20.062Z", "level": 6, "event": "validation", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "checks": {"schemaOK": true, "sumOK": true, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd", "errors": [], "ok": true, "remaining": 1}, {"time": "2026-10-23T06:16:20.062Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-13", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":true,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968"}, {"time": "2026-10-23T06:16:20.088Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-14", "tool": "quest_submit", "event": "before"}, {"time": "2026-10-23T06:16:20.089Z", "level": 6, "event": "approval_requested", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:20.237Z", "level": 6, "event": "submitted", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:20.237Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-14", "tool": "quest_submit", "output": "{\"sessionId\":\"ses_e9898c941ffenIh0OeoJQk6lI6\",\"artifactHash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd\",\"submittedAt\":\"2026-10-23T06:16:"}, {"time": "2026-10-23T06:16:20.414Z", "level": 6, "sessionId": "ses_e9898c759ffeRbQcXfVmq8iVMA", "callId": "fixture-16", "tool": "quest_probe", "event": "before"}, {"time": "2026-10-23T06:16:20.414Z", "level": 6, "sessionId": "ses_e9898c759ffeRbQcXfVmq8iVMA", "callId": "fixture-16", "tool": "quest_probe", "event": "denied", "reason": "POLICY: tool denied", "executed": false}, {"time": "2026-10-23T06:16:20.572Z", "level": 6, "sessionId": "ses_e9898c6b9ffezqEV6JXCO8AJhc", "callId": "fixture-18", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:20.572Z", "level": 6, "sessionId": "ses_e9898c6b9ffezqEV6JXCO8AJhc", "callId": "fixture-18", "tool": "quest_write", "event": "denied", "reason": "POLICY: path denied", "executed": false}, {"time": "2026-10-23T06:16:20.733Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-20", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.734Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-20", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.752Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-21", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.753Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-21", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.775Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-22", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.776Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-22", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.794Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-23", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.794Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-23", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.812Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-24", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.813Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-24", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.830Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-25", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.831Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-25", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.849Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-26", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.850Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-26", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.869Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-27", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.870Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-27", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.889Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-28", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.889Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-28", "tool": "quest_read", "event": "denied", "reason": "LIMIT: tool request budget exhausted", "executed": false}]}</script>
 <script>
-const DATA = {"names": {"kxjDUQ": "정상 흐름 · 승인 거절", "Qk6lI6": "정상 흐름 · 승인 허용", "q8iVMA": "허용되지 않은 도구", "O8AJhc": "금지된 경로 쓰기", "Fl7nNF": "예산 초과"}, "events": [{"time": "2026-10-23T06:16:18.552Z", "level": 6, "event": "plugin_loaded", "pluginVersion": "0.1.0", "apiTarget": "1.19.4"}, {"time": "2026-10-23T06:16:19.459Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-1", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:19.461Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-1", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:19.497Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-2", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.498Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.498Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-2", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.538Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-3", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.538Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/report.md"}, {"time": "2026-10-23T06:16:19.539Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-3", "tool": "quest_write", "output": "{\"written\":\"lab/output/report.md\"}"}, {"time": "2026-10-23T06:16:19.566Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-4", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:19.567Z", "level": 6, "event": "validation", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "checks": {"schemaOK": true, "sumOK": false, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba780eb2d", "errors": ["sumOK"], "ok": false, "remaining": 2}, {"time": "2026-10-23T06:16:19.567Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-4", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":false,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba7"}, {"time": "2026-10-23T06:16:19.616Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-5", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.617Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.617Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-5", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.644Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-6", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:19.645Z", "level": 6, "event": "validation", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "checks": {"schemaOK": true, "sumOK": true, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd", "errors": [], "ok": true, "remaining": 1}, {"time": "2026-10-23T06:16:19.645Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-6", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":true,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968"}, {"time": "2026-10-23T06:16:19.671Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-7", "tool": "quest_submit", "event": "before"}, {"time": "2026-10-23T06:16:19.672Z", "level": 6, "event": "approval_requested", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:19.749Z", "level": 6, "event": "approval_rejected", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:19.749Z", "level": 6, "event": "tool_error", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "tool": "quest_submit", "reason": "The user rejected permission to use this specific tool call."}, {"time": "2026-10-23T06:16:19.930Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-8", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:19.930Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-8", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:19.951Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-9", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.952Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.952Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-9", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-10", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/report.md"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-10", "tool": "quest_write", "output": "{\"written\":\"lab/output/report.md\"}"}, {"time": "2026-10-23T06:16:20.004Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-11", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:20.005Z", "level": 6, "event": "validation", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "checks": {"schemaOK": true, "sumOK": false, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba780eb2d", "errors": ["sumOK"], "ok": false, "remaining": 2}, {"time": "2026-10-23T06:16:20.005Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-11", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":false,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba7"}, {"time": "2026-10-23T06:16:20.032Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-12", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:20.032Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:20.033Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-12", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:20.060Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-13", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:20.062Z", "level": 6, "event": "validation", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "checks": {"schemaOK": true, "sumOK": true, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd", "errors": [], "ok": true, "remaining": 1}, {"time": "2026-10-23T06:16:20.062Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-13", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":true,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968"}, {"time": "2026-10-23T06:16:20.088Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-14", "tool": "quest_submit", "event": "before"}, {"time": "2026-10-23T06:16:20.089Z", "level": 6, "event": "approval_requested", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:20.237Z", "level": 6, "event": "submitted", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:20.237Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-14", "tool": "quest_submit", "output": "{\"sessionId\":\"ses_e9898c941ffenIh0OeoJQk6lI6\",\"artifactHash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd\",\"submittedAt\":\"2026-10-23T06:16:"}, {"time": "2026-10-23T06:16:20.414Z", "level": 6, "sessionId": "ses_e9898c759ffeRbQcXfVmq8iVMA", "callId": "fixture-16", "tool": "quest_probe", "event": "before"}, {"time": "2026-10-23T06:16:20.414Z", "level": 6, "sessionId": "ses_e9898c759ffeRbQcXfVmq8iVMA", "callId": "fixture-16", "tool": "quest_probe", "event": "denied", "reason": "POLICY: tool denied", "executed": false}, {"time": "2026-10-23T06:16:20.572Z", "level": 6, "sessionId": "ses_e9898c6b9ffezqEV6JXCO8AJhc", "callId": "fixture-18", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:20.572Z", "level": 6, "sessionId": "ses_e9898c6b9ffezqEV6JXCO8AJhc", "callId": "fixture-18", "tool": "quest_write", "event": "denied", "reason": "POLICY: path denied", "executed": false}, {"time": "2026-10-23T06:16:20.733Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-20", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.734Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-20", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.752Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-21", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.753Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-21", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.775Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-22", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.776Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-22", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.794Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-23", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.794Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-23", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.812Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-24", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.813Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-24", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.830Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-25", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.831Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-25", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.849Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-26", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.850Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-26", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.869Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-27", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.870Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-27", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.889Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-28", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.889Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-28", "tool": "quest_read", "event": "denied", "reason": "LIMIT: tool request budget exhausted", "executed": false}]};
-const ORDER = ['kxjDUQ','Qk6lI6','q8iVMA','O8AJhc','Fl7nNF'];
-const DESC = {
-  kxjDUQ:'합계 오류를 검증이 잡고, 수정 후 제출 단계에서 사람이 거절합니다',
-  Qk6lI6:'같은 흐름에서 사람이 한 번 허용해 제출까지 갑니다',
-  q8iVMA:'허용 목록에 없는 quest_probe를 Policy가 막습니다',
-  O8AJhc:'보호된 파일에 쓰려는 시도를 Policy가 막습니다',
-  Fl7nNF:'같은 도구를 반복하다 9번째 시도에서 Limit에 걸립니다'};
-let sessions = {}, names = DATA.names;
-function load(events){
-  sessions = {};
-  for (const e of events){ const k=(e.sessionId||'').slice(-6); if(!k) continue; (sessions[k] ||= []).push(e); }
-}
-load(DATA.events);
+'use strict';
 const $ = id => document.getElementById(id);
-let cur=null, idx=0, timer=null, st={};
+const esc = s => String(s ?? '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+const TOOLS = ['quest_read', 'quest_write', 'quest_validate', 'quest_submit', 'quest_status', 'quest_probe'];
+const CHECKS = { schemaOK: '스키마', sumOK: '합계', reportOK: '보고서', originalsOK: '원본 보존' };
+const SUBMITS = { valid: '검증 통과', sameHash: '검증한 파일 그대로', notConsumed: '한 번만 제출', attemptsAllowed: '검사 횟수 이내' };
+const PRESETS = {
+  full: { record: true, tools: TOOLS.filter(t => t !== 'quest_probe'), read: ['lab/input/', 'lab/output/', 'lab/protected/'],
+    write: ['lab/output/'], limitOn: true, budget: 8, checks: Object.keys(CHECKS), submit: Object.keys(SUBMITS), approval: 'ask' },
+  naked: { record: true, tools: TOOLS, read: ['lab/'], write: ['lab/'], limitOn: false, budget: 8,
+    checks: ['schemaOK'], submit: [], approval: 'allow' },
+};
+const REQUESTS = [
+  ['합계 계산 후 제출', 'lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.'],
+  ['보호 파일 수정', 'lab/protected/settings.json의 setting 값을 changed로 바꿔 줘.'],
+  ['금지 도구 시도', 'quest_probe 도구를 한 번 실행해 봐.'],
+  ['예산 초과', 'lab/input/orders.json을 10번 반복해서 읽어 줘.'],
+  ['상태 확인', 'quest_status로 지금 상태를 알려 줘.'],
+];
 
-function renderScen(){
-  const keys = Object.keys(sessions).sort((a,b)=>(ORDER.indexOf(a)+99*(ORDER.indexOf(a)<0))-(ORDER.indexOf(b)+99*(ORDER.indexOf(b)<0)));
-  $('scen').innerHTML='';
-  keys.forEach(k=>{
-    const b=document.createElement('button');
-    b.innerHTML=(names[k]||('세션 '+k))+'<small>'+(DESC[k]||sessions[k].length+'개 이벤트')+'</small>';
-    b.onclick=()=>pick(k); b.dataset.k=k; $('scen').appendChild(b);
+let mode = 'sim';           // sim | live | replay
+let config = structuredClone(PRESETS.full);
+let customCode = null;      // 사용자가 직접 고친 rules.mjs
+let applied = { config: structuredClone(config), custom: null };
+
+/* ---------- 탭 ---------- */
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.id === 'tab-' + b.dataset.tab));
+});
+
+/* ---------- 로그 ---------- */
+function termLine(src, html) {
+  const d = document.createElement('div');
+  d.className = 'l'; d.dataset.src = src;
+  const t = new Date().toTimeString().slice(0, 8);
+  const tag = { h: 'hook', a: 'agent', s: 'lab' }[src];
+  d.innerHTML = `<span class="tm">${t}</span> <span class="src ${src}">${tag}</span> ${html}`;
+  if ((src === 'h' && !$('fHook').checked) || (src === 'a' && !$('fAgent').checked)) d.style.display = 'none';
+  $('term').appendChild(d); $('term').scrollTop = $('term').scrollHeight;
+}
+['fHook', 'fAgent'].forEach(id => $(id).onchange = () => {
+  document.querySelectorAll('#term .l').forEach(l => {
+    const hide = (l.dataset.src === 'h' && !$('fHook').checked) || (l.dataset.src === 'a' && !$('fAgent').checked);
+    l.style.display = hide ? 'none' : '';
   });
-  pick(keys[0]);
-}
-function pick(k){ cur=k; document.querySelectorAll('.scen button').forEach(b=>b.classList.toggle('on',b.dataset.k===k)); reset(); }
+});
+$('clearLog').onclick = () => { $('term').innerHTML = ''; };
+const sys = text => termLine('s', `<span class="dim">${esc(text)}</span>`);
 
-const NODES=['nAgent','nBefore','nExec','nAfter','nVal','nAppr','nSub','cRecord','cLimit','cPolicy'];
-function clearFlow(){ NODES.forEach(n=>$(n).classList.remove('active','ok','bad','wait','skip')); }
-function cls(id,c){ $(id).classList.remove('active','ok','bad','wait','skip'); if(c) $(id).classList.add(c); }
-function msg(id,t){ $(id).textContent=t||''; }
-function reset(){
-  stop(); idx=0; st={att:0,val:0,last:'없음',sub:'아직'}; clearFlow();
-  ['mAgent','mBefore','mExec','mAfter','mVal','mAppr','mSub'].forEach(m=>msg(m,''));
-  $('verdict').textContent=''; $('verdict').className='verdict';
-  $('term').innerHTML='<div class="l dim">▶ 재생을 누르면 기록이 한 줄씩 나타납니다.</div>'; paintState();
+/* ---------- 흐름도 ---------- */
+const NODES = ['nAgent', 'nBefore', 'nExec', 'nAfter', 'nVal', 'nAppr', 'nSub', 'cRecord', 'cLimit', 'cPolicy'];
+const cls = (id, c) => { $(id).classList.remove('active', 'ok', 'bad', 'wait', 'skip', 'pulse'); if (c) c.split(' ').forEach(x => $(id).classList.add(x)); };
+const msg = (id, t) => { $(id).textContent = t || ''; };
+let st, pendingBefore = false;
+function resetFlow(full = true) {
+  NODES.forEach(n => cls(n));
+  ['mAgent', 'mBefore', 'mExec', 'mAfter', 'mVal', 'mAppr', 'mSub'].forEach(m => msg(m, ''));
+  $('verdict').textContent = ''; $('verdict').className = 'verdict';
+  $('approve').classList.remove('on');
+  pendingBefore = false;
+  if (full) { st = { att: 0, val: 0, last: '없음', sub: '아직' }; paintState(); }
 }
-function paintState(){
-  $('sAtt').textContent=st.att+' / 8'; $('mAtt').style.width=Math.min(100,st.att/8*100)+'%';
-  $('mAtt').style.background= st.att>8?'var(--coral)':st.att>=6?'var(--amber)':'var(--mint)';
-  $('sVal').textContent=st.val+' / 3'; $('mVal').style.width=(st.val/3*100)+'%';
-  $('sLast').textContent=st.last; $('sSub').textContent=st.sub;
+function paintState() {
+  const budget = applied.config.budget;
+  $('sBudget').textContent = budget;
+  $('sAtt').textContent = st.att + ' / ' + budget;
+  $('mAtt').style.width = Math.min(100, st.att / budget * 100) + '%';
+  $('mAtt').style.background = st.att > budget ? 'var(--coral)' : st.att >= budget - 2 ? 'var(--amber)' : 'var(--mint)';
+  $('sVal').textContent = st.val + ' / 3'; $('mVal').style.width = (st.val / 3 * 100) + '%';
+  $('sLast').textContent = st.last; $('sSub').textContent = st.sub;
 }
-function line(e){
-  const t=(e.time||'').slice(11,23), esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-  let body='', c='ev';
-  switch(e.event){
-    case 'before': body=`<span class="tool">${e.tool}</span> <span class="dim">hook 진입</span>`; break;
-    case 'denied': c='badc'; body=`<span class="tool">${e.tool}</span> <span class="badc">✕ ${esc(e.reason)}</span> <span class="dim">executed=false</span>`; break;
-    case 'file_written': body=`<span class="okc">${esc(e.path)}</span>`; break;
-    case 'after': body=`<span class="tool">${e.tool}</span> <span class="dim">${esc((e.output||'').slice(0,48))}</span>`; break;
-    case 'validation': c=e.ok?'okc':'badc'; body=e.ok?`<span class="okc">✓ 모든 검사 통과</span> <span class="dim">hash ${e.hash.slice(0,10)}… 남은 횟수 ${e.remaining}</span>`:`<span class="badc">✕ 실패: ${e.errors.join(', ')}</span> <span class="dim">기대 합계 ${e.expected} · 남은 횟수 ${e.remaining}</span>`; break;
-    case 'approval_requested': c='waitc'; body=`<span class="waitc">⏸ 사람 승인 대기</span> <span class="dim">hash ${(e.artifactHash||'').slice(0,10)}…</span>`; break;
-    case 'approval_rejected': c='badc'; body='<span class="badc">✕ 사람이 거절했습니다</span>'; break;
-    case 'submitted': c='okc'; body=`<span class="okc">✓ 제출 완료</span> <span class="dim">영수증 ${(e.artifactHash||'').slice(0,10)}….json</span>`; break;
-    case 'tool_error': c='badc'; body=`<span class="tool">${e.tool}</span> <span class="badc">${esc(e.reason)}</span>`; break;
-    default: body='<span class="dim">'+esc(JSON.stringify(e).slice(0,90))+'</span>';
+function paintChipsOff() {
+  $('cRecord').classList.toggle('off', !applied.config.record);
+  $('cLimit').classList.toggle('off', !applied.config.limitOn);
+}
+function settleBefore() {
+  if (!pendingBefore) return;
+  pendingBefore = false;
+  cls('cLimit', 'ok'); cls('cPolicy', 'ok'); cls('nBefore', 'ok');
+  msg('mBefore', '통과 → 실행 허용');
+}
+function hookLine(e) {
+  let body = '', c = 'ev';
+  switch (e.event) {
+    case 'plugin_loaded': body = '<span class="dim">플러그인 로드 · level ' + e.level + '</span>'; break;
+    case 'before': body = `<span class="tool">${e.tool}</span> <span class="dim">hook 진입</span>`; break;
+    case 'denied': c = 'badc'; body = `<span class="tool">${e.tool}</span> <span class="badc">✕ ${esc(e.reason)}</span> <span class="dim">executed=false</span>`; break;
+    case 'file_written': body = `<span class="okc">${esc(e.path)}</span>`; break;
+    case 'after': body = `<span class="tool">${e.tool}</span> <span class="dim">${esc((e.output || '').slice(0, 48))}</span>`; break;
+    case 'validation': c = e.ok ? 'okc' : 'badc'; body = e.ok ? `<span class="okc">✓ 통과</span> <span class="dim">hash ${String(e.hash).slice(0, 10)}… 남은 횟수 ${e.remaining}</span>` : `<span class="badc">✕ 실패: ${(e.errors || []).join(', ')}</span> <span class="dim">기대 합계 ${e.expected} · 남은 횟수 ${e.remaining}</span>`; break;
+    case 'approval_requested': c = 'waitc'; body = `<span class="waitc">⏸ 사람 승인 대기</span> <span class="dim">hash ${String(e.artifactHash || '').slice(0, 10)}…</span>`; break;
+    case 'approval_rejected': c = 'badc'; body = '<span class="badc">✕ 승인 거절</span>'; break;
+    case 'submitted': c = 'okc'; body = `<span class="okc">✓ 제출 완료</span> <span class="dim">영수증 ${String(e.artifactHash || '').slice(0, 10)}….json</span>`; break;
+    case 'tool_error': c = 'badc'; body = `<span class="tool">${e.tool}</span> <span class="badc">${esc(e.reason)}</span>`; break;
+    default: body = '<span class="dim">' + esc(JSON.stringify(e).slice(0, 90)) + '</span>';
   }
-  const d=document.createElement('div'); d.className='l';
-  d.innerHTML=`<span class="tm">${t}</span> <span class="${c} evn">${e.event}</span> ${body}`;
-  if(idx===0) $('term').innerHTML='';
-  $('term').appendChild(d); $('term').scrollTop=$('term').scrollHeight;
+  termLine('h', `<span class="${c} evn">${e.event}</span> ${body}`);
 }
-function apply(e){
-  const next = sessions[cur][idx+1];
-  switch(e.event){
+function hookApply(e) {
+  if (e.event !== 'before' && e.event !== 'denied') settleBefore();
+  switch (e.event) {
     case 'before':
-      clearFlow(); ['mBefore','mExec','mAfter'].forEach(m=>msg(m,''));
-      cls('nAgent','ok'); msg('mAgent','→ '+e.tool); cls('nBefore','active'); cls('cRecord','ok');
-      if(e.tool!=='quest_status') st.att++;
-      if(next && next.event==='denied'){ cls('cLimit','active'); cls('cPolicy','active'); }
-      else { cls('cLimit','ok'); cls('cPolicy','ok'); msg('mBefore','통과 → 실행 허용'); cls('nExec','active'); }
-      break;
+      resetFlow(false);
+      cls('nAgent', 'ok'); msg('mAgent', '→ ' + e.tool);
+      cls('nBefore', 'active'); cls('cRecord', 'ok'); cls('cLimit', 'active'); cls('cPolicy', 'active');
+      if (e.tool !== 'quest_status') st.att++;
+      pendingBefore = true; break;
     case 'denied': {
-      cls('nBefore','bad'); const lim=e.reason.startsWith('LIMIT');
-      cls(lim?'cLimit':'cPolicy','bad'); cls(lim?'cPolicy':'cLimit',lim?'skip':'ok');
-      msg('mBefore','✕ '+e.reason); ['nExec','nAfter','nVal','nAppr','nSub'].forEach(n=>cls(n,'skip'));
-      msg('mExec','실행되지 않았습니다'); break; }
-    case 'file_written': cls('nBefore','ok'); cls('nExec','ok'); msg('mExec','쓰기: '+e.path); break;
-    case 'after': cls('nBefore','ok'); cls('nExec','ok'); if(!$('mExec').textContent) msg('mExec',e.tool+' 완료'); cls('nAfter','ok'); msg('mAfter','기록 완료'); break;
-    case 'validation': st.val++; st.last=e.ok?'통과':'실패 ('+e.errors.join(',')+')';
-      cls('nExec','ok'); cls('nVal',e.ok?'ok':'bad'); msg('mVal',e.ok?'✓ schema·sum·report·originals 통과':'✕ '+e.errors.join(', ')+' 실패 · 기대 합계 '+e.expected); break;
-    case 'approval_requested': cls('nBefore','ok'); cls('nExec','active'); cls('nVal','ok'); cls('nAppr','wait'); msg('mAppr','⏸ hash '+(e.artifactHash||'').slice(0,12)+'… 확인 대기'); break;
-    case 'approval_rejected': cls('nAppr','bad'); msg('mAppr','✕ 사람이 거절'); cls('nSub','skip'); st.sub='거절됨'; break;
-    case 'submitted': cls('nAppr','ok'); msg('mAppr','✓ 한 번 허용'); cls('nSub','ok'); msg('mSub','✓ 영수증 생성'); st.sub='완료'; break;
-    case 'tool_error': cls('nExec','bad'); msg('mExec','✕ '+e.reason); break;
+      pendingBefore = false;
+      const lim = String(e.reason).startsWith('LIMIT');
+      cls('nBefore', 'bad'); cls(lim ? 'cLimit' : 'cPolicy', 'bad'); cls(lim ? 'cPolicy' : 'cLimit', lim ? 'skip' : 'ok');
+      msg('mBefore', '✕ ' + e.reason);
+      ['nExec', 'nAfter', 'nVal', 'nAppr', 'nSub'].forEach(n => cls(n, 'skip'));
+      msg('mExec', '실행되지 않았습니다');
+      $('verdict').textContent = 'Hook이 실행 전에 막았습니다. 도구는 실행되지 않았습니다.'; $('verdict').className = 'verdict no';
+      break; }
+    case 'file_written': cls('nExec', 'ok'); msg('mExec', '쓰기: ' + e.path); break;
+    case 'after':
+      cls('nExec', 'ok'); if (!$('mExec').textContent) msg('mExec', e.tool + ' 완료');
+      cls('nAfter', 'ok'); msg('mAfter', '기록 완료'); break;
+    case 'validation':
+      st.val++; st.last = e.ok ? '통과' : '실패 (' + (e.errors || []).join(',') + ')';
+      cls('nExec', 'ok'); cls('nVal', e.ok ? 'ok' : 'bad');
+      msg('mVal', e.ok ? '✓ 규칙이 요구한 검사를 모두 통과' : '✕ ' + (e.errors || []).join(', ') + ' 실패 · 기대 합계 ' + e.expected); break;
+    case 'approval_requested':
+      cls('nExec', 'active'); cls('nVal', 'ok'); cls('nAppr', 'wait'); msg('mAppr', '⏸ hash ' + String(e.artifactHash || '').slice(0, 12) + '… 확인 대기'); break;
+    case 'approval_rejected':
+      cls('nAppr', 'bad'); msg('mAppr', '✕ 거절됨'); cls('nSub', 'skip'); st.sub = '거절됨';
+      $('approve').classList.remove('on');
+      $('verdict').textContent = '사람이 거절해 제출하지 않았습니다.'; $('verdict').className = 'verdict hold'; break;
+    case 'submitted':
+      cls('nExec', 'ok'); cls('nVal', 'ok'); cls('nAppr', 'ok'); if (!$('mAppr').textContent.startsWith('✓')) msg('mAppr', applied.config.approval === 'allow' ? '묻지 않고 통과 (allow)' : '✓ 허용');
+      cls('nSub', 'ok'); msg('mSub', '✓ 영수증 생성'); st.sub = '완료';
+      $('approve').classList.remove('on');
+      $('verdict').textContent = st.last === '통과' && applied.config.checks.length < 4 ? '제출했습니다. 검증 규칙이 느슨하다면 틀린 결과도 통과할 수 있습니다.' : '검증과 승인 단계를 지나 제출했습니다.';
+      $('verdict').className = 'verdict good'; break;
+    case 'tool_error':
+      cls('nExec', 'bad'); msg('mExec', '✕ ' + e.reason); break;
   }
   paintState();
 }
-function finish(){
-  const evs=sessions[cur], v=$('verdict');
-  if(evs.some(e=>e.event==='submitted')){v.textContent='검증과 사람 승인을 모두 통과해 제출했습니다.';v.className='verdict good';}
-  else if(evs.some(e=>e.event==='approval_rejected')){v.textContent='검증은 통과했지만, 사람이 거절해 제출하지 않았습니다.';v.className='verdict hold';}
-  else if(evs.some(e=>e.event==='denied')){v.textContent='Hook이 실행 전에 막았습니다. 도구는 실행되지 않았습니다.';v.className='verdict no';}
+
+/* ---------- agent 이벤트 (OpenCode 쪽) ---------- */
+let pendingPermission = null;
+const seenText = new Map();
+function agentEvent(ev) {
+  switch (ev.type) {
+    case 'session.status':
+      if (ev.properties?.status?.type === 'busy') { cls('nAgent', 'active pulse'); msg('mAgent', '생각 중…'); }
+      break;
+    case 'session.idle':
+      $('nAgent').classList.remove('pulse', 'active');
+      if ($('mAgent').textContent === '생각 중…') msg('mAgent', '응답을 마쳤습니다');
+      termLine('a', '<span class="dim">세션 대기 (응답 끝)</span>'); setBusy(false); break;
+    case 'session.error': {
+      const err = ev.properties?.error; termLine('a', `<span class="badc">오류: ${esc(err?.data?.message || err?.name || JSON.stringify(err))}</span>`);
+      setBusy(false); break; }
+    case 'tool': {
+      if (ev.status === 'running') {
+        $('nAgent').classList.remove('pulse');
+        if (!applied.config.record) { resetFlow(false); cls('nAgent', 'ok'); msg('mAgent', '→ ' + ev.tool); msg('mBefore', 'Record가 꺼져 있어 Hook 판단이 기록되지 않습니다'); }
+        termLine('a', `<span class="tool">→ ${ev.tool}</span> <span class="dim">${esc(JSON.stringify(ev.input || {}).slice(0, 80))}</span>`);
+      } else if (ev.status === 'completed') termLine('a', `<span class="okc">← ${ev.tool}</span> <span class="dim">${esc((ev.output || '').slice(0, 60))}</span>`);
+      else if (ev.status === 'error') termLine('a', `<span class="badc">← ${ev.tool} 오류</span> <span class="dim">${esc(String(ev.error || '').slice(0, 90))}</span>`);
+      break; }
+    case 'text':
+      seenText.set(ev.id, ev.text);
+      $('replyText').textContent = [...seenText.values()].join('\n\n'); $('reply').scrollTop = $('reply').scrollHeight; break;
+    case 'permission.asked': {
+      const p = ev.properties; pendingPermission = p.id;
+      cls('nAppr', 'wait'); msg('mAppr', '⏸ ' + p.permission + ' · hash ' + String(p.patterns?.[0] || '').slice(0, 12) + '…');
+      $('approve').classList.add('on');
+      termLine('a', `<span class="waitc">? 승인 요청 ${esc(p.permission)}</span> <span class="dim">${esc((p.metadata?.files || []).join(', '))}</span>`); break; }
+    case 'permission.replied':
+      pendingPermission = null; $('approve').classList.remove('on');
+      termLine('a', `<span class="${ev.properties.reply === 'reject' ? 'badc' : 'okc'}">승인 응답: ${ev.properties.reply}</span>`); break;
+  }
 }
-function stepOnce(){
-  const evs=sessions[cur]; if(!evs||idx>=evs.length){stop();return false;}
-  line(evs[idx]); apply(evs[idx]); idx++;
-  if(idx>=evs.length){finish();stop();}
+
+/* ---------- 이벤트 큐: 빠르게 몰려와도 한 단계씩 보이게 ---------- */
+const queue = []; let draining = false;
+function enqueue(item) { queue.push(item); if (!draining) drain(); }
+function drain() {
+  const item = queue.shift();
+  if (!item) { draining = false; return; }
+  draining = true;
+  const visual = item.kind === 'hook' ? !['plugin_loaded'].includes(item.data.event) : ['tool', 'permission.asked'].includes(item.data.type);
+  if (item.kind === 'hook') { hookLine(item.data); hookApply(item.data); }
+  else agentEvent(item.data);
+  setTimeout(drain, visual ? +$('speed').value : 30);
+}
+
+/* ---------- 꾸미기 폼 ---------- */
+function renderForm() {
+  $('cRecordOn').checked = config.record;
+  $('cTools').innerHTML = TOOLS.map(t => `<label><input type="checkbox" value="${t}" ${config.tools.includes(t) ? 'checked' : ''}>${t.replace('quest_', '')}</label>`).join('');
+  $('cRead').value = config.read.join('\n'); $('cWrite').value = config.write.join('\n');
+  $('cLimitOn').checked = config.limitOn; $('cBudget').value = config.budget;
+  $('cChecks').innerHTML = Object.entries(CHECKS).map(([k, v]) => `<label><input type="checkbox" value="${k}" ${config.checks.includes(k) ? 'checked' : ''}>${v}</label>`).join('');
+  $('cSubmit').innerHTML = Object.entries(SUBMITS).map(([k, v]) => `<label><input type="checkbox" value="${k}" ${config.submit.includes(k) ? 'checked' : ''}>${v}</label>`).join('');
+  $('cApproval').value = config.approval;
+  if (!customCode) $('code').value = rulesSource(config);
+}
+function readForm() {
+  const boxes = id => [...$(id).querySelectorAll('input:checked')].map(i => i.value);
+  const lines = id => $(id).value.split('\n').map(s => s.trim()).filter(Boolean);
+  config = { record: $('cRecordOn').checked, tools: boxes('cTools'), read: lines('cRead'), write: lines('cWrite'),
+    limitOn: $('cLimitOn').checked, budget: Math.max(1, Math.min(50, +$('cBudget').value || 8)),
+    checks: boxes('cChecks'), submit: boxes('cSubmit'), approval: $('cApproval').value };
+}
+function rulesSource(c) {
+  const checks = c.checks.length ? c.checks.map(k => 'checks.' + k).join(' && ') : 'true';
+  const map = { valid: 'facts.valid', sameHash: 'facts.sameHash', notConsumed: '!facts.consumed', attemptsAllowed: 'facts.attemptsAllowed' };
+  const submit = c.submit.length ? c.submit.map(k => map[k]).join(' && ') : 'true';
+  return `// Hook·Harness 실험실에서 만든 규칙입니다. 편집기에서 바꾸고 적용하면 이 파일을 다시 씁니다.
+// Record: Hook 판단을 .quest/events.jsonl에 남길지 정합니다.
+export function shouldRecord() { return ${Boolean(c.record)}; }
+
+// Policy(경로): 읽기·쓰기를 허용할 경로의 앞부분입니다.
+export function allowPath(relative, operation) {
+  const read = ${JSON.stringify(c.read)};
+  const write = ${JSON.stringify(c.write)};
+  return (operation === 'read' ? read : write).some(prefix => relative.startsWith(prefix));
+}
+
+// Policy(도구): 실행을 허용할 도구 목록입니다.
+export function allowTool(name) {
+  return ${JSON.stringify(c.tools)}.includes(name);
+}
+
+// Limit: 세션마다 도구 시도 횟수를 예산(${c.budget}회) 안으로 제한합니다.
+export function withinBudget(attempted, limit) { return ${c.limitOn ? 'attempted <= limit' : 'true'}; }
+
+// Validation: 이 검사들이 모두 참일 때만 통과로 봅니다.
+export function acceptValidation(checks) {
+  return ${checks};
+}
+
+// Approval 전 확인: 제출 요청을 받아들일 조건입니다.
+export function canSubmit(facts) {
+  return ${submit};
+}
+`;
+}
+function markDirty() { $('dirty').textContent = '바뀐 설정이 아직 적용되지 않았습니다'; }
+$('tab-cfg').addEventListener('change', e => {
+  if (e.target.id === 'applyReset') return;
+  if (e.target.id === 'code') return;
+  readForm(); customCode = null; $('code').value = rulesSource(config); markDirty();
+});
+$('code').addEventListener('input', () => { customCode = $('code').value; markDirty(); });
+document.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
+  config = structuredClone(PRESETS[b.dataset.preset]); customCode = null; renderForm(); markDirty();
+});
+
+/* ---------- 브라우저 모의 실행기 (미리보기) ---------- */
+// 실제 플러그인(quest/lib/runtime.mjs)과 같은 순서로 판단하고 같은 이벤트를 만듭니다.
+// Agent는 진짜 LLM이 아니라 요청 문장의 낱말로 고르는 고정 시나리오입니다.
+const sim = (() => {
+  const ORDERS = '{"currency":"KRW","items":[{"id":"A","amount":10000},{"id":"B","amount":5000},{"id":"discount","amount":-2000}]}';
+  const PROTECTED = '{"setting":"do-not-change"}';
+  let files, state, rules, running = false, approvalResolve = null, aborted = false;
+  function resetFiles() { files = { 'lab/input/orders.json': ORDERS, 'lab/protected/settings.json': PROTECTED }; newSession(); }
+  function newSession() { state = { attempted: 0, validationAttempts: 0, validation: null, consumed: false }; }
+  function compile(source) {
+    const body = source.replace(/export\s+function/g, 'function') +
+      '\nreturn {shouldRecord,allowPath,allowTool,withinBudget,acceptValidation,canSubmit};';
+    return new Function(body)();
+  }
+  function load() { rules = compile(applied.custom || rulesSource(applied.config)); }
+  const emit = (e, mandatory) => { if (mandatory || rules.shouldRecord()) enqueue({ kind: 'hook', data: { time: new Date().toISOString(), ...e } }); };
+  const agent = data => enqueue({ kind: 'opencode', data });
+  const hashOf = s => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return ('00000000' + (h >>> 0).toString(16)).slice(-8).repeat(8); };
+  function inspect() {
+    let summary = null; try { summary = JSON.parse(files['lab/output/summary.json']); } catch {}
+    const report = files['lab/output/report.md'] || '';
+    const checks = {
+      schemaOK: !!summary && summary.currency === 'KRW' && Number.isInteger(summary.itemCount) && Number.isInteger(summary.total),
+      sumOK: !!summary && summary.total === 13000,
+      reportOK: /13,?000/.test(report),
+      originalsOK: files['lab/input/orders.json'] === ORDERS && files['lab/protected/settings.json'] === PROTECTED };
+    return { checks, hash: hashOf((files['lab/output/summary.json'] || '') + '|' + report), expected: 13000,
+      errors: Object.entries(checks).filter(([, v]) => !v).map(([k]) => k) };
+  }
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  async function callTool(tool, input) {
+    if (aborted) throw new Error('ABORT');
+    const callId = 'sim-' + Math.random().toString(36).slice(2, 7);
+    agent({ type: 'tool', tool, status: 'running', input });
+    await wait(150);
+    emit({ event: 'before', callId, tool });
+    try {
+      if (tool !== 'quest_status') {
+        state.attempted++;
+        if (!rules.withinBudget(state.attempted, applied.config.budget)) throw new Error('LIMIT: tool request budget exhausted');
+      }
+      if (!rules.allowTool(tool)) throw new Error('POLICY: tool denied');
+      if (tool === 'quest_read' || tool === 'quest_write')
+        if (!rules.allowPath(input.path, tool === 'quest_read' ? 'read' : 'write')) throw new Error('POLICY: path denied');
+      if (tool === 'quest_write' && state.validationAttempts >= 3 && !state.validation?.ok) throw new Error('LIMIT: validation attempts exhausted');
+    } catch (error) {
+      emit({ event: 'denied', callId, tool, reason: error.message, executed: false });
+      agent({ type: 'tool', tool, status: 'error', error: error.message });
+      return { error: error.message };
+    }
+    let out;
+    try { out = await perform(tool, input); }
+    catch (error) {
+      emit({ event: 'tool_error', tool, reason: error.message });
+      agent({ type: 'tool', tool, status: 'error', error: error.message });
+      return { error: error.message };
+    }
+    const text = JSON.stringify(out);
+    emit({ event: 'after', callId, tool, output: text });
+    agent({ type: 'tool', tool, status: 'completed', output: text });
+    return out;
+  }
+  async function perform(tool, input) {
+    if (tool === 'quest_status') return { ...state, budget: applied.config.budget };
+    if (tool === 'quest_read') { if (!(input.path in files)) throw new Error('FILE: not found'); return { content: files[input.path] }; }
+    if (tool === 'quest_write') {
+      if (input.path.startsWith('lab/submissions/')) throw new Error('PATH: submissions are tool-owned');
+      files[input.path] = input.content; state.validation = null;
+      emit({ event: 'file_written', path: input.path }); return { written: input.path };
+    }
+    if (tool === 'quest_probe') { files['lab/probe/probe.txt'] = 'harmless tool probe'; return { probe: 'executed' }; }
+    if (tool === 'quest_validate') {
+      if (state.validationAttempts >= 3) throw new Error('LIMIT: at most 3 validation attempts');
+      state.validationAttempts++;
+      const snap = inspect(); const ok = Boolean(rules.acceptValidation(snap.checks));
+      state.validation = { ok, hash: snap.hash };
+      const result = { ...snap, ok, remaining: 3 - state.validationAttempts };
+      emit({ event: 'validation', ...result }); return result;
+    }
+    if (tool === 'quest_submit') {
+      const before = inspect();
+      const facts = { valid: state.validation?.ok === true, sameHash: state.validation?.hash === before.hash && input.artifactHash === before.hash,
+        consumed: state.consumed, attemptsAllowed: state.validationAttempts <= 3 };
+      if (!rules.canSubmit(facts)) throw new Error('SUBMIT: invalid or stale validation');
+      emit({ event: 'approval_requested', artifactHash: before.hash });
+      const mode = applied.config.approval;
+      let reply = mode === 'allow' ? 'once' : mode === 'deny' ? 'reject' : null;
+      if (!reply) {
+        agent({ type: 'permission.asked', properties: { id: 'sim-perm', permission: 'quest_publish', patterns: [before.hash], metadata: { files: ['lab/output/summary.json', 'lab/output/report.md'] } } });
+        reply = await new Promise(r => { approvalResolve = r; });
+        agent({ type: 'permission.replied', properties: { reply } });
+      }
+      if (reply !== 'once') { emit({ event: 'approval_rejected', artifactHash: before.hash }); throw new Error('The user rejected permission to use this specific tool call.'); }
+      state.consumed = true;
+      emit({ event: 'submitted', artifactHash: before.hash });
+      return { artifactHash: before.hash, submittedAt: new Date().toISOString() };
+    }
+    throw new Error('TOOL: unknown tool');
+  }
+  const say = text => agent({ type: 'text', id: 'sim-' + Math.random(), text });
+  async function script(text) {
+    const t = text.toLowerCase();
+    if (/probe|프로브/.test(t)) {
+      const r = await callTool('quest_probe', {});
+      return say(r.error ? `quest_probe 실행이 거부되었습니다 (${r.error}). 우회하지 않고 보고합니다.` : 'quest_probe를 실행했습니다. lab/probe/probe.txt가 만들어졌습니다.');
+    }
+    if (/protected|보호|settings\.json/.test(t)) {
+      const r = await callTool('quest_write', { path: 'lab/protected/settings.json', content: '{"setting":"changed"}' });
+      return say(r.error ? `보호 파일 쓰기가 거부되었습니다 (${r.error}).` : '보호 파일을 수정했습니다. 원본 보존 검사는 이제 실패할 것입니다.');
+    }
+    if (/반복|번|repeat|\d+\s*times/.test(t) && !/합계|제출/.test(t)) {
+      const n = Math.min(20, +(t.match(/(\d+)\s*번/)?.[1] || 10));
+      for (let i = 0; i < n; i++) { const r = await callTool('quest_read', { path: 'lab/input/orders.json' }); if (r.error) return say(`${i + 1}번째 시도에서 멈췄습니다 (${r.error}).`); }
+      return say(`orders.json을 ${n}번 읽었습니다.`);
+    }
+    if (/status|상태/.test(t)) { const r = await callTool('quest_status', {}); return say('현재 상태: ' + JSON.stringify(r)); }
+    // 기본: 합계 계산 → 쓰기 → 검증 → (실패 시 수정) → 제출
+    let r = await callTool('quest_read', { path: 'lab/input/orders.json' }); if (r.error) return say('입력 파일을 읽지 못했습니다: ' + r.error);
+    r = await callTool('quest_write', { path: 'lab/output/summary.json', content: '{"currency":"KRW","itemCount":3,"total":15000}' }); if (r.error) return say('summary.json을 쓰지 못했습니다: ' + r.error);
+    r = await callTool('quest_write', { path: 'lab/output/report.md', content: '# Report\nTotal: 13000 KRW' }); if (r.error) return say('report.md를 쓰지 못했습니다: ' + r.error);
+    let v = await callTool('quest_validate', {}); if (v.error) return say('검증하지 못했습니다: ' + v.error);
+    if (!v.ok) {
+      r = await callTool('quest_write', { path: 'lab/output/summary.json', content: '{"currency":"KRW","itemCount":3,"total":13000}' }); if (r.error) return say('수정하지 못했습니다: ' + r.error);
+      v = await callTool('quest_validate', {}); if (v.error) return say('재검증하지 못했습니다: ' + v.error);
+      if (!v.ok) return say('검증을 통과하지 못해 제출하지 않았습니다: ' + v.errors.join(', '));
+    }
+    r = await callTool('quest_submit', { artifactHash: v.hash });
+    if (r.error) return say('제출하지 못했습니다: ' + r.error);
+    const total = JSON.parse(files['lab/output/summary.json']).total;
+    say(`합계 ${total.toLocaleString()}원으로 제출을 마쳤습니다.` + (total !== 13000 ? ' (실제 합계는 13,000원입니다. 검증 규칙이 합계를 보지 않아 틀린 값이 완료로 처리되었습니다.)' : ''));
+  }
+  async function run(text) {
+    if (running) return;
+    running = true; aborted = false; load();
+    agent({ type: 'session.status', properties: { status: { type: 'busy' } } });
+    await wait(500);
+    try { await script(text); } catch (e) { if (e.message !== 'ABORT') say('오류: ' + e.message); }
+    agent({ type: 'session.idle', properties: {} });
+    running = false;
+  }
+  return { run, resetFiles, newSession, load, approve: reply => { approvalResolve?.(reply); approvalResolve = null; },
+    abort: () => { aborted = true; approvalResolve?.('reject'); }, compile };
+})();
+
+/* ---------- 라이브 연결 ---------- */
+let models = null;
+async function api(route, body) {
+  const r = await fetch(route, body ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) } : {});
+  const data = await r.json(); if (!r.ok) throw new Error(data.error || r.status); return data;
+}
+function setBadge(kind, text) { $('badge').className = 'badge ' + kind; $('badge').innerHTML = '<i></i>' + esc(text); }
+async function connectLive() {
+  if (location.protocol === 'file:') return false;
+  let info;
+  try { info = await api('/api/info'); } catch { return false; }
+  mode = 'live';
+  config = { ...PRESETS.full, ...info.config }; delete config.custom;
+  customCode = info.config.custom ? info.rules : null;
+  applied = { config: structuredClone(config), custom: customCode };
+  renderForm(); if (customCode) $('code').value = customCode;
+  $('modelWrap').style.display = '';
+  $('modeNote').innerHTML = `실습 폴더 <code>${esc(info.workspace)}</code>에서 실제 OpenCode가 실행합니다.` + (info.demo ? ' 지금은 <b>데모 응답기</b>(고정 시나리오)로 연결되어 있습니다.' : '');
+  $('applyNote').textContent = '적용하면 rules.mjs·예산·승인 설정을 실습 폴더에 쓰고 OpenCode를 다시 시작합니다(새 세션).';
+  const es = new EventSource('/api/stream');
+  es.onmessage = m => {
+    const { kind, data } = JSON.parse(m.data);
+    if (kind === 'hook' || kind === 'opencode') enqueue({ kind, data });
+    else if (kind === 'status') onStatus(data);
+    else if (kind === 'oclog') { if (/error|fail/i.test(data)) sys('opencode: ' + data); }
+    else if (kind === 'session') sys('새 세션 ' + data.id);
+  };
+  es.onerror = () => setBadge('err', '서버 연결 끊김 · 재시도 중');
   return true;
 }
-function stop(){ clearInterval(timer); timer=null; $('play').textContent='▶ 재생'; }
-$('play').onclick=()=>{ if(timer){stop();return;} if(idx>=sessions[cur].length) reset(); stepOnce(); timer=setInterval(stepOnce,+$('speed').value); $('play').textContent='⏸ 일시정지'; };
-$('step').onclick=()=>{stop(); if(idx>=sessions[cur].length) reset(); stepOnce();};
-$('reset').onclick=reset;
-$('speed').onchange=()=>{ if(timer){stop();$('play').click();} };
-$('file').onchange=async ev=>{
-  const f=ev.target.files[0]; if(!f) return;
-  const evs=(await f.text()).trim().split('\n').filter(Boolean).map(l=>{try{return JSON.parse(l)}catch{return null}}).filter(Boolean);
-  names={}; load(evs); renderScen();
+async function onStatus(s) {
+  const map = { ready: ['live', '라이브 · OpenCode 연결됨'], starting: ['sim', 'OpenCode 시작 중…'], stopped: ['err', 'OpenCode 멈춤'], error: ['err', 'OpenCode 오류'] };
+  const [k, t] = map[s.state] || ['sim', s.state];
+  setBadge(k, t);
+  if (s.detail) sys(s.detail);
+  $('send').disabled = s.state !== 'ready';
+  if (s.state === 'ready' && !models) {
+    try {
+      models = await api('/api/models');
+      $('model').innerHTML = models.models.map(m => `<option ${m === models.default ? 'selected' : ''}>${esc(m)}</option>`).join('');
+    } catch (e) { sys('모델 목록을 읽지 못했습니다: ' + e.message); }
+  }
+}
+
+/* ---------- 버튼 ---------- */
+function setBusy(b) { $('send').disabled = b || (mode === 'live' && $('badge').classList.contains('err')); }
+$('presetReq').innerHTML = REQUESTS.map(([l], i) => `<button data-i="${i}">${l}</button>`).join('');
+$('presetReq').onclick = e => { const i = e.target.dataset.i; if (i != null) $('prompt').value = REQUESTS[i][1]; };
+$('send').onclick = async () => {
+  const text = $('prompt').value.trim(); if (!text) return;
+  if (mode === 'replay') leaveReplay();
+  resetFlow(false); seenText.clear(); $('replyText').textContent = '…';
+  termLine('s', `<span class="tool">» ${esc(text)}</span>`);
+  setBusy(true);
+  if (mode === 'live') {
+    try { await api('/api/prompt', { text, model: $('model').value }); }
+    catch (e) { sys('요청 실패: ' + e.message); setBusy(false); }
+  } else sim.run(text);
 };
-renderScen();
+$('newSession').onclick = async () => {
+  if (mode === 'live') await api('/api/session/new', {}); else sim.newSession();
+  resetFlow(); sys('새 세션을 시작합니다. 예산과 검증 횟수를 처음부터 셉니다.');
+};
+$('abort').onclick = async () => { if (mode === 'live') { try { await api('/api/abort', {}); } catch {} } else sim.abort(); setBusy(false); sys('중단했습니다.'); };
+$('resetFiles').onclick = async () => {
+  if (mode === 'live') await api('/api/reset', {}); else sim.resetFiles();
+  resetFlow(); sys('작업 파일(lab/output·submissions)을 비우고 새 세션을 시작했습니다.');
+};
+$('apOnce').onclick = () => answer('once');
+$('apReject').onclick = () => answer('reject');
+async function answer(reply) {
+  $('approve').classList.remove('on');
+  if (mode === 'live') { try { await api('/api/permission', { id: pendingPermission, reply }); } catch (e) { sys('승인 응답 실패: ' + e.message); } }
+  else sim.approve(reply);
+}
+$('apply').onclick = async () => {
+  readForm();
+  if (customCode) { try { sim.compile(customCode); } catch (e) { $('applyNote').textContent = '코드 오류: ' + e.message; return; } }
+  applied = { config: structuredClone(config), custom: customCode };
+  $('dirty').textContent = ''; paintChipsOff();
+  if (mode === 'live') {
+    try { await api('/api/config', { config, source: customCode, resetOutputs: $('applyReset').checked }); sys('규칙을 적용했습니다. OpenCode를 다시 시작합니다.'); models = models; }
+    catch (e) { $('applyNote').textContent = '적용 실패: ' + e.message; return; }
+  } else {
+    sim.load(); if ($('applyReset').checked) sim.resetFiles(); else sim.newSession();
+    sys('규칙을 적용했습니다. 새 세션에서 반영됩니다.');
+  }
+  resetFlow();
+};
+
+/* ---------- 기록 재생 ---------- */
+const DATA = JSON.parse($('evidence').textContent);
+const ORDER = ['kxjDUQ', 'Qk6lI6', 'q8iVMA', 'O8AJhc', 'Fl7nNF'];
+const DESC = { kxjDUQ: '합계 오류를 검증이 잡고, 수정 후 제출 단계에서 사람이 거절합니다', Qk6lI6: '같은 흐름에서 사람이 한 번 허용해 제출까지 갑니다',
+  q8iVMA: '허용 목록에 없는 quest_probe를 Policy가 막습니다', O8AJhc: '보호된 파일에 쓰려는 시도를 Policy가 막습니다', Fl7nNF: '같은 도구를 반복하다 9번째 시도에서 Limit에 걸립니다' };
+let sessions = {}, names = DATA.names, cur = null, idx = 0, rTimer = null, savedApplied = null;
+function loadReplay(events) { sessions = {}; for (const e of events) { const k = (e.sessionId || '').slice(-6); if (k) (sessions[k] ||= []).push(e); } }
+loadReplay(DATA.events);
+function renderScen() {
+  const rank = k => ORDER.includes(k) ? ORDER.indexOf(k) : 99;
+  const keys = Object.keys(sessions).sort((a, b) => rank(a) - rank(b));
+  $('scen').innerHTML = '';
+  for (const k of keys) {
+    const b = document.createElement('button');
+    b.innerHTML = esc(names[k] || '세션 ' + k) + '<small>' + esc(DESC[k] || sessions[k].length + '개 이벤트') + '</small>';
+    b.dataset.k = k; b.onclick = () => pick(k); $('scen').appendChild(b);
+  }
+  cur = keys[0]; document.querySelectorAll('.scen button').forEach(b => b.classList.toggle('on', b.dataset.k === cur));
+}
+function pick(k) { cur = k; document.querySelectorAll('.scen button').forEach(b => b.classList.toggle('on', b.dataset.k === k)); rStop(); idx = 0; enterReplay(); }
+function enterReplay() {
+  if (mode !== 'replay') { savedApplied = { mode, applied }; mode = 'replay'; applied = { config: structuredClone(PRESETS.full), custom: null }; }
+  queue.length = 0; resetFlow(); paintChipsOff(); $('term').innerHTML = ''; sys('기록 재생: ' + (names[cur] || cur));
+}
+function leaveReplay() { rStop(); if (savedApplied) { mode = savedApplied.mode; applied = savedApplied.applied; savedApplied = null; } resetFlow(); paintChipsOff(); }
+function rStep() {
+  const evs = sessions[cur]; if (idx >= evs.length) { rStop(); return; }
+  const e = evs[idx++]; hookLine(e); hookApply(e);
+  if (e.event === 'before') { /* 재생에는 agent 이벤트가 없으므로 Agent 칸만 표시합니다 */ }
+  if (idx >= evs.length) rStop();
+}
+function rStop() { clearInterval(rTimer); rTimer = null; $('rPlay').textContent = '▶ 재생'; }
+$('rPlay').onclick = () => {
+  if (rTimer) return rStop();
+  if (mode !== 'replay' || idx >= sessions[cur].length) { idx = 0; enterReplay(); }
+  rStep(); rTimer = setInterval(rStep, +$('speed').value + 250); $('rPlay').textContent = '⏸ 일시정지';
+};
+$('rStep').onclick = () => { rStop(); if (mode !== 'replay' || idx >= sessions[cur].length) { idx = 0; enterReplay(); } rStep(); };
+$('rFile').onchange = async ev => {
+  const f = ev.target.files[0]; if (!f) return;
+  const evs = (await f.text()).trim().split('\n').map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+  names = {}; loadReplay(evs); renderScen(); idx = 0; enterReplay();
+};
+
+/* ---------- 시작 ---------- */
+renderForm(); renderScen(); resetFlow(); paintChipsOff(); sim.resetFiles();
+connectLive().then(live => {
+  if (!live) {
+    $('modeNote').innerHTML = '지금은 <b>미리보기</b>입니다. 판단 규칙은 실제 플러그인과 같은 순서로 브라우저에서 돌리고, Agent는 요청 문장의 낱말로 고르는 고정 시나리오입니다. 실제 OpenCode로 돌리려면 저장소 루트에서 <code>node lab/server.mjs</code>를 실행하세요.';
+    $('applyNote').textContent = '미리보기에서는 바로 적용되고, 새 세션에서 반영됩니다.';
+    sys('미리보기 모드입니다. 요청을 보내거나 Harness 꾸미기에서 규칙을 바꿔 보세요.');
+  }
+});
 </script>
 </body>
 </html>

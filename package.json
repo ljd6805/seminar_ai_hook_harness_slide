@@ -10,6 +10,8 @@
     "test": "node --test quest/tests/*.test.mjs",
     "quest": "node quest/cli.mjs",
     "check:source": "node quest/scripts/check-source.mjs",
-    "check:docs": "node quest/scripts/check-docs.mjs"
+    "check:docs": "node quest/scripts/check-docs.mjs",
+    "lab": "node lab/server.mjs",
+    "lab:demo": "node lab/server.mjs --demo"
   }
 }
