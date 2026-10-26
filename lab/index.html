@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hook·Harness 실험실</title>
+<style>
+:root{color-scheme:dark;--bg:#0e1220;--card:#171d30;--line:#303951;--text:#edf0fa;--sub:#b2bbd2;--faint:#7d87a3;--mint:#61dec6;--coral:#ff8a7a;--amber:#ffcc7a;--violet:#b19bff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.65 "Apple SD Gothic Neo","Malgun Gothic",sans-serif;word-break:keep-all}
+a{color:var(--mint);text-underline-offset:4px}
+header{display:flex;align-items:center;gap:18px;padding:16px 26px;border-bottom:1px solid var(--line)}
+header .home{border:1px solid var(--line);border-radius:8px;padding:5px 12px;text-decoration:none;font-size:13px}
+header h1{font-size:19px;margin:0}
+header .mode{margin-left:auto;font-size:12px;color:var(--amber);border:1px solid #6a5437;border-radius:30px;padding:2px 11px}
+main{display:grid;grid-template-columns:300px 1fr 430px;gap:18px;padding:18px 26px;min-height:calc(100vh - 62px)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.panel h2{font-size:12px;letter-spacing:.12em;color:var(--violet);margin:0 0 12px}
+.scen{display:flex;flex-direction:column;gap:8px}
+.scen button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
+.scen button small{display:block;color:var(--faint);font-size:12px}
+.scen button.on{border-color:var(--mint);background:#13302c}
+.ctrl{display:flex;gap:8px;margin:16px 0 6px;flex-wrap:wrap}
+.ctrl button{background:#20283f;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 13px;cursor:pointer;font:inherit;font-size:13px}
+.ctrl button.pri{border-color:var(--mint);color:var(--mint)}
+.ctrl label{font-size:12px;color:var(--sub);display:flex;align-items:center;gap:6px}
+.state{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;font-size:13px}
+.state div{display:flex;justify-content:space-between;padding:3px 0;color:var(--sub)}
+.state b{color:var(--text);font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:500}
+.meter{height:7px;border-radius:5px;background:#252d45;overflow:hidden;margin:4px 0 8px}
+.meter i{display:block;height:100%;width:0;background:var(--mint);transition:width .3s,background .3s}
+.hint{font-size:12px;color:var(--faint);margin-top:14px}
+/* 흐름도 */
+.flow{display:flex;flex-direction:column;align-items:center;gap:0}
+.node{position:relative;width:min(100%,430px);border:1.5px solid var(--line);border-radius:12px;padding:10px 16px;background:#141a2b;transition:border-color .25s,background .25s,box-shadow .25s}
+.node .t{font-weight:700;font-size:15px}
+.node .d{font-size:12px;color:var(--faint)}
+.node .msg{font-size:12.5px;font-family:"JetBrains Mono",ui-monospace,monospace;color:var(--sub);min-height:0;margin-top:2px}
+.node.hook{border-style:dashed}
+.node.group{padding:10px 12px}
+.node .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.chip{border:1.5px solid var(--line);border-radius:9px;padding:6px 8px;text-align:center;font-size:13px;transition:all .25s}
+.chip small{display:block;font-size:11px;color:var(--faint)}
+.arrow{width:2px;height:20px;background:var(--line);position:relative}
+.arrow::after{content:"";position:absolute;left:-4px;bottom:-2px;border:5px solid transparent;border-top-color:var(--line)}
+.active{border-color:var(--violet)!important;box-shadow:0 0 0 3px #b19bff30;background:#1d1a33!important}
+.ok{border-color:var(--mint)!important;background:#12302b!important}
+.bad{border-color:var(--coral)!important;background:#3a1d1d!important;box-shadow:0 0 0 3px #ff8a7a30}
+.wait{border-color:var(--amber)!important;background:#3a2e17!important;box-shadow:0 0 0 3px #ffcc7a30}
+.skip{opacity:.35}
+.verdict{margin-top:16px;text-align:center;font-size:15px;min-height:26px}
+.verdict.good{color:var(--mint)}.verdict.no{color:var(--coral)}.verdict.hold{color:var(--amber)}
+/* 터미널 */
+.term{background:#0a0d17;border:1px solid var(--line);border-radius:10px;padding:12px 14px;height:calc(100vh - 190px);min-height:380px;overflow:auto;font:12.5px/1.7 "JetBrains Mono",ui-monospace,monospace}
+.term .l{white-space:pre-wrap;word-break:break-all;animation:in .25s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+.term .tm{color:#5b6585}.term .evn{display:inline-block;min-width:9.5em}.term .ev{color:var(--violet)}.term .tool{color:var(--text)}
+.term .okc{color:var(--mint)}.term .badc{color:var(--coral)}.term .waitc{color:var(--amber)}.term .dim{color:var(--faint)}
+.legend{display:flex;gap:12px;font-size:12px;color:var(--sub);margin-bottom:10px;flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+@media(max-width:1200px){main{grid-template-columns:1fr}.term{height:420px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <a class="home" href="../docs/index.html">← 문서 허브</a>
+  <h1>Hook·Harness 실험실</h1>
+  <span class="mode">1단계 · 기록 재생 모드</span>
+</header>
+<main>
+  <section class="panel">
+    <h2>시나리오</h2>
+    <div class="scen" id="scen"></div>
+    <div class="ctrl">
+      <button class="pri" id="play">▶ 재생</button>
+      <button id="step">한 단계</button>
+      <button id="reset">↺ 처음부터</button>
+      <label>속도 <select id="speed"><option value="1400">느리게</option><option value="800" selected>보통</option><option value="350">빠르게</option></select></label>
+    </div>
+    <div class="state">
+      <div>도구 시도 (예산 8)<b id="sAtt">0 / 8</b></div>
+      <div class="meter"><i id="mAtt"></i></div>
+      <div>검증 시도 (최대 3)<b id="sVal">0 / 3</b></div>
+      <div class="meter"><i id="mVal"></i></div>
+      <div>마지막 검증<b id="sLast">없음</b></div>
+      <div>제출<b id="sSub">아직</b></div>
+    </div>
+    <p class="hint">실제 OpenCode 1.19.4 실행기에서 남긴 <code>events.jsonl</code> 기록을 다시 재생합니다. 모델은 고정 응답 제공자입니다. 다른 기록은 아래에서 불러올 수 있습니다.</p>
+    <input type="file" id="file" accept=".jsonl,.json,.txt" style="font-size:12px;color:var(--sub)">
+  </section>
+
+  <section class="panel">
+    <h2>HARNESS 흐름</h2>
+    <div class="legend"><span style="--c:var(--violet)">진행 중</span><span style="--c:var(--mint)">통과</span><span style="--c:var(--coral)">거부·실패</span><span style="--c:var(--amber)">사람 확인 대기</span></div>
+    <div class="flow">
+      <div class="node" id="nAgent"><div class="t">Agent가 도구를 호출합니다</div><div class="d">LLM이 quest_* 도구 중 하나를 고릅니다</div><div class="msg" id="mAgent"></div></div>
+      <div class="arrow"></div>
+      <div class="node hook group" id="nBefore"><div class="t">Hook · tool.execute.before</div><div class="d">실행 전에 끼어들어 규칙으로 판단합니다</div>
+        <div class="row">
+          <div class="chip" id="cRecord">Record<small>기록</small></div>
+          <div class="chip" id="cLimit">Limit<small>예산</small></div>
+          <div class="chip" id="cPolicy">Policy<small>도구·경로</small></div>
+        </div>
+        <div class="msg" id="mBefore"></div>
+      </div>
+      <div class="arrow"></div>
+      <div class="node" id="nExec"><div class="t">도구 실행</div><div class="d">실제 파일을 읽고 씁니다</div><div class="msg" id="mExec"></div></div>
+      <div class="arrow"></div>
+      <div class="node hook" id="nAfter"><div class="t">Hook · tool.execute.after</div><div class="d">결과를 기록합니다</div><div class="msg" id="mAfter"></div></div>
+      <div class="arrow"></div>
+      <div class="node" id="nVal"><div class="t">Validation · 산출물 검증</div><div class="d">스키마·합계·보고서·원본 보존을 검사합니다</div><div class="msg" id="mVal"></div></div>
+      <div class="arrow"></div>
+      <div class="node" id="nAppr"><div class="t">Approval · 사람 승인</div><div class="d">제출 전에 OpenCode가 사람에게 묻습니다</div><div class="msg" id="mAppr"></div></div>
+      <div class="arrow"></div>
+      <div class="node" id="nSub"><div class="t">제출</div><div class="d">로컬 영수증을 한 번만 만듭니다</div><div class="msg" id="mSub"></div></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+  </section>
+
+  <section class="panel">
+    <h2>EVENTS.JSONL</h2>
+    <div class="term" id="term"><div class="l dim">▶ 재생을 누르면 기록이 한 줄씩 나타납니다.</div></div>
+  </section>
+</main>
+<script>
+const DATA = {"names": {"kxjDUQ": "정상 흐름 · 승인 거절", "Qk6lI6": "정상 흐름 · 승인 허용", "q8iVMA": "허용되지 않은 도구", "O8AJhc": "금지된 경로 쓰기", "Fl7nNF": "예산 초과"}, "events": [{"time": "2026-10-23T06:16:18.552Z", "level": 6, "event": "plugin_loaded", "pluginVersion": "0.1.0", "apiTarget": "1.19.4"}, {"time": "2026-10-23T06:16:19.459Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-1", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:19.461Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-1", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:19.497Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-2", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.498Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.498Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-2", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.538Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-3", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.538Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/report.md"}, {"time": "2026-10-23T06:16:19.539Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-3", "tool": "quest_write", "output": "{\"written\":\"lab/output/report.md\"}"}, {"time": "2026-10-23T06:16:19.566Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-4", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:19.567Z", "level": 6, "event": "validation", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "checks": {"schemaOK": true, "sumOK": false, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba780eb2d", "errors": ["sumOK"], "ok": false, "remaining": 2}, {"time": "2026-10-23T06:16:19.567Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-4", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":false,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba7"}, {"time": "2026-10-23T06:16:19.616Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-5", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.617Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.617Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-5", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.644Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-6", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:19.645Z", "level": 6, "event": "validation", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "checks": {"schemaOK": true, "sumOK": true, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd", "errors": [], "ok": true, "remaining": 1}, {"time": "2026-10-23T06:16:19.645Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-6", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":true,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968"}, {"time": "2026-10-23T06:16:19.671Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-7", "tool": "quest_submit", "event": "before"}, {"time": "2026-10-23T06:16:19.672Z", "level": 6, "event": "approval_requested", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:19.749Z", "level": 6, "event": "approval_rejected", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:19.749Z", "level": 6, "event": "tool_error", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "tool": "quest_submit", "reason": "The user rejected permission to use this specific tool call."}, {"time": "2026-10-23T06:16:19.930Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-8", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:19.930Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-8", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:19.951Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-9", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.952Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.952Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-9", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-10", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/report.md"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-10", "tool": "quest_write", "output": "{\"written\":\"lab/output/report.md\"}"}, {"time": "2026-10-23T06:16:20.004Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-11", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:20.005Z", "level": 6, "event": "validation", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "checks": {"schemaOK": true, "sumOK": false, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba780eb2d", "errors": ["sumOK"], "ok": false, "remaining": 2}, {"time": "2026-10-23T06:16:20.005Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-11", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":false,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba7"}, {"time": "2026-10-23T06:16:20.032Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-12", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:20.032Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:20.033Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-12", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:20.060Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-13", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:20.062Z", "level": 6, "event": "validation", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "checks": {"schemaOK": true, "sumOK": true, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd", "errors": [], "ok": true, "remaining": 1}, {"time": "2026-10-23T06:16:20.062Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-13", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":true,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968"}, {"time": "2026-10-23T06:16:20.088Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-14", "tool": "quest_submit", "event": "before"}, {"time": "2026-10-23T06:16:20.089Z", "level": 6, "event": "approval_requested", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:20.237Z", "level": 6, "event": "submitted", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:20.237Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-14", "tool": "quest_submit", "output": "{\"sessionId\":\"ses_e9898c941ffenIh0OeoJQk6lI6\",\"artifactHash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd\",\"submittedAt\":\"2026-10-23T06:16:"}, {"time": "2026-10-23T06:16:20.414Z", "level": 6, "sessionId": "ses_e9898c759ffeRbQcXfVmq8iVMA", "callId": "fixture-16", "tool": "quest_probe", "event": "before"}, {"time": "2026-10-23T06:16:20.414Z", "level": 6, "sessionId": "ses_e9898c759ffeRbQcXfVmq8iVMA", "callId": "fixture-16", "tool": "quest_probe", "event": "denied", "reason": "POLICY: tool denied", "executed": false}, {"time": "2026-10-23T06:16:20.572Z", "level": 6, "sessionId": "ses_e9898c6b9ffezqEV6JXCO8AJhc", "callId": "fixture-18", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:20.572Z", "level": 6, "sessionId": "ses_e9898c6b9ffezqEV6JXCO8AJhc", "callId": "fixture-18", "tool": "quest_write", "event": "denied", "reason": "POLICY: path denied", "executed": false}, {"time": "2026-10-23T06:16:20.733Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-20", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.734Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-20", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.752Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-21", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.753Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-21", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.775Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-22", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.776Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-22", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.794Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-23", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.794Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-23", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.812Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-24", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.813Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-24", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.830Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-25", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.831Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-25", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.849Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-26", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.850Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-26", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.869Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-27", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.870Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-27", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.889Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-28", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.889Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-28", "tool": "quest_read", "event": "denied", "reason": "LIMIT: tool request budget exhausted", "executed": false}]};
+const ORDER = ['kxjDUQ','Qk6lI6','q8iVMA','O8AJhc','Fl7nNF'];
+const DESC = {
+  kxjDUQ:'합계 오류를 검증이 잡고, 수정 후 제출 단계에서 사람이 거절합니다',
+  Qk6lI6:'같은 흐름에서 사람이 한 번 허용해 제출까지 갑니다',
+  q8iVMA:'허용 목록에 없는 quest_probe를 Policy가 막습니다',
+  O8AJhc:'보호된 파일에 쓰려는 시도를 Policy가 막습니다',
+  Fl7nNF:'같은 도구를 반복하다 9번째 시도에서 Limit에 걸립니다'};
+let sessions = {}, names = DATA.names;
+function load(events){
+  sessions = {};
+  for (const e of events){ const k=(e.sessionId||'').slice(-6); if(!k) continue; (sessions[k] ||= []).push(e); }
+}
+load(DATA.events);
+const $ = id => document.getElementById(id);
+let cur=null, idx=0, timer=null, st={};
+
+function renderScen(){
+  const keys = Object.keys(sessions).sort((a,b)=>(ORDER.indexOf(a)+99*(ORDER.indexOf(a)<0))-(ORDER.indexOf(b)+99*(ORDER.indexOf(b)<0)));
+  $('scen').innerHTML='';
+  keys.forEach(k=>{
+    const b=document.createElement('button');
+    b.innerHTML=(names[k]||('세션 '+k))+'<small>'+(DESC[k]||sessions[k].length+'개 이벤트')+'</small>';
+    b.onclick=()=>pick(k); b.dataset.k=k; $('scen').appendChild(b);
+  });
+  pick(keys[0]);
+}
+function pick(k){ cur=k; document.querySelectorAll('.scen button').forEach(b=>b.classList.toggle('on',b.dataset.k===k)); reset(); }
+
+const NODES=['nAgent','nBefore','nExec','nAfter','nVal','nAppr','nSub','cRecord','cLimit','cPolicy'];
+function clearFlow(){ NODES.forEach(n=>$(n).classList.remove('active','ok','bad','wait','skip')); }
+function cls(id,c){ $(id).classList.remove('active','ok','bad','wait','skip'); if(c) $(id).classList.add(c); }
+function msg(id,t){ $(id).textContent=t||''; }
+function reset(){
+  stop(); idx=0; st={att:0,val:0,last:'없음',sub:'아직'}; clearFlow();
+  ['mAgent','mBefore','mExec','mAfter','mVal','mAppr','mSub'].forEach(m=>msg(m,''));
+  $('verdict').textContent=''; $('verdict').className='verdict';
+  $('term').innerHTML='<div class="l dim">▶ 재생을 누르면 기록이 한 줄씩 나타납니다.</div>'; paintState();
+}
+function paintState(){
+  $('sAtt').textContent=st.att+' / 8'; $('mAtt').style.width=Math.min(100,st.att/8*100)+'%';
+  $('mAtt').style.background= st.att>8?'var(--coral)':st.att>=6?'var(--amber)':'var(--mint)';
+  $('sVal').textContent=st.val+' / 3'; $('mVal').style.width=(st.val/3*100)+'%';
+  $('sLast').textContent=st.last; $('sSub').textContent=st.sub;
+}
+function line(e){
+  const t=(e.time||'').slice(11,23), esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  let body='', c='ev';
+  switch(e.event){
+    case 'before': body=`<span class="tool">${e.tool}</span> <span class="dim">hook 진입</span>`; break;
+    case 'denied': c='badc'; body=`<span class="tool">${e.tool}</span> <span class="badc">✕ ${esc(e.reason)}</span> <span class="dim">executed=false</span>`; break;
+    case 'file_written': body=`<span class="okc">${esc(e.path)}</span>`; break;
+    case 'after': body=`<span class="tool">${e.tool}</span> <span class="dim">${esc((e.output||'').slice(0,48))}</span>`; break;
+    case 'validation': c=e.ok?'okc':'badc'; body=e.ok?`<span class="okc">✓ 모든 검사 통과</span> <span class="dim">hash ${e.hash.slice(0,10)}… 남은 횟수 ${e.remaining}</span>`:`<span class="badc">✕ 실패: ${e.errors.join(', ')}</span> <span class="dim">기대 합계 ${e.expected} · 남은 횟수 ${e.remaining}</span>`; break;
+    case 'approval_requested': c='waitc'; body=`<span class="waitc">⏸ 사람 승인 대기</span> <span class="dim">hash ${(e.artifactHash||'').slice(0,10)}…</span>`; break;
+    case 'approval_rejected': c='badc'; body='<span class="badc">✕ 사람이 거절했습니다</span>'; break;
+    case 'submitted': c='okc'; body=`<span class="okc">✓ 제출 완료</span> <span class="dim">영수증 ${(e.artifactHash||'').slice(0,10)}….json</span>`; break;
+    case 'tool_error': c='badc'; body=`<span class="tool">${e.tool}</span> <span class="badc">${esc(e.reason)}</span>`; break;
+    default: body='<span class="dim">'+esc(JSON.stringify(e).slice(0,90))+'</span>';
+  }
+  const d=document.createElement('div'); d.className='l';
+  d.innerHTML=`<span class="tm">${t}</span> <span class="${c} evn">${e.event}</span> ${body}`;
+  if(idx===0) $('term').innerHTML='';
+  $('term').appendChild(d); $('term').scrollTop=$('term').scrollHeight;
+}
+function apply(e){
+  const next = sessions[cur][idx+1];
+  switch(e.event){
+    case 'before':
+      clearFlow(); ['mBefore','mExec','mAfter'].forEach(m=>msg(m,''));
+      cls('nAgent','ok'); msg('mAgent','→ '+e.tool); cls('nBefore','active'); cls('cRecord','ok');
+      if(e.tool!=='quest_status') st.att++;
+      if(next && next.event==='denied'){ cls('cLimit','active'); cls('cPolicy','active'); }
+      else { cls('cLimit','ok'); cls('cPolicy','ok'); msg('mBefore','통과 → 실행 허용'); cls('nExec','active'); }
+      break;
+    case 'denied': {
+      cls('nBefore','bad'); const lim=e.reason.startsWith('LIMIT');
+      cls(lim?'cLimit':'cPolicy','bad'); cls(lim?'cPolicy':'cLimit',lim?'skip':'ok');
+      msg('mBefore','✕ '+e.reason); ['nExec','nAfter','nVal','nAppr','nSub'].forEach(n=>cls(n,'skip'));
+      msg('mExec','실행되지 않았습니다'); break; }
+    case 'file_written': cls('nBefore','ok'); cls('nExec','ok'); msg('mExec','쓰기: '+e.path); break;
+    case 'after': cls('nBefore','ok'); cls('nExec','ok'); if(!$('mExec').textContent) msg('mExec',e.tool+' 완료'); cls('nAfter','ok'); msg('mAfter','기록 완료'); break;
+    case 'validation': st.val++; st.last=e.ok?'통과':'실패 ('+e.errors.join(',')+')';
+      cls('nExec','ok'); cls('nVal',e.ok?'ok':'bad'); msg('mVal',e.ok?'✓ schema·sum·report·originals 통과':'✕ '+e.errors.join(', ')+' 실패 · 기대 합계 '+e.expected); break;
+    case 'approval_requested': cls('nBefore','ok'); cls('nExec','active'); cls('nVal','ok'); cls('nAppr','wait'); msg('mAppr','⏸ hash '+(e.artifactHash||'').slice(0,12)+'… 확인 대기'); break;
+    case 'approval_rejected': cls('nAppr','bad'); msg('mAppr','✕ 사람이 거절'); cls('nSub','skip'); st.sub='거절됨'; break;
+    case 'submitted': cls('nAppr','ok'); msg('mAppr','✓ 한 번 허용'); cls('nSub','ok'); msg('mSub','✓ 영수증 생성'); st.sub='완료'; break;
+    case 'tool_error': cls('nExec','bad'); msg('mExec','✕ '+e.reason); break;
+  }
+  paintState();
+}
+function finish(){
+  const evs=sessions[cur], v=$('verdict');
+  if(evs.some(e=>e.event==='submitted')){v.textContent='검증과 사람 승인을 모두 통과해 제출했습니다.';v.className='verdict good';}
+  else if(evs.some(e=>e.event==='approval_rejected')){v.textContent='검증은 통과했지만, 사람이 거절해 제출하지 않았습니다.';v.className='verdict hold';}
+  else if(evs.some(e=>e.event==='denied')){v.textContent='Hook이 실행 전에 막았습니다. 도구는 실행되지 않았습니다.';v.className='verdict no';}
+}
+function stepOnce(){
+  const evs=sessions[cur]; if(!evs||idx>=evs.length){stop();return false;}
+  line(evs[idx]); apply(evs[idx]); idx++;
+  if(idx>=evs.length){finish();stop();}
+  return true;
+}
+function stop(){ clearInterval(timer); timer=null; $('play').textContent='▶ 재생'; }
+$('play').onclick=()=>{ if(timer){stop();return;} if(idx>=sessions[cur].length) reset(); stepOnce(); timer=setInterval(stepOnce,+$('speed').value); $('play').textContent='⏸ 일시정지'; };
+$('step').onclick=()=>{stop(); if(idx>=sessions[cur].length) reset(); stepOnce();};
+$('reset').onclick=reset;
+$('speed').onchange=()=>{ if(timer){stop();$('play').click();} };
+$('file').onchange=async ev=>{
+  const f=ev.target.files[0]; if(!f) return;
+  const evs=(await f.text()).trim().split('\n').filter(Boolean).map(l=>{try{return JSON.parse(l)}catch{return null}}).filter(Boolean);
+  names={}; load(evs); renderScen();
+};
+renderScen();
+</script>
+</body>
+</html>
