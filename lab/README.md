@@ -57,6 +57,16 @@ before Hook 한 번은 ① Record → ② Limit → ③ Policy 세 단계로 펼
 
 라이브에서 OpenCode 이벤트는 HTTP 스트림으로, Hook 기록은 파일로 와서 도착 순서가 뒤집힐 수 있습니다. 화면은 같은 도구의 호출과 Hook을 짝지어 "호출 → Hook" 순서로 테이프를 맞추고, 승인 요청은 `approval_requested` 기록이 온 뒤에 보여 줍니다.
 
+### 모델과 로그인(SSO)
+
+모델 선택 박스의 기본값은 "OpenCode 기본 모델 사용"입니다. 이때 실험실은 모델을 지정하지 않고 요청을 보내므로, OpenCode가 평소 설정의 기본 모델을 씁니다. 다른 모델로 보내고 싶을 때만 목록에서 고르면 됩니다.
+
+로그인은 실험실이 하지 않습니다. 실험실은 `opencode serve`를 같은 사용자, 같은 환경 변수로 띄우므로 OpenCode에 저장된 로그인 정보(OAuth SSO 포함)와 전역 설정·플러그인을 그대로 씁니다.
+
+1. 평소처럼 OpenCode에서 SSO 로그인을 먼저 마칩니다. 브라우저 로그인 창은 `serve` 안에서는 뜰 수 없습니다.
+2. 같은 터미널에서 실험실을 실행합니다. 사내 실행 스크립트가 `OPENCODE_CONFIG_DIR` 같은 환경 변수를 세팅한다면 그 변수가 켜진 셸이어야 합니다.
+3. 사내 OpenCode가 별도 실행 파일이면 `--opencode "그 경로"`로 지정합니다.
+
 ### 모델이 목록에 안 보일 때
 
 실험실은 OpenCode를 `workshops/lab` 폴더에서 띄웁니다. OpenCode는 전역 설정(`~/.config/opencode/opencode.json`)과 실행한 폴더의 `opencode.json`만 읽으므로, 다른 프로젝트 폴더의 `opencode.json`에 정의한 공급자·모델은 목록에 나오지 않습니다.

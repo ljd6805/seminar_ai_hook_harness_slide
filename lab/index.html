@@ -373,7 +373,7 @@ details.note summary{font-size:12.5px;color:var(--faint)}
         <div class="stephead"><span class="num">2</span><b>요청 보내기</b><span class="dirty" id="dirty"></span></div>
         <div class="rb-row">
           <select id="tReq" title="예시 요청을 고르면 아래 칸에 채워집니다"></select>
-          <span id="modelWrap" style="display:none"><select id="model" title="모델"></select></span>
+          <span id="modelWrap" style="display:none"><select id="model" title="요청을 보낼 모델입니다. 기본값은 OpenCode 설정의 기본 모델이고, 로그인(SSO 포함)은 OpenCode가 그대로 씁니다."></select></span>
         </div>
         <div class="rb-send">
           <textarea id="prompt" rows="2">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
@@ -1759,22 +1759,24 @@ async function onStatus(s) {
     try {
       models = await api('/api/models');
       let saved = null; try { saved = localStorage.getItem('lab.model'); } catch {}
-      const want = saved || models.default || '';
-      $('model').innerHTML = models.models.map(m => `<option value="${esc(m)}">${esc(m)}</option>`).join('') +
+      // 첫 항목(값 없음)은 모델을 지정하지 않고 보냅니다. 그러면 OpenCode가 평소 설정의 기본 모델과 로그인(SSO 포함)을 그대로 씁니다.
+      const want = saved === null ? '' : saved;
+      $('model').innerHTML = '<option value="">OpenCode 기본 모델 사용</option>' +
+        models.models.map(m => `<option value="${esc(m)}">${esc(m)}</option>`).join('') +
         '<option value="__custom">직접 입력… (목록에 없는 모델)</option>';
       if (want && !models.models.includes(want)) { $('model').value = '__custom'; $('modelCustom').value = want; }
-      else $('model').value = want || models.models[0] || '__custom';
+      else $('model').value = want;
       syncModel();
     } catch (e) { sys('모델 목록을 읽지 못했습니다: ' + e.message); }
   }
 }
 
 /* ---------- 버튼 ---------- */
-// 목록에서 고르거나 "직접 입력"으로 공급자/모델을 적습니다. 고른 값은 브라우저에 기억합니다.
+// 기본값은 "OpenCode 기본 모델 사용"입니다. 목록에서 고르거나 "직접 입력"으로 공급자/모델을 적을 수도 있습니다. 고른 값은 브라우저에 기억합니다.
 const chosenModel = () => $('model').value === '__custom' ? $('modelCustom').value.trim() : $('model').value;
 function syncModel() {
   $('modelCustom').style.display = $('model').value === '__custom' ? '' : 'none';
-  try { if (chosenModel()) localStorage.setItem('lab.model', chosenModel()); } catch {}
+  try { if ($('model').value !== '__custom' || chosenModel()) localStorage.setItem('lab.model', chosenModel()); } catch {}
 }
 $('model').addEventListener('change', () => { syncModel(); if ($('model').value === '__custom') $('modelCustom').focus(); });
 $('modelCustom').addEventListener('change', syncModel);
