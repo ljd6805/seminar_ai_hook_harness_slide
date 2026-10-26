@@ -20,6 +20,20 @@ const OPENCODE = option('--opencode', 'opencode');
 const DEMO = args.includes('--demo');
 const isWindows = process.platform === 'win32';
 
+// Windows의 opencode·npm은 보통 .cmd 파일이라 cmd.exe를 거쳐야 실행됩니다. cmd.exe는 명령줄을 다시 쪼개므로
+// 공백·한글·괄호가 있는 경로는 직접 따옴표로 감싼 한 줄로 넘깁니다. .exe는 셸 없이 바로 실행합니다.
+const winQuote = arg => /^[A-Za-z0-9_.:\\/=-]+$/.test(arg) ? arg : '"' + String(arg).replace(/"/g, '""') + '"';
+function spawnTool(bin, argv, options) {
+  if (!isWindows || /\.exe$/i.test(bin)) return spawn(bin, argv, options);
+  return spawn([bin, ...argv].map(winQuote).join(' '), [], { ...options, shell: true });
+}
+// 드라이브 문자 대소문자, 8.3 짧은 이름, 연결 폴더가 달라도 같은 파일인지 비교합니다.
+function samePath(a, b) {
+  const real = p => { try { return fs.realpathSync.native(p); } catch { return path.resolve(p); } };
+  const x = real(a), y = real(b);
+  return isWindows ? x.toLowerCase() === y.toLowerCase() : x === y;
+}
+
 const TOOLS = ['quest_read', 'quest_write', 'quest_validate', 'quest_submit', 'quest_status', 'quest_probe'];
 const CHECKS = ['schemaOK', 'sumOK', 'reportOK', 'originalsOK'];
 const SUBMIT = ['valid', 'sameHash', 'notConsumed', 'attemptsAllowed'];
@@ -89,13 +103,30 @@ function prepareWorkspace() {
     log('실습 폴더를 만듭니다:', WORKSPACE);
     initProject(WORKSPACE, 6, true);
   }
+  // 플러그인은 @opencode-ai/plugin에서 tool()만 씁니다. npm 설치 대신 저장소에 들어 있는 사본을 연결하므로
+  // 사내 npm 미러에 패키지가 없거나 경로에 공백·한글이 있어도 설치 단계가 없습니다.
   const pluginDir = path.join(WORKSPACE, '.opencode');
-  if (!fs.existsSync(path.join(pluginDir, 'node_modules', '@opencode-ai', 'plugin'))) {
-    log('플러그인 의존성을 설치합니다 (처음 한 번)...');
-    // Windows는 shell로 npm.cmd를 부르므로 경로를 인자로 넘기면 공백에서 잘립니다. 폴더 안에서 실행합니다.
-    const result = spawnSync('npm', ['install'], { cwd: pluginDir, stdio: 'inherit', shell: isWindows });
-    if (result.status !== 0) throw new Error('npm install 실패: ' + pluginDir);
+  const vendorDir = path.join(pluginDir, 'lab-vendor');
+  fs.mkdirSync(vendorDir, { recursive: true });
+  for (const name of ['zod.mjs', 'plugin-tool.mjs']) fs.copyFileSync(path.join(here, 'vendor', name), path.join(vendorDir, name));
+  const pluginFile = path.join(pluginDir, 'plugins', 'harness.js');
+  fs.writeFileSync(pluginFile, fs.readFileSync(pluginFile, 'utf8')
+    .replace("from '@opencode-ai/plugin'", "from '../lab-vendor/plugin-tool.mjs'"));
+  // OpenCode는 시작할 때 node_modules에 @opencode-ai/plugin이 없으면 npm으로 받으려 하고, 사내망에서는
+  // 실패하거나 재시도로 수십 초를 기다립니다. 같은 이름의 작은 패키지를 두어 설치 단계를 건너뜁니다.
+  const stubDir = path.join(pluginDir, 'node_modules', '@opencode-ai', 'plugin');
+  if (!fs.existsSync(path.join(stubDir, 'package.json'))) {
+    fs.mkdirSync(stubDir, { recursive: true });
+    fs.writeFileSync(path.join(stubDir, 'package.json'), JSON.stringify({ name: '@opencode-ai/plugin', version: '1.19.4',
+      type: 'module', exports: { '.': './index.js' }, description: 'lab stub: re-exports lab-vendor/plugin-tool.mjs' }, null, 2) + '\n');
+    fs.writeFileSync(path.join(stubDir, 'index.js'), "export { tool } from '../../../lab-vendor/plugin-tool.mjs';\n");
   }
+  // OpenCode는 package-lock.json에 @opencode-ai/plugin이 적혀 있어야 설치가 끝난 것으로 봅니다.
+  const lockFile = path.join(pluginDir, 'package-lock.json');
+  if (!readJson(lockFile, {})?.packages?.['']?.dependencies?.['@opencode-ai/plugin'])
+    fs.writeFileSync(lockFile, JSON.stringify({ name: 'opencode-lab', lockfileVersion: 3, requires: true, packages: {
+      '': { dependencies: { '@opencode-ai/plugin': '1.19.4' } },
+      'node_modules/@opencode-ai/plugin': { version: '1.19.4' } } }, null, 2) + '\n');
   if (!fs.existsSync(labConfigFile)) writeConfig(PRESETS.full, null);
 }
 function writeConfig(config, customSource) {
@@ -172,8 +203,8 @@ async function startOpenCode() {
   const port = await freePort();
   ocUrl = 'http://127.0.0.1:' + port;
   const env = { ...process.env, OPENCODE_DISABLE_AUTOUPDATE: '1' };
-  oc = spawn(isWindows && /\s/.test(OPENCODE) ? `"${OPENCODE}"` : OPENCODE, ['serve', '--hostname', '127.0.0.1', '--port', String(port)],
-    { cwd: WORKSPACE, env, stdio: ['ignore', 'pipe', 'pipe'], shell: isWindows });
+  oc = spawnTool(OPENCODE, ['serve', '--hostname', '127.0.0.1', '--port', String(port)],
+    { cwd: WORKSPACE, env, stdio: ['ignore', 'pipe', 'pipe'] });
   const child = oc;
   const relay = chunk => String(chunk).split('\n').filter(Boolean).forEach(text => broadcast('oclog', text));
   child.stdout.on('data', relay);
@@ -367,7 +398,7 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && samePath(process.argv[1], fileURLToPath(import.meta.url))) {
   prepareWorkspace();
   server.listen(PORT, '127.0.0.1', () => {
     log('실험실: http://127.0.0.1:' + PORT + '/');
