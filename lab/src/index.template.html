@@ -1,0 +1,1608 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hook·Harness 실험실</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0f1a;--card:#151b2c;--card2:#111727;--line:#2c3550;--text:#edf0fa;--sub:#b2bbd2;--faint:#7d87a3;--mint:#61dec6;--coral:#ff8a7a;--amber:#ffcc7a;--violet:#b19bff;--blue:#8fb7ff;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 "Pretendard Variable","Apple SD Gothic Neo","Malgun Gothic",sans-serif;word-break:keep-all;display:flex;flex-direction:column}
+a{color:var(--mint);text-underline-offset:4px}
+code{font-family:var(--mono);font-size:.92em}
+header{display:flex;align-items:center;gap:16px;padding:10px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:#0d1220}
+header .home{border:1px solid var(--line);border-radius:8px;padding:4px 11px;text-decoration:none;font-size:13px}
+header h1{font-size:18px;margin:0}
+header .sub{font-size:12px;color:var(--faint)}
+.badge{margin-left:auto;font-size:12px;border:1px solid var(--line);border-radius:30px;padding:3px 12px;color:var(--sub)}
+.badge.live{color:var(--mint);border-color:#316459}.badge.sim{color:var(--amber);border-color:#6a5437}.badge.err{color:var(--coral);border-color:#7a3d3d}
+.badge i{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px}
+main{flex:1;min-height:0;display:grid;grid-template-columns:clamp(270px,21vw,330px) minmax(0,1fr) clamp(300px,25vw,420px);gap:14px;padding:14px 20px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0;min-height:0;overflow:auto}
+.panel h2{font-size:12px;letter-spacing:.08em;color:var(--faint);margin:0 0 8px;font-weight:700}
+.panel h2:not(:first-child){margin-top:16px}
+.tabs{display:flex;gap:4px;margin:-4px 0 12px;border-bottom:1px solid var(--line)}
+.tabs button{all:unset;cursor:pointer;padding:6px 9px 8px;font-size:14px;white-space:nowrap;color:var(--sub);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--text);border-bottom-color:var(--mint);font-weight:700}
+.tab{display:none}.tab.on{display:block}
+label.f{display:block;font-size:12.5px;color:var(--sub);margin:10px 0 5px}
+textarea,select,input[type=number],#model{width:100%;background:#0d1222;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px}
+label.f .faint{font-weight:400;color:var(--faint);font-size:11.5px;margin-left:4px}
+textarea{resize:vertical}
+textarea.code{font:12px/1.55 var(--mono);min-height:240px;white-space:pre;tab-size:2}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips button{background:#1b2240;color:var(--sub);border:1px solid var(--line);border-radius:20px;padding:4px 10px;font:inherit;font-size:12.5px;cursor:pointer}
+.chips button:hover{color:var(--text);border-color:var(--violet)}
+.btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.btn{background:#1e2640;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font:inherit;font-size:13.5px}
+.btn.pri{border-color:var(--mint);color:var(--mint)}
+.btn.warn{border-color:var(--amber);color:var(--amber)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.small{font-size:12px;color:var(--faint);overflow-wrap:anywhere}
+.reply{margin-top:14px;background:#0d1222;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;min-height:52px;white-space:pre-wrap;color:var(--sub);max-height:170px;overflow:auto}
+.reply b{color:var(--faint);font-weight:600;font-size:12px;display:block;margin-bottom:3px}
+.grp{border:1px solid var(--line);border-radius:11px;padding:9px 12px;margin-bottom:9px;background:var(--card2)}
+.grp h3{margin:0 0 4px;font-size:14px;display:flex;align-items:center;gap:8px}
+.grp h3 small{font-weight:400;color:var(--faint);font-size:12px}
+.grp .row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;color:var(--sub)}
+.grp .row label{display:flex;align-items:center;gap:5px;cursor:pointer}
+.grp textarea{font:12px/1.5 var(--mono);min-height:46px;margin-top:4px}
+.switch{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);font-weight:400}
+.dirty{color:var(--amber);font-size:12px}
+body.building main{grid-template-columns:minmax(600px,47vw) minmax(0,1fr) clamp(270px,21vw,360px)}
+@media(max-width:1500px){body.building main{grid-template-columns:minmax(560px,52vw) minmax(0,1fr)}body.building main>.panel:last-child{display:none}}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.seg button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--card2)}
+.seg button b{display:block;font-size:14px}
+.seg button small{display:block;font-size:11.5px;color:var(--faint);margin-top:2px}
+.seg button.on{border-color:var(--violet);background:rgba(177,155,255,.1)}
+.seg button.on small{color:var(--sub)}
+.seg button:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+.build{display:grid;grid-template-columns:minmax(210px,.72fr) minmax(0,1.5fr);gap:12px;align-items:start}
+.build[hidden]{display:none}
+.presets{margin:0 0 9px!important;flex-wrap:nowrap!important;gap:5px!important}
+.presets .btn{padding:5px 9px;font-size:12.5px;white-space:nowrap}
+.grp{transition:border-color .2s}
+.grp:hover,.grp:focus-within{border-color:#4a557a}
+.grp.dim .row,.grp.dim .pathcols,.grp.dim>.small{opacity:.4}
+.pathcols{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px}
+.pathcols label{display:block}
+.codepane{position:sticky;top:0;min-width:0}
+.codehead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--faint);margin-bottom:5px}
+.codehead code{color:var(--sub)}
+#diffNote{color:var(--mint);font:12px var(--mono)}
+.codev,textarea.code.edit{font-variant-ligatures:none}
+.codev{margin:0;background:#090d18;border:1px solid var(--line);border-radius:10px;padding:8px 0;font:11.5px/1.62 var(--mono);color:#d7dcf0;overflow:auto;max-height:calc(100vh - 330px)}
+.codev .ln{display:flex;white-space:pre-wrap;overflow-wrap:anywhere;padding-right:12px;border-left:3px solid transparent;transition:opacity .2s}
+.codev .ln>i{font-style:normal;color:#454d67;min-width:2.4em;text-align:right;padding-right:12px;flex:none;user-select:none}
+.codev .ln.gap{box-shadow:inset 0 2px 0 var(--coral);animation:lngap 2.8s ease-out forwards}
+@keyframes lngap{0%,40%{box-shadow:inset 0 2px 0 var(--coral)}100%{box-shadow:inset 0 2px 0 transparent}}
+.codev .ln.chg{border-left-color:var(--mint);animation:lnchg 2.8s ease-out}
+@keyframes lnchg{0%,25%{background:rgba(97,222,198,.26)}100%{background:transparent}}
+.codev[data-focus] .ln{opacity:.42}
+.codev[data-focus] .ln.fo{opacity:1;background:rgba(177,155,255,.1);border-left-color:var(--violet)}
+.codev.mini{max-height:none;margin-top:8px}
+.c-c{color:#6c7796}.c-s{color:#9be3c6}.c-k{color:#c4b3ff}.c-n{color:var(--amber)}
+textarea.code.edit{min-height:calc(100vh - 420px);font:11.5px/1.62 var(--mono);background:#090d18;resize:vertical}
+.mhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.mhead span{font-size:12px;color:var(--mint)}
+#missionList{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ms{border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:var(--card2)}
+.ms .mh{display:flex;align-items:center;gap:7px;font-size:13.5px}
+.ms .dot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--faint);flex:none}
+.ms.pass .dot{background:var(--mint);border-color:var(--mint)}
+.ms.fail .dot{border-color:var(--coral)}
+.ms.pass{border-color:rgba(97,222,198,.35)}
+.ms p{margin:3px 0 0;font-size:12px;color:var(--sub);line-height:1.5}
+.ms p.why{color:var(--coral)}
+.ms details{margin-top:3px}
+.ms summary{font-size:11.5px;color:var(--faint);cursor:pointer}
+.ms pre{margin:4px 0 0;font:11px/1.5 var(--mono);color:#cfd5ea;background:#090d18;border-radius:7px;padding:6px 8px;white-space:pre-wrap}
+.checkres{margin-top:8px;font-size:12.5px;color:var(--sub);border:1px solid var(--line);border-radius:9px;padding:7px 10px;line-height:1.5}
+.checkres.good{border-color:rgba(97,222,198,.5);color:var(--mint)}
+.checkres.bad{border-color:rgba(255,138,122,.5);color:var(--coral)}
+.apprrow{margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.apprrow select{width:auto;padding:3px 6px;font-size:12.5px}
+.applybar{position:sticky;bottom:-14px;margin:12px -14px -14px;padding:10px 14px;background:var(--card);border-top:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap;z-index:2}
+
+details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
+.scen{display:flex;flex-direction:column;gap:7px}
+.scen button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px}
+.scen button small{display:block;color:var(--faint);font-size:12px}
+.scen button.on{border-color:var(--mint);background:#13302c}
+
+/* ---------- 머신(Agent 루프) ---------- */
+.loopwrap{position:relative;display:flex;justify-content:center}
+.machine{position:relative;width:720px;height:804px;flex:none}
+.machine svg.wire{position:absolute;inset:0;width:720px;height:804px;overflow:visible}
+.wire .ln{fill:none;stroke:var(--line);stroke-width:3;transition:stroke .25s,filter .25s}
+.wire .ln.thin{stroke-width:2}
+.wire .deny{stroke:#5b3a44;stroke-dasharray:7 6;stroke-width:2.5}
+.wire .hb{fill:none;stroke:#ff8a7a70;stroke-width:2;stroke-dasharray:9 7}
+.wire text{font:12px "Pretendard Variable","Apple SD Gothic Neo","Malgun Gothic",sans-serif;fill:var(--faint);transition:fill .25s}
+.wire text.hl{font-size:12.5px;font-weight:700;fill:#ff9d90;letter-spacing:.06em}
+.wire text.hs{fill:#c98a82}
+.wire .ln.lit{stroke:var(--violet);filter:drop-shadow(0 0 6px #b19bffaa)}
+.wire .ln.lit.ok{stroke:var(--mint);filter:drop-shadow(0 0 6px #61dec6aa)}
+.wire .ln.lit.bad{stroke:var(--coral);filter:drop-shadow(0 0 6px #ff8a7aaa)}
+.wire .ln.lit.wait{stroke:var(--amber);filter:drop-shadow(0 0 6px #ffcc7aaa)}
+.wire text.lit{fill:var(--text)}
+.wire .ln.lit:not(.head){stroke-dasharray:10 7;animation:flow .6s linear infinite}
+.wire .head{stroke-width:2}
+.wire #tDeny{font-size:11.5px;fill:#a9706c}
+.wire #tDeny.lit{fill:var(--coral)}
+@keyframes flow{to{stroke-dashoffset:-17}}
+.packet{position:absolute;left:0;top:0;width:23px;height:23px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 5px #b19bff33,0 0 22px #b19bffaa;transition:background .3s,box-shadow .3s;z-index:1;opacity:0;pointer-events:none}
+.packet.on{opacity:1}
+.packet.bad{background:var(--coral);box-shadow:0 0 0 5px #ff8a7a33,0 0 22px #ff8a7aaa}
+.packet.ok{background:var(--mint);box-shadow:0 0 0 5px #61dec633,0 0 22px #61dec6aa}
+.packet.wait{background:var(--amber);box-shadow:0 0 0 5px #ffcc7a33,0 0 22px #ffcc7aaa;animation:blink 1s infinite}
+.packet span{position:absolute;left:50%;transform:translateX(-50%);top:-20px;font:11px var(--mono);color:var(--sub);white-space:nowrap;background:#0b0f1add;padding:0 5px;border-radius:4px}
+@keyframes blink{50%{opacity:.45}}
+.packet.below span{top:26px}
+.unit{position:absolute;transform:translate(-50%,-50%);width:220px;border:1.5px solid var(--line);border-radius:12px;padding:8px 13px;background:var(--card2);z-index:2;transition:border-color .25s,background .25s,box-shadow .25s,opacity .25s,transform .3s}
+.unit.top{transform:translate(-50%,0)}
+.unit .t{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.unit .t em{font-style:normal;font:10.5px var(--mono);color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:0 5px}
+.unit .d{font-size:12px;color:var(--faint);line-height:1.45}
+.unit .msg{font-size:12px;font-family:var(--mono);color:var(--sub);margin-top:2px;word-break:break-all;min-height:0}
+.unit.hook{border-style:dashed;border-color:#7a4a48}
+.unit .row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.chip{position:relative;border:1.5px solid var(--line);border-radius:9px;padding:4px 4px;text-align:center;font-size:12.5px;transition:all .25s;overflow:hidden;line-height:1.35}
+.chip small{display:block;font-size:10.5px;color:var(--faint)}
+.chip.off{opacity:.4;border-style:dotted}
+.active{border-color:var(--violet)!important;background:#1d1a33!important}
+.ok{border-color:var(--mint)!important;background:#11302a!important}
+.bad{border-color:var(--coral)!important;background:#3a1d1d!important}
+.wait{border-color:var(--amber)!important;background:#3a2e17!important}
+.skip{opacity:.32}
+.focus{box-shadow:0 0 0 3px #b19bff55,0 0 28px #b19bff44!important;z-index:3}
+.unit.focus{transform:translate(-50%,-50%) scale(1.035)}
+.unit.top.focus{transform:translate(-50%,0) scale(1.035)}
+.focus.bad{box-shadow:0 0 0 3px #ff8a7a66,0 0 28px #ff8a7a44!important}
+.focus.ok{box-shadow:0 0 0 3px #61dec666,0 0 28px #61dec644!important}
+.focus.wait{box-shadow:0 0 0 3px #ffcc7a66,0 0 28px #ffcc7a44!important}
+.chip.focus::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,#ffffff22,transparent);animation:sweep .7s ease-out}
+@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.approve{display:none;margin-top:8px;gap:8px}
+.approve.on{display:flex}
+.approve .btn{padding:5px 10px;font-size:13px}
+.user{position:absolute;left:360px;top:24px;transform:translate(-50%,-50%);border:1.5px solid var(--line);border-radius:30px;padding:3px 16px;font-size:13.5px;font-weight:700;background:var(--card2);z-index:2;transition:all .25s}
+.user.focus{border-color:var(--violet)}
+.center{position:absolute;left:360px;transform:translateX(-50%);text-align:center;z-index:1}
+.center small{display:block;font:10.5px var(--mono);letter-spacing:.16em;color:var(--violet)}
+.center b{display:block;font-size:20px;line-height:1.3;margin:2px 0}
+.center span{display:block;font-size:12px;color:var(--faint);line-height:1.45}
+.verdict{position:absolute;left:360px;top:432px;transform:translateX(-50%);width:300px;text-align:center;font-size:13.5px;line-height:1.45;z-index:1}
+.verdict.good{color:var(--mint)}.verdict.no{color:var(--coral)}.verdict.hold{color:var(--amber)}
+.gbtn{background:#1b2240;color:var(--violet);border:1px solid #4b3f86;border-radius:30px;padding:3px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.gbtn:hover{background:#262055}
+.guide{position:fixed;inset:0;z-index:50;display:none}
+.guide.on{display:block}
+.guide .veil{position:absolute;inset:0;background:#05070dcc}
+.guide .hole{position:absolute;border-radius:14px;box-shadow:0 0 0 9999px #05070dc4;border:2px solid var(--violet);transition:all .35s cubic-bezier(.5,0,.2,1);pointer-events:none}
+.guide .card{position:absolute;width:min(420px,calc(100vw - 32px));background:#161c30;border:1px solid #4b3f86;border-radius:14px;padding:16px 18px 14px;box-shadow:0 18px 50px #000a;transition:left .35s,top .35s}
+.guide .card small{font:11px var(--mono);letter-spacing:.12em;color:var(--violet)}
+.guide .card h3{margin:4px 0 6px;font-size:17px}
+.guide .card p{margin:0 0 6px;font-size:14px;color:var(--sub);line-height:1.6}
+.guide .card ol,.guide .card ul{margin:4px 0 6px;padding-left:20px;font-size:13.5px;color:var(--sub);line-height:1.6}
+.guide .card li{margin:3px 0}
+.guide .card b{color:var(--text)}
+.guide .card .gnav{display:flex;align-items:center;gap:8px;margin-top:10px}
+.guide .card .gnav .dots{flex:1;display:flex;gap:4px}
+.guide .card .gnav .dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.guide .card .gnav .dots i.on{background:var(--violet)}
+.guide .card.wide{width:min(560px,calc(100vw - 32px))}
+.stepbar{position:sticky;bottom:-14px;z-index:5;box-shadow:0 -10px 20px var(--card);display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}
+.stepbar .sb{background:#1e2640;color:var(--text);border:1.5px solid var(--line);border-radius:10px;padding:10px 18px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap}
+.stepbar .sb:disabled{opacity:.35;cursor:default}
+.stepbar .sb.next{border-color:var(--mint);color:var(--mint)}
+.stepbar .sb.next.ready{background:#13302c;box-shadow:0 0 0 3px #61dec622;animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{50%{box-shadow:0 0 0 6px #61dec611}}
+.stepbar .sbi{min-width:0;text-align:center;line-height:1.35}
+.stepbar .sbi b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stepbar .sbi small{display:block;font-size:12px;color:var(--faint)}
+.stepbar .sbi label{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--sub);cursor:pointer;margin-top:2px}
+.stepbar .sbi small.go{color:var(--mint)}
+
+
+/* ---------- 왼쪽 패널 정리 ---------- */
+.btn.send{width:100%;margin-top:10px;padding:10px 12px;font-size:15px;font-weight:700;background:#13302c}
+.sect{margin:16px 0 6px;font-size:12px;font-weight:700;color:var(--faint);letter-spacing:.04em}
+.sect span{font-weight:400;margin-left:6px;color:#5d6681}
+.examples{display:flex;flex-direction:column;gap:4px}
+.examples button{all:unset;cursor:pointer;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 10px;padding:7px 10px;border:1px solid transparent;border-radius:8px;font-size:13.5px}
+.examples button:hover{background:#ffffff08}
+.examples button.on{border-color:var(--line);background:#1b2240}
+.examples button b{white-space:nowrap}
+.examples button small{font-size:11.5px;color:var(--faint);white-space:nowrap;margin-left:auto}
+.examples button small.t-ok{color:#7fc9b8}.examples button small.t-bad{color:#d99a91}
+.mgmt{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.mgmt button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:8px;padding:6px 8px;text-align:center;line-height:1.3}
+.mgmt button:hover{border-color:#47507a;background:#ffffff06}
+.mgmt b{display:block;font-size:12.5px}
+.mgmt small{display:block;font-size:10.5px;color:var(--faint)}
+details.note{margin-top:12px}
+details.note summary{font-size:12.5px;color:var(--faint)}
+.insp details summary{font-size:11.5px;color:var(--faint);margin:6px 0 0;cursor:pointer}
+#tPrev,#tNext{display:none}
+
+/* ---------- 레지스터·인스펙터·로그 ---------- */
+.regs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;margin-bottom:12px}
+.reg{background:#0d1222;border:1px solid var(--line);border-radius:8px;padding:5px 9px;transition:border-color .3s,background .3s}
+.reg small{display:block;font:10px var(--mono);letter-spacing:.08em;color:var(--faint)}
+.reg b{font:500 13px var(--mono);color:var(--text);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.reg.flash{border-color:var(--violet);background:#1d1a33}
+.reg.warn b{color:var(--amber)}.reg.bad b{color:var(--coral)}.reg.good b{color:var(--mint)}
+.insp{background:#0d1222;border:1px solid var(--line);border-left:3px solid var(--violet);border-radius:10px;padding:9px 12px;margin-bottom:12px}
+.insp .k{font:11px var(--mono);color:var(--faint)}
+.insp .h{font-weight:700;font-size:14.5px;margin:2px 0}
+.insp .p{font-size:13.5px;color:var(--sub)}
+.insp pre{margin:6px 0 0;font:11px/1.5 var(--mono);color:var(--faint);white-space:pre-wrap;word-break:break-all;max-height:96px;overflow:auto}
+.insp.bad{border-left-color:var(--coral)}.insp.ok{border-left-color:var(--mint)}.insp.wait{border-left-color:var(--amber)}
+.term{background:#080b14;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:11.5px/1.6 var(--mono);height:300px;overflow:auto}
+.term .l{white-space:pre-wrap;word-break:break-all;padding:0 4px;border-radius:4px;cursor:pointer}
+.term .l:hover{background:#ffffff08}
+.term .l.cur{background:#b19bff1f;outline:1px solid #b19bff55}
+.term .l.future{opacity:.25}
+.term .n{color:#4a536e;display:inline-block;min-width:2.6em}
+.term .src{display:inline-block;min-width:3.4em}
+.term .src.h{color:var(--violet)}.term .src.a{color:var(--blue)}.term .src.s{color:var(--faint)}
+.term .okc{color:var(--mint)}.term .badc{color:var(--coral)}.term .waitc{color:var(--amber)}.term .dim{color:var(--faint)}.term .tool{color:var(--text)}
+.term-ctl{display:flex;gap:10px;align-items:center;margin:0 0 6px;font-size:12px;color:var(--sub)}
+.term-ctl label{display:flex;gap:4px;align-items:center}
+
+/* ---------- 트랜스포트(에뮬레이터 컨트롤) ---------- */
+.transport{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center;padding:10px 20px 12px;border-top:1px solid var(--line);background:#0d1220}
+.tbtns{display:flex;gap:6px}
+.tb{width:40px;height:38px;border-radius:9px;border:1px solid var(--line);background:#182039;color:var(--text);font-size:15px;cursor:pointer;display:grid;place-items:center}
+.tb:hover{border-color:var(--violet)}
+.tb.play{width:52px;border-color:var(--mint);color:var(--mint);font-size:17px}
+.tb.live{width:auto;padding:0 12px;font:600 12px var(--mono);letter-spacing:.06em}
+.tb.live.on{color:var(--coral);border-color:#7a3d3d}
+.tb.live.on::before{content:"●";margin-right:5px;animation:blink 1.2s infinite}
+.tl{min-width:0}
+.tl-top{display:flex;justify-content:space-between;font:11.5px var(--mono);color:var(--faint);margin-bottom:5px;gap:10px}
+.tl-top b{color:var(--text);font-weight:500}
+.track{position:relative;height:30px;background:#0a0e1a;border:1px solid var(--line);border-radius:8px;cursor:pointer;overflow:hidden}
+.track .buf{position:absolute;top:0;bottom:0;background:#b19bff14}
+.track .tick{position:absolute;top:7px;bottom:7px;width:3px;border-radius:2px;background:#3d4766;transform:translateX(-1px)}
+.track .tick.c{background:var(--violet)}.track .tick.x{background:var(--coral)}.track .tick.o{background:var(--mint)}.track .tick.w{background:var(--amber)}.track .tick.m{background:#5b6585;top:3px;bottom:3px;width:2px}
+.track .head{position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 8px #fff;transition:left .25s}
+.track .head::before{content:"";position:absolute;top:-1px;left:-5px;border:6px solid transparent;border-top-color:#fff}
+.dialbox{display:flex;align-items:center;gap:12px}
+.dial{width:66px;height:66px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#2a3352,#121829 70%);border:1px solid #3a4466;position:relative;cursor:grab;touch-action:none;box-shadow:inset 0 -3px 8px #0008,0 2px 10px #0006}
+.dial:active{cursor:grabbing}
+.dial .notch{position:absolute;left:50%;top:5px;width:4px;height:14px;margin-left:-2px;border-radius:2px;background:var(--mint);box-shadow:0 0 8px var(--mint);transform-origin:2px 28px}
+.dial .ring{position:absolute;inset:-6px;border-radius:50%;background:repeating-conic-gradient(#3a4466 0 2deg,transparent 2deg 15deg);-webkit-mask:radial-gradient(circle,transparent 37px,#000 38px);mask:radial-gradient(circle,transparent 37px,#000 38px);pointer-events:none}
+.dialinfo{font:12px/1.5 var(--mono);color:var(--faint);min-width:150px}
+.dialinfo b{color:var(--text);font-size:15px;font-weight:600}
+.dialinfo .mode{color:var(--mint)}
+.keys{font-size:11px;color:#59627e}
+@media(max-width:1150px){main,body.building main{grid-template-columns:280px minmax(0,1fr)}main>.panel:last-child{grid-column:1/-1}body.building main>.panel:first-child{grid-column:1/-1}}
+@media(max-width:900px){main,body.building main{grid-template-columns:1fr}.build{grid-template-columns:1fr}.transport{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <a class="home" href="../docs/index.html">← 문서 허브</a>
+  <h1>Hook·Harness 실험실</h1>
+  <span class="badge sim" id="badge"><i></i>미리보기 · 브라우저 모의 실행</span>
+  <button class="gbtn" id="gBtn" title="화면 둘러보기와 해 볼 실험">? 가이드</button>
+</header>
+<main>
+  <!-- 왼쪽: 입력 -->
+  <section class="panel">
+    <div class="tabs" id="tabs">
+      <button data-tab="req" class="on">요청</button>
+      <button data-tab="cfg">Harness 만들기</button>
+      <button data-tab="rep">기록 재생</button>
+    </div>
+    <div class="tab on" id="tab-req">
+      <div id="modelWrap" style="display:none"><label class="f" for="model">모델 <span class="faint">목록에 없으면 <code>공급자/모델</code> 형식으로 직접 입력</span></label><input id="model" list="modelList" spellcheck="false" autocomplete="off"><datalist id="modelList"></datalist></div>
+      <label class="f" for="prompt">Agent에게 보낼 요청</label>
+      <textarea id="prompt" rows="4">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
+      <button class="btn pri send" id="send">요청 보내기</button>
+      <div class="sect">예시 요청 <span>누르면 위 칸에 채워집니다</span></div>
+      <div class="examples" id="presetReq"></div>
+      <div class="reply"><b>Agent 응답</b><span id="replyText">아직 요청을 보내지 않았습니다.</span></div>
+      <div class="sect">실행 관리</div>
+      <div class="mgmt">
+        <button id="newSession" title="시도 횟수와 검증 횟수를 0부터 다시 셉니다"><b>새 세션</b><small>횟수 초기화</small></button>
+        <button id="abort" title="돌고 있는 Agent를 멈춥니다"><b>중단</b><small>Agent 멈춤</small></button>
+        <button id="resetFiles" title="지난 실험에서 만든 lab/output 파일을 지웁니다"><b>파일 비우기</b><small>결과 초기화</small></button>
+      </div>
+      <details class="note"><summary>지금 무엇이 실행하나요?</summary><p class="small" id="modeNote"></p></details>
+    </div>
+    <div class="tab" id="tab-cfg">
+      <div class="seg" id="courseSeg">
+        <button data-course="basic" class="on"><b>기본 과정</b><small>설정을 고르면 코드가 바뀝니다</small></button>
+        <button data-course="advanced"><b>고급 과정</b><small>코드를 직접 쓰고 검사합니다</small></button>
+      </div>
+      <div class="build" id="buildBasic">
+        <div class="form">
+          <div class="btns presets"><span class="small">빠른 설정</span>
+            <button class="btn" data-preset="naked">맨몸 Agent</button>
+            <button class="btn" data-preset="full">완성 Harness</button></div>
+          <div class="grp" data-region="record"><h3>Record <small>기록</small><label class="switch"><input type="checkbox" id="cRecordOn"> 켜기</label></h3>
+            <div class="small">Hook이 본 것과 판단을 <code>.quest/events.jsonl</code>에 남깁니다.</div></div>
+          <div class="grp" data-region="limit"><h3>Limit <small>시도 횟수</small><label class="switch"><input type="checkbox" id="cLimitOn"> 켜기</label></h3>
+            <div class="row"><label>세션마다 <input type="number" id="cBudget" min="1" max="50" style="width:70px"> 회까지</label></div></div>
+          <div class="grp" data-region="tools"><h3>Policy <small>허용 도구</small><label class="switch"><input type="checkbox" id="cToolsOn"> 켜기</label></h3>
+            <div class="row" id="cTools"></div></div>
+          <div class="grp" data-region="paths"><h3>Policy <small>허용 경로</small><label class="switch"><input type="checkbox" id="cPathOn"> 켜기</label></h3>
+            <div class="small">한 줄에 하나, 앞부분이 같으면 허용</div>
+            <div class="pathcols"><label class="small">읽기<textarea id="cRead"></textarea></label><label class="small">쓰기<textarea id="cWrite"></textarea></label></div></div>
+          <div class="grp" data-region="validation"><h3>Validation <small>통과로 볼 검사</small></h3><div class="row" id="cChecks"></div></div>
+          <div class="grp" data-region="submit"><h3>Approval <small>제출 조건과 사람 승인</small></h3>
+            <div class="row" id="cSubmit"></div>
+            <div class="row" style="margin-top:6px"><label>제출할 때 사람에게
+              <select id="cApproval" style="width:auto;padding:3px 6px"><option value="ask">묻기 (ask)</option><option value="allow">묻지 않고 허용 (allow)</option><option value="deny">항상 거절 (deny)</option></select></label></div></div>
+        </div>
+        <div class="codepane">
+          <div class="codehead"><code>.opencode/plugins/harness.js</code><span id="diffNote"></span></div>
+          <pre class="codev" id="codeView"></pre>
+          <pre class="codev mini" id="approvalView"></pre>
+        </div>
+      </div>
+      <div class="build adv" id="buildAdv" hidden>
+        <div class="missions">
+          <div class="mhead"><b>미션</b><span id="missionScore"></span></div>
+          <ol id="missionList"></ol>
+          <p class="small">검사는 고정 입력으로 코드를 돌려 보는 것입니다. 실제로 막히는지는 적용한 뒤 요청을 보내 머신에서 확인합니다.</p>
+        </div>
+        <div class="codepane">
+          <div class="codehead"><code>.opencode/plugins/harness.js</code><span>Tab 키는 들여쓰기</span></div>
+          <textarea class="code edit" id="advCode" spellcheck="false" autocomplete="off"></textarea>
+          <div class="btns">
+            <button class="btn pri" id="advCheck">검사하기</button>
+            <button class="btn" id="advFromBasic" title="기본 과정에서 고른 설정으로 만든 코드를 편집기에 넣습니다">기본 과정 코드 가져오기</button>
+            <button class="btn" id="advReset" title="미션을 시작할 때의 빈 코드로 되돌립니다">처음 코드로</button>
+          </div>
+          <div class="checkres" id="advResult">코드를 고친 뒤 <b>검사하기</b>를 누르면 미션별로 통과 여부를 알려 줍니다.</div>
+          <div class="row small apprrow"><code>opencode.json</code> 제출할 때 사람에게
+            <select id="advApproval"><option value="ask">묻기 (ask)</option><option value="allow">묻지 않고 허용 (allow)</option><option value="deny">항상 거절 (deny)</option></select></div>
+        </div>
+      </div>
+      <div class="applybar">
+        <button class="btn pri" id="apply">적용하기</button>
+        <label class="small"><input type="checkbox" id="applyReset" checked> 작업 파일도 비우기</label>
+        <span class="dirty" id="dirty"></span>
+      </div>
+      <p class="small" id="applyNote">적용하면 이 코드가 Harness가 됩니다. 그다음 요청을 보내 머신에서 차이를 봅니다.</p>
+    </div>
+    <div class="tab" id="tab-rep">
+      <p class="small" style="margin-top:0">실제 OpenCode 1.19.4 실행기에서 남긴 기록을 테이프에 올려 재생합니다(모델은 고정 응답기).</p>
+      <div class="scen" id="scen"></div>
+      <div class="btns">
+        <button class="btn" id="backToLab">실험 테이프로 돌아가기</button>
+        <label class="small">다른 기록 <input type="file" id="rFile" accept=".jsonl,.json,.txt" style="width:150px"></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 가운데: 머신 -->
+  <section class="panel">
+    <h2>HARNESS 머신</h2>
+    <div class="loopwrap" id="loopwrap">
+    <div class="machine" id="machine">
+      <svg class="wire" viewBox="0 0 720 804" aria-hidden="true">
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 9 5 1 9z" fill="context-stroke"/></marker></defs>
+        <rect class="hb" x="8" y="62" width="704" height="736" rx="22"/>
+        <text class="hl" x="26" y="784">HARNESS</text>
+        <text class="hs" x="104" y="784">OpenCode가 Agent 루프를 돌리고, 플러그인 Hook이 길목마다 끼어듭니다</text>
+        <path id="aIn" class="ln thin" d="M346 40 V98" marker-end="url(#ah)"/>
+        <path id="aOut" class="ln thin" d="M374 98 V40" marker-end="url(#ah)"/>
+        <text id="tIn" x="338" y="76" text-anchor="end">요청</text>
+        <text id="tOut" x="382" y="76">응답</text>
+        <path id="aCall" class="ln"/><path id="hCall" class="ln head" marker-end="url(#ah)"/>
+        <path id="aRun" class="ln"/><path id="hRun" class="ln head" marker-end="url(#ah)"/>
+        <path id="aRes" class="ln"/><path id="hRes" class="ln head" marker-end="url(#ah)"/>
+        <path id="aObs" class="ln"/><path id="hObs" class="ln head" marker-end="url(#ah)"/>
+        <path id="aDeny" class="ln deny"/><path id="hDeny" class="ln deny head" marker-end="url(#ah)"/>
+        <path id="pDenyT" fill="none"/>
+        <text id="tCall" x="556" y="194" text-anchor="middle">① 도구 호출</text>
+        <text id="tRun" x="556" y="500" text-anchor="middle">② 허용되면 실행</text>
+        <text id="tRes" x="164" y="500" text-anchor="middle">③ 결과</text>
+        <text id="tObs" x="164" y="194" text-anchor="middle">④ 관찰 → 다음 생각</text>
+        <text id="tDeny" dy="15"><textPath href="#pDenyT" startOffset="46%" text-anchor="middle">거부 → 오류를 결과로</textPath></text>
+        <path id="aBr" class="ln thin" d="M360 560 V604 M130 604 H590 M130 604 V630 M360 604 V630 M590 604 V630"/>
+        <text x="244" y="623" text-anchor="middle">validate · submit일 때</text>
+      </svg>
+      <div class="user" id="uUser">사용자</div>
+      <div class="packet" id="packet"><span id="packetLabel"></span></div>
+      <div class="center" style="top:258px;left:348px"><small>AGENT LOOP</small><b id="loopN">대기 중</b></div>
+      <div class="verdict" id="loopD" style="top:418px;color:var(--faint);font-size:12.5px"></div>
+      <div class="unit" id="uAgent" style="left:360px;top:140px;width:272px"><div class="t">Agent <em>LLM</em></div><div class="d">지난 결과를 보고 다음 도구를 고릅니다</div><div class="msg" id="mAgent"></div></div>
+      <div class="unit hook" id="uBefore" style="left:574px;top:340px;width:264px"><div class="t">before Hook <em>실행 전</em></div><div class="d">tool.execute.before가 호출을 가로채 판정합니다</div>
+        <div class="row">
+          <div class="chip" id="uRecord">① Record<small>record()</small></div>
+          <div class="chip" id="uLimit">② Limit<small>attempted</small></div>
+          <div class="chip" id="uPolicy">③ Policy<small>도구·경로</small></div>
+        </div>
+        <div class="msg" id="mBefore"></div>
+      </div>
+      <div class="unit" id="uExec" style="left:360px;top:530px;width:220px"><div class="t">도구 실행 <em>execute</em></div><div class="d">Hook을 통과한 도구가 실제로 읽고 씁니다</div><div class="msg" id="mExec"></div></div>
+      <div class="unit hook" id="uAfter" style="left:156px;top:340px;width:196px"><div class="t">after Hook <em>실행 후</em></div><div class="d">tool.execute.after가 결과를 기록합니다</div><div class="msg" id="mAfter"></div></div>
+      <div class="unit top" id="uVal" style="left:128px;top:632px;width:208px"><div class="t">Validation</div><div class="d">acceptValidation · 스키마·합계·보고서·원본</div><div class="msg" id="mVal"></div></div>
+      <div class="unit top" id="uAppr" style="left:360px;top:632px;width:224px"><div class="t">Approval <em>ask</em></div><div class="d">canSubmit 뒤에 사람에게 묻습니다</div><div class="msg" id="mAppr"></div>
+        <div class="approve" id="approve"><button class="btn pri" id="apOnce">한 번 허용</button><button class="btn warn" id="apReject">거절</button></div></div>
+      <div class="unit top" id="uSub" style="left:592px;top:632px;width:208px"><div class="t">제출 <em>receipt</em></div><div class="d">로컬 영수증을 한 번만 만듭니다</div><div class="msg" id="mSub"></div></div>
+      <div class="verdict" id="verdict" style="top:440px"></div>
+    </div>
+    </div>
+    <div class="stepbar">
+      <button class="sb" id="sPrev" title="한 단계 뒤 (←)">◀ 이전 단계</button>
+      <div class="sbi"><b id="sInfo">처음 위치</b><small id="sWait">요청을 보내면 단계가 쌓입니다</small>
+        <label title="켜 두면 요청을 보내도 저절로 재생하지 않고, 다음 단계 버튼을 누를 때만 움직입니다"><input type="checkbox" id="sMode"> 한 단계씩 보기 (자동 재생 끄기)</label></div>
+      <button class="sb next" id="sNext" title="한 단계 앞 (→)">다음 단계 ▶</button>
+    </div>
+  </section>
+
+  <!-- 오른쪽: 레지스터·인스펙터·로그 -->
+  <section class="panel">
+    <h2>현재 단계</h2>
+    <div class="insp" id="insp"><div class="k" id="iK">STEP 0 / 0</div><div class="h" id="iH">테이프가 비어 있습니다</div><div class="p" id="iP">요청을 보내면 OpenCode와 Hook이 만드는 사건이 이 테이프에 쌓이고, 아래 컨트롤로 한 단계씩 돌려 볼 수 있습니다.</div><details><summary>원본 사건</summary><pre id="iRaw"></pre></details></div>
+    <h2>상태</h2>
+    <div class="regs">
+      <div class="reg" id="rTool"><small>도구</small><b>-</b></div>
+      <div class="reg" id="rArg"><small>인자</small><b>-</b></div>
+      <div class="reg" id="rAtt"><small>시도 / 예산</small><b>0 / 8</b></div>
+      <div class="reg" id="rVal"><small>검증 / 3</small><b>0 / 3</b></div>
+      <div class="reg" id="rLast"><small>마지막 검사</small><b>-</b></div>
+      <div class="reg" id="rSub"><small>제출</small><b>아직</b></div>
+    </div>
+    <h2>로그</h2>
+    <div class="term-ctl">
+      <label><input type="checkbox" id="fHook" checked> hook</label>
+      <label><input type="checkbox" id="fAgent" checked> agent</label>
+      <label><input type="checkbox" id="fFuture" checked> 다음 단계 미리 보기</label>
+    </div>
+    <div class="term" id="term"></div>
+  </section>
+</main>
+
+<div class="guide" id="guide"><div class="veil" id="gVeil"></div><div class="hole" id="gHole"></div><div class="card" id="gCard"></div></div>
+<footer class="transport">
+  <div class="tbtns">
+    <button class="tb" id="tFirst" title="처음 (Home)">⏮</button>
+    <button class="tb" id="tPrev" title="한 단계 뒤 (←)">◀</button>
+    <button class="tb play" id="tPlay" title="재생/일시정지 (Space)">▶</button>
+    <button class="tb" id="tNext" title="한 단계 앞 (→)">▶|</button>
+    <button class="tb live" id="tLive" title="실시간 위치로 (End)">LIVE</button>
+  </div>
+  <div class="tl">
+    <div class="tl-top"><span>STEP <b id="tlStep">0</b> / <b id="tlTotal">0</b></span><span id="tlBehind"></span><span class="keys">Space 재생 · ← → 한 단계</span></div>
+    <div class="track" id="track"><div class="buf" id="tlBuf"></div><div class="head" id="tlHead"></div></div>
+  </div>
+  <div class="dialbox">
+    <div class="dial" id="dial" title="재생 중: 단계 사이 간격 조절 · 멈춤: 한 단계씩 조그"><div class="ring"></div><div class="notch" id="notch"></div></div>
+    <div class="dialinfo"><div class="mode" id="dMode">간격 다이얼</div><div><b id="dGap">0.8</b> 초 / 단계</div><div id="dHint">실제 간격보다 짧으면 이 값만큼 기다립니다</div></div>
+  </div>
+</footer>
+
+<script id="evidence" type="application/json">__DATA__</script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+/*__HARNESS_KIT__*/
+const REQUESTS = [
+  ['합계 계산 후 제출', 'lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.', '정상 흐름 · 검증과 승인까지', 'ok'],
+  ['보호 파일 수정', 'lab/protected/settings.json의 setting 값을 changed로 바꿔 줘.', 'Policy가 경로를 막음', 'bad'],
+  ['금지 도구 시도', 'quest_probe 도구를 한 번 실행해 봐.', 'Policy가 도구를 막음', 'bad'],
+  ['예산 초과', 'lab/input/orders.json을 10번 반복해서 읽어 줘.', 'Limit이 횟수를 막음', 'bad'],
+  ['상태 확인', 'quest_status로 지금 상태를 알려 줘.', '시도 횟수에 넣지 않는 도구', ''],
+];
+let mode = 'sim';           // sim | live
+let config = structuredClone(PRESETS.full);
+// Harness 만들기: 기본 과정(폼→코드)과 고급 과정(직접 작성). applied는 지금 실행 중인 Harness입니다.
+let course = 'basic';
+const infoFromConfig = c => ({ record: c.record, toolsOn: c.toolsOn, pathOn: c.pathOn, limitOn: c.limitOn, budget: c.budget, checksAll: c.checks.length === 4 });
+const appliedFrom = (m, c, source, info) => ({ mode: m, config: structuredClone(c), source: source ?? harnessSource(c).source, info: info ?? infoFromConfig(c) });
+let applied = appliedFrom('basic', config);
+const appliedCfg = () => ({ ...applied.info, approval: applied.config.approval });
+
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.id === 'tab-' + b.dataset.tab));
+  document.body.classList.toggle('building', b.dataset.tab === 'cfg');
+  requestAnimationFrame(() => { if (typeof fitMachine === 'function') fitMachine(); });
+});
+
+/* =====================================================================
+   테이프: 들어온 사건을 "단계(step)"로 펼쳐 쌓습니다.
+   화면은 언제나 "테이프의 0번부터 플레이헤드까지"를 접어서(fold) 그립니다.
+   그래서 앞뒤로 자유롭게 움직일 수 있고, 실제 실행이 빨라도 천천히 볼 수 있습니다.
+   ===================================================================== */
+function makeTape(name) { return { name, steps: [], open: null, lastInput: null }; }
+let labTape = makeTape('lab'), tape = labTape;
+
+const VISUAL = new Set(['request', 'think', 'call', 'hook-in', 'chk-record', 'chk-limit', 'chk-policy', 'deny', 'exec',
+  'validate', 'appr-req', 'ask', 'appr-no', 'submit', 'error', 'after', 'idle', 'session', 'config']);
+function addStep(tp, s) { s.t = s.t ?? performance.now(); tp.steps.push(s); return undefined; }
+function resolveChecks(tp, ev) {
+  // before 뒤에 오는 첫 hook 사건으로 ①②③ 판정 결과를 정합니다.
+  if (!tp.open) return;
+  const reason = ev.event === 'denied' ? String(ev.reason) : null;
+  const lim = reason?.startsWith('LIMIT'), pol = reason?.startsWith('POLICY');
+  tp.open.limit.result = lim ? 'bad' : 'ok';
+  tp.open.policy.result = lim ? 'skip' : pol ? 'bad' : 'ok';
+  if (reason && !lim && !pol) tp.open.policy.result = 'bad';
+  for (const s of [tp.open.record, tp.open.limit, tp.open.policy]) s.pending = false;
+  tp.open = null;
+}
+function ingest(tp, kind, data, t) {
+  const at = t ?? performance.now();
+  if (kind === 'hook') {
+    const e = data;
+    if (e.event === 'plugin_loaded') return addStep(tp, { type: 'log', src: 'h', ev: e, t: at });
+    if (e.event === 'before') {
+      resolveChecks(tp, e);
+      const call = tp.pendingCall?.tool === e.tool ? tp.pendingCall : null;
+      tp.pendingCall = null;
+      const hin = { type: 'hook-in', ev: e, t: at, input: call?.input ?? null, hasCall: Boolean(call) };
+      addStep(tp, hin);
+      const rec = { type: 'chk-record', ev: e, t: at, result: 'ok', pending: true };
+      const lim = { type: 'chk-limit', ev: e, t: at, pending: true };
+      const pol = { type: 'chk-policy', ev: e, t: at, pending: true, input: call?.input ?? null };
+      hin.policy = pol;
+      addStep(tp, rec); addStep(tp, lim); addStep(tp, pol);
+      tp.open = { record: rec, limit: lim, policy: pol, tool: e.tool, wrote: false };
+      tp.cur = { tool: e.tool, exec: false };
+      return;
+    }
+    resolveChecks(tp, e);
+    if (e.event === 'denied') return addStep(tp, { type: 'deny', ev: e, t: at });
+    if (e.event === 'file_written') { if (tp.cur) tp.cur.exec = true; return addStep(tp, { type: 'exec', ev: e, t: at }); }
+    if (e.event === 'validation') { if (tp.cur) tp.cur.exec = true; return addStep(tp, { type: 'validate', ev: e, t: at }); }
+    if (e.event === 'approval_requested') { if (tp.cur) tp.cur.exec = true; return addStep(tp, { type: 'appr-req', ev: e, t: at }); }
+    if (e.event === 'approval_rejected') return addStep(tp, { type: 'appr-no', ev: e, t: at });
+    if (e.event === 'submitted') return addStep(tp, { type: 'submit', ev: e, t: at });
+    if (e.event === 'tool_error') return addStep(tp, { type: 'error', ev: e, t: at });
+    if (e.event === 'after') {
+      if (tp.cur && !tp.cur.exec) addStep(tp, { type: 'exec', ev: { event: 'exec', tool: e.tool }, t: at });
+      tp.cur = null;
+      return addStep(tp, { type: 'after', ev: e, t: at });
+    }
+    return addStep(tp, { type: 'log', src: 'h', ev: e, t: at });
+  }
+  if (kind === 'opencode') {
+    const ev = data;
+    if (ev.type === 'session.status') { if (ev.properties?.status?.type === 'busy') addStep(tp, { type: 'think', ev, t: at }); return; }
+    if (ev.type === 'session.idle') return addStep(tp, { type: 'idle', ev, t: at });
+    if (ev.type === 'session.error') return addStep(tp, { type: 'log', src: 'a', ev, t: at, bad: true });
+    if (ev.type === 'tool') {
+      if (ev.status === 'running') {
+        // OpenCode 이벤트와 Hook 기록은 서로 다른 길로 와서 순서가 뒤집힐 수 있습니다.
+        // Hook이 먼저 왔으면 그 Hook 앞에 호출 단계를 끼워 넣어 "호출 → Hook" 순서를 지킵니다.
+        for (let j = tp.steps.length - 1; j >= 0; j--) {
+          const s = tp.steps[j];
+          if (s.type === 'call') break;
+          if (s.type === 'hook-in' && s.ev.tool === ev.tool && !s.hasCall) {
+            s.hasCall = true; s.input = ev.input; if (s.policy) s.policy.input = ev.input;
+            tp.steps.splice(j, 0, { type: 'call', ev, t: s.t });
+            return j;
+          }
+        }
+        tp.pendingCall = { tool: ev.tool, input: ev.input };
+        return addStep(tp, { type: 'call', ev, t: at });
+      }
+      if (ev.status === 'completed' || ev.status === 'error') return addStep(tp, { type: 'log', src: 'a', ev, t: at });
+      return;
+    }
+    if (ev.type === 'text') return addStep(tp, { type: 'text', ev, t: at });
+    if (ev.type === 'permission.asked') return addStep(tp, { type: 'ask', ev, t: at });
+    if (ev.type === 'permission.replied') return addStep(tp, { type: 'log', src: 'a', ev, t: at });
+    return;
+  }
+  if (kind === 'lab') return addStep(tp, { ...data, t: at });
+}
+
+/* ---------- 접기(fold): 테이프 → 화면 상태 ---------- */
+function blankUnits() {
+  const u = {}; for (const k of ['uAgent', 'uBefore', 'uRecord', 'uLimit', 'uPolicy', 'uExec', 'uVal', 'uAppr', 'uAfter', 'uSub']) u[k] = '';
+  return u;
+}
+function fold(steps, upto) {
+  const S = { units: blankUnits(), msgs: {}, att: 0, val: 0, last: '-', sub: '아직', tool: '-', args: '-', verdict: null,
+    cfg: appliedCfg(), permission: null, reply: [], record: true };
+  const reset = () => { S.units = blankUnits(); S.msgs = {}; S.verdict = null; };
+  for (let i = 0; i <= upto && i < steps.length; i++) {
+    const s = steps[i], e = s.ev || {};
+    switch (s.type) {
+      case 'session': S.att = 0; S.val = 0; S.last = '-'; S.sub = '아직'; reset(); S.permission = null; break;
+      case 'config': S.cfg = s.cfg; break;
+      case 'request': reset(); S.reply = []; S.units.uAgent = 'active'; S.msgs.mAgent = '요청 수신'; break;
+      case 'think': S.units.uAgent = 'active'; S.msgs.mAgent = '다음 행동을 생각하는 중…'; break;
+      case 'call': reset(); S.units.uAgent = 'ok'; S.msgs.mAgent = '→ ' + e.tool; S.tool = e.tool; S.args = JSON.stringify(e.input || {}); break;
+      case 'hook-in':
+        if (!steps[i - 1] || steps[i - 1].type !== 'call') { reset(); S.units.uAgent = 'ok'; S.msgs.mAgent = '→ ' + e.tool; S.tool = e.tool; }
+        S.units.uBefore = 'active'; S.msgs.mBefore = '판정 중…';
+        if (e.tool !== 'quest_status') S.att++;
+        break;
+      case 'chk-record': S.units.uRecord = 'ok'; break;
+      case 'chk-limit': S.units.uLimit = s.pending ? 'active' : s.result; break;
+      case 'chk-policy':
+        S.units.uPolicy = s.pending ? 'active' : s.result;
+        if (!s.pending && s.result === 'ok') { S.units.uBefore = 'ok'; S.msgs.mBefore = '통과 → 실행 허용'; }
+        break;
+      case 'deny':
+        S.units.uBefore = 'bad'; S.msgs.mBefore = '✕ ' + e.reason;
+        for (const k of ['uExec', 'uVal', 'uAppr', 'uAfter', 'uSub']) S.units[k] = 'skip';
+        S.msgs.mExec = '실행되지 않았습니다';
+        S.verdict = ['no', 'Hook이 실행 전에 막았습니다. 도구는 실행되지 않았습니다.'];
+        break;
+      case 'exec':
+        S.units.uExec = 'ok'; S.msgs.mExec = e.path ? '쓰기: ' + e.path : (e.tool || '') + ' 실행 완료'; break;
+      case 'validate':
+        S.units.uExec = 'ok'; S.msgs.mExec = 'quest_validate 실행'; S.val++;
+        S.last = e.ok ? '통과' : '실패: ' + (e.errors || []).join(',');
+        S.units.uVal = e.ok ? 'ok' : 'bad';
+        S.msgs.mVal = e.ok ? '✓ 규칙이 요구한 검사를 모두 통과 · hash ' + String(e.hash).slice(0, 8) : '✕ ' + (e.errors || []).join(', ') + ' 실패 · 기대 합계 ' + e.expected;
+        break;
+      case 'appr-req':
+        S.units.uExec = 'active'; S.msgs.mExec = 'quest_submit 실행 중 (승인 대기)';
+        S.units.uAppr = 'wait'; S.msgs.mAppr = 'canSubmit 통과 · hash ' + String(e.artifactHash || '').slice(0, 10) + '…'; break;
+      case 'ask': S.units.uAppr = 'wait'; S.msgs.mAppr = '⏸ 사람의 답을 기다립니다'; S.permission = e.properties?.id || 'pending'; break;
+      case 'appr-no':
+        S.units.uAppr = 'bad'; S.msgs.mAppr = '✕ 거절됨'; S.units.uSub = 'skip'; S.sub = '거절됨'; S.permission = null;
+        S.verdict = ['hold', '사람이 거절해 제출하지 않았습니다.']; break;
+      case 'submit':
+        S.units.uExec = 'ok'; S.units.uAppr = 'ok'; S.msgs.mAppr = S.cfg.approval === 'allow' ? '묻지 않고 통과 (allow)' : '✓ 허용';
+        S.units.uSub = 'ok'; S.msgs.mSub = '✓ 영수증 ' + String(e.artifactHash || '').slice(0, 10) + '….json'; S.sub = '완료'; S.permission = null;
+        S.verdict = ['good', !S.cfg.checksAll ? '제출했습니다. 검증 규칙이 느슨하면 틀린 결과도 통과할 수 있습니다.' : '검증과 승인을 지나 제출했습니다.']; break;
+      case 'error': S.units.uExec = 'bad'; S.msgs.mExec = '✕ ' + e.reason; break;
+      case 'after': if (S.units.uExec !== 'bad') S.units.uExec = 'ok'; S.units.uAfter = 'ok'; S.msgs.mAfter = '결과 기록 완료'; break;
+      case 'text': S.reply.push([e.id, e.text]); break;
+      case 'idle': if (S.units.uAgent === 'active') { S.units.uAgent = ''; S.msgs.mAgent = '응답을 마쳤습니다'; } break;
+      case 'log': if (e.type === 'permission.replied') S.permission = null; break;
+    }
+  }
+  return S;
+}
+
+/* ---------- 단계 설명(인스펙터) ---------- */
+const FOCUS = { request: 'uAgent', think: 'uAgent', call: 'uAgent', 'hook-in': 'uBefore', 'chk-record': 'uRecord', 'chk-limit': 'uLimit',
+  'chk-policy': 'uPolicy', deny: 'uBefore', exec: 'uExec', validate: 'uVal', 'appr-req': 'uAppr', ask: 'uAppr', 'appr-no': 'uAppr',
+  submit: 'uSub', error: 'uExec', after: 'uAfter', idle: 'uAgent' };
+function describe(s, S) {
+  const e = s.ev || {};
+  const arg = s.input?.path ? ' (' + s.input.path + ')' : '';
+  switch (s.type) {
+    case 'request': return ['요청', '사용자가 요청을 보냈습니다', '“' + s.text + '”'];
+    case 'session': return ['세션', '새 세션을 시작합니다', '도구 시도 횟수와 검증 횟수를 0부터 다시 셉니다.'];
+    case 'config': return ['설정', 'Harness를 적용했습니다', s.mode === 'advanced' ? '직접 작성한 harness.js가 Harness가 됩니다. 이제부터 모든 도구 호출이 이 코드를 지납니다.' : '기본 과정에서 고른 설정으로 만든 harness.js가 Harness가 됩니다.'];
+    case 'think': return ['Agent', 'LLM이 다음 행동을 생각합니다', '대화와 지난 도구 결과를 보고 다음에 부를 도구를 고릅니다.'];
+    case 'call': return ['Agent', 'Agent가 ' + e.tool + '을 호출합니다', '입력: ' + JSON.stringify(e.input || {})];
+    case 'hook-in': return ['Hook', 'tool.execute.before가 호출을 가로챕니다', 'harness.js의 before 함수가 위에서부터 차례로 검사합니다. 여기서 throw하면 도구는 실행되지 않습니다.'];
+    case 'chk-record': return ['① Record', "record({ event: 'before' })", '이 판단을 .quest/events.jsonl에 기록합니다. 기록이 있어야 나중에 무슨 일이 있었는지 볼 수 있습니다.'];
+    case 'chk-limit': {
+      if (s.pending) return ['② Limit', '판정을 기다립니다', '다음 기록이 들어오면 결과가 정해집니다.'];
+      if (!S.cfg.limitOn) return ['② Limit', 'Limit 코드 없음', 'harness.js에 시도 횟수를 세는 코드가 없어 몇 번이든 통과합니다.'];
+      if (e.tool === 'quest_status') return ['② Limit', '세지 않는 도구', 'quest_status는 시도 횟수에 넣지 않습니다.'];
+      return ['② Limit', 'state.attempted ' + S.att + (s.result === 'ok' ? ' ≤ ' : ' > ') + S.cfg.budget + ' → ' + (s.result === 'ok' ? '통과' : '막음'), s.result === 'ok' ? '이번이 ' + S.att + '번째 시도이고 예산 ' + S.cfg.budget + '회 이하라서 통과합니다.' : S.att + '번째 시도라서 예산 ' + S.cfg.budget + '회를 넘었습니다. 여기서 막습니다.'];
+    }
+    case 'chk-policy':
+      if (s.pending) return ['③ Policy', '판정을 기다립니다', '다음 기록이 들어오면 결과가 정해집니다.'];
+      if (s.result === 'skip') return ['③ Policy', '판정하지 않음', 'Limit에서 이미 막혀 Policy까지 오지 않았습니다.'];
+      if (!S.cfg.toolsOn && !S.cfg.pathOn) return ['③ Policy', 'Policy 코드 없음', 'harness.js에 도구·경로를 검사하는 코드가 없어 그대로 통과합니다.'];
+      return ['③ Policy', 'allowedTools · 허용 경로 → ' + (s.result === 'ok' ? '통과' : '막음'), s.result === 'ok' ? e.tool + arg + '은 허용 목록과 경로 규칙을 통과합니다.' : e.tool + arg + '은 허용 목록이나 경로 규칙에 맞지 않습니다. 여기서 막습니다.'];
+    case 'deny': return ['차단', 'Hook이 실행을 막았습니다: ' + e.reason, 'before Hook이 예외를 던졌습니다. 도구는 실행되지 않고, Agent는 이 오류를 결과로 받습니다.'];
+    case 'exec': return ['실행', e.path ? e.path + ' 파일을 썼습니다' : (e.tool || '도구') + '가 실행되었습니다', e.path ? '쓰기가 실제로 일어났습니다. 검증 상태는 초기화됩니다.' : 'Hook을 통과한 도구가 실제로 동작했습니다.'];
+    case 'validate': return ['Validation', e.ok ? '검증 통과' : '검증 실패: ' + (e.errors || []).join(', '),
+      '검사 결과 ' + Object.entries(e.checks || {}).map(([k, v]) => k + '=' + v).join(' · ') + '. acceptValidation()이 ' + (e.ok ? '통과로 봅니다.' : '실패로 봅니다. 남은 검증 ' + e.remaining + '회.')];
+    case 'appr-req': return ['Approval', 'canSubmit()을 통과했습니다', '검증한 파일과 지금 파일이 같은지 확인하고 OpenCode 승인 단계로 넘어갑니다.'];
+    case 'ask': return ['Approval', 'OpenCode가 사람에게 묻습니다', S.permission ? '실행이 멈춰 있습니다. 머신의 [한 번 허용] 또는 [거절]을 누르세요.' : '사람이 답을 보냈습니다.'];
+    case 'appr-no': return ['Approval', '거절되었습니다', '사람이 거절했으므로 영수증을 만들지 않습니다. 도구는 오류로 끝납니다.'];
+    case 'submit': return ['제출', '영수증을 만들었습니다', '검증 해시와 같은 파일만 한 번 제출됩니다.'];
+    case 'error': return ['오류', '도구가 오류로 끝났습니다', String(e.reason)];
+    case 'after': return ['Hook', 'tool.execute.after가 결과를 기록합니다', '실행 결과(출력 앞부분)를 기록에 남깁니다.'];
+    case 'idle': return ['Agent', 'Agent가 응답을 마쳤습니다', '세션이 다음 요청을 기다립니다.'];
+    case 'text': return ['Agent', 'Agent가 답변을 썼습니다', e.text];
+    default: return ['기록', s.ev?.event || s.ev?.type || s.type, ''];
+  }
+}
+const TONE = { deny: 'bad', 'appr-no': 'bad', error: 'bad', submit: 'ok', ask: 'wait', 'appr-req': 'wait' };
+function tone(s) {
+  if (TONE[s.type]) return TONE[s.type];
+  if (s.type === 'validate') return s.ev.ok ? 'ok' : 'bad';
+  if (s.type === 'chk-limit' || s.type === 'chk-policy') return s.pending ? '' : s.result === 'bad' ? 'bad' : s.result === 'ok' ? 'ok' : '';
+  if (s.type === 'chk-record') return 'ok';
+  return '';
+}
+
+/* ---------- 로그 줄 ---------- */
+function logHtml(s) {
+  const e = s.ev || {};
+  const h = (c, t) => `<span class="${c}">${t}</span>`;
+  switch (s.type) {
+    case 'request': return ['s', h('tool', '» ' + esc(s.text))];
+    case 'session': return ['s', h('dim', '── 새 세션 ──')];
+    case 'config': return ['s', h('dim', '── 규칙 적용 ──')];
+    case 'think': return ['a', h('dim', '생각 중…')];
+    case 'call': return ['a', h('tool', '→ ' + e.tool) + ' ' + h('dim', esc(JSON.stringify(e.input || {}).slice(0, 70)))];
+    case 'hook-in': return ['h', h('tool', 'before ' + e.tool)];
+    case 'chk-record': return ['h', '  ① record ' + h('okc', '✓')];
+    case 'chk-limit': return ['h', '  ② limit  ' + (s.pending ? h('dim', '…') : s.result === 'ok' ? h('okc', '✓') : h('badc', '✕'))];
+    case 'chk-policy': return ['h', '  ③ policy ' + (s.pending ? h('dim', '…') : s.result === 'ok' ? h('okc', '✓') : s.result === 'skip' ? h('dim', '-') : h('badc', '✕'))];
+    case 'deny': return ['h', h('badc', 'denied ' + esc(e.reason))];
+    case 'exec': return ['h', e.path ? h('okc', 'file_written ' + esc(e.path)) : h('dim', 'exec ' + (e.tool || ''))];
+    case 'validate': return ['h', e.ok ? h('okc', 'validation ✓') : h('badc', 'validation ✕ ' + (e.errors || []).join(','))];
+    case 'appr-req': return ['h', h('waitc', 'approval_requested')];
+    case 'ask': return ['a', h('waitc', '? 승인 요청 ' + esc(e.properties?.permission))];
+    case 'appr-no': return ['h', h('badc', 'approval_rejected')];
+    case 'submit': return ['h', h('okc', 'submitted')];
+    case 'error': return ['h', h('badc', 'tool_error ' + esc(e.reason))];
+    case 'after': return ['h', h('dim', 'after ' + e.tool)];
+    case 'idle': return ['a', h('dim', '응답 끝')];
+    case 'text': return ['a', h('dim', '답변: ' + esc(String(e.text).slice(0, 60)))];
+    case 'log':
+      if (e.type === 'tool') return ['a', e.status === 'error' ? h('badc', '← ' + e.tool + ' 오류 ' + esc(String(e.error || '').slice(0, 60))) : h('okc', '← ' + e.tool) + ' ' + h('dim', esc((e.output || '').slice(0, 50)))];
+      if (e.type === 'permission.replied') return ['a', h(e.properties.reply === 'reject' ? 'badc' : 'okc', '승인 응답: ' + e.properties.reply)];
+      if (e.event === 'plugin_loaded') return ['h', h('dim', 'plugin_loaded level ' + e.level)];
+      if (e.note) return ['s', h('dim', esc(e.note))];
+      return [s.src || 'a', h(s.bad ? 'badc' : 'dim', esc(JSON.stringify(e).slice(0, 90)))];
+  }
+  return ['s', ''];
+}
+
+/* =====================================================================
+   플레이어
+   ===================================================================== */
+const player = { cur: -1, playing: true, gap: 0.8, timer: null, follow: true };
+const isVisual = s => VISUAL.has(s.type);
+
+function render(animate) {
+  const steps = tape.steps, i = player.cur;
+  const S = fold(steps, i);
+  // 유닛
+  for (const [id, c] of Object.entries(S.units)) {
+    const el = $(id); el.classList.remove('active', 'ok', 'bad', 'wait', 'skip', 'focus');
+    if (c) el.classList.add(c);
+  }
+  $('uRecord').classList.toggle('off', !S.cfg.record);
+  $('uLimit').classList.toggle('off', !S.cfg.limitOn);
+  $('uPolicy').classList.toggle('off', !S.cfg.toolsOn && !S.cfg.pathOn);
+  for (const m of ['mAgent', 'mBefore', 'mExec', 'mVal', 'mAppr', 'mAfter', 'mSub']) $(m).textContent = S.msgs[m] || '';
+  $('verdict').textContent = S.verdict ? S.verdict[1] : ''; $('verdict').className = 'verdict ' + (S.verdict ? S.verdict[0] : '');
+  $('approve').classList.toggle('on', Boolean(S.permission));
+  pendingPermission = S.permission;
+  $('replyText').textContent = S.reply.length ? S.reply.map(r => r[1]).join('\n\n') : (i < 0 ? '아직 요청을 보내지 않았습니다.' : '…');
+  // 레지스터
+  const prev = renderCache.regs || {};
+  const regs = { rTool: S.tool, rArg: S.args, rAtt: S.att + ' / ' + (S.cfg.limitOn ? S.cfg.budget : '∞'), rVal: S.val + ' / 3', rLast: S.last, rSub: S.sub };
+  for (const [id, v] of Object.entries(regs)) {
+    const el = $(id); el.querySelector('b').textContent = v;
+    el.classList.toggle('flash', animate && prev[id] !== undefined && prev[id] !== v);
+  }
+  $('rAtt').classList.toggle('bad', S.cfg.limitOn && S.att > S.cfg.budget);
+  $('rAtt').classList.toggle('warn', S.cfg.limitOn && S.att <= S.cfg.budget && S.att >= S.cfg.budget - 1);
+  $('rLast').classList.toggle('good', S.last === '통과'); $('rLast').classList.toggle('bad', S.last.startsWith('실패'));
+  $('rSub').classList.toggle('good', S.sub === '완료'); $('rSub').classList.toggle('bad', S.sub === '거절됨');
+  renderCache.regs = regs;
+  // 현재 단계 · 포커스 · 패킷 (로그 전용 단계 위에 있으면 직전 시각 단계를 보여 줍니다)
+  let vi = i; while (vi >= 0 && !isVisual(steps[vi])) vi--;
+  const s = steps[vi];
+  const ins = $('insp');
+  if (s) {
+    const [k, hd, p] = describe(s, S);
+    $('iK').textContent = 'STEP ' + (vi + 1) + ' / ' + steps.length + ' · ' + k;
+    $('iH').textContent = hd; $('iP').textContent = p;
+    $('iRaw').textContent = s.ev ? JSON.stringify(s.ev, null, 1).slice(0, 600) : '';
+    ins.className = 'insp ' + tone(s);
+    const f = FOCUS[s.type];
+    if (f) { $(f).classList.add('focus'); if (f.startsWith('uRecord') || f === 'uLimit' || f === 'uPolicy') $('uBefore').classList.add('focus'); }
+    renderLoop(steps, vi, s, animate, S.tool);
+  } else {
+    $('iK').textContent = 'STEP 0 / ' + steps.length; $('iH').textContent = steps.length ? '처음 위치입니다' : '테이프가 비어 있습니다';
+    $('iP').textContent = '요청을 보내면 OpenCode와 Hook이 만드는 사건이 이 테이프에 쌓이고, 아래 컨트롤로 한 단계씩 돌려 볼 수 있습니다.';
+    $('iRaw').textContent = ''; ins.className = 'insp'; renderLoop(steps, -1, null, false);
+  }
+  renderLog(animate);
+  renderTimeline();
+}
+const renderCache = {};
+/* ---------- 루프 기하 ----------
+   링 위 유닛은 극좌표(각도 a, 반지름 r), 링 밖 유닛은 x·y 좌표로 둡니다.
+   패킷은 링 위에서는 시계 방향 호를 따라, 거부되면 안쪽 점선 호를 따라 거꾸로 돌아갑니다. */
+const C = { x: 360, y: 340 }, R = 200;
+const DOCK = { uAgent: { a: -90, r: 150 }, uBefore: { a: -40, r: R }, uExec: { a: 52, r: R }, uAfter: { a: 150, r: R },
+  uVal: { x: 128, y: 604 }, uAppr: { x: 360, y: 604 }, uSub: { x: 592, y: 604 }, uUser: { x: 374, y: 58 }, uUserIn: { x: 346, y: 58 } };
+DOCK.uRecord = DOCK.uLimit = DOCK.uPolicy = DOCK.uBefore;
+const xy = p => p.a === undefined ? p : { x: C.x + p.r * Math.cos(p.a * Math.PI / 180), y: C.y + p.r * Math.sin(p.a * Math.PI / 180) };
+const denyR = k => R - 50 * k - 22 * Math.sin(Math.PI * k);
+function arcD(a0, a1, rf) {
+  // a0 → a1 사이를 잘게 나눈 경로(가운데 점에 화살표)
+  const n = 24, pts = [];
+  for (let i = 0; i <= n; i++) { const k = i / n; pts.push(xy({ a: a0 + (a1 - a0) * k, r: rf ? rf(k) : R })); }
+  return 'M' + pts.map(p => p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' L');
+}
+function drawWires() {
+  $('aCall').setAttribute('d', arcD(-90, 0)); $('aRun').setAttribute('d', arcD(0, 90));
+  $('aRes').setAttribute('d', arcD(90, 180)); $('aObs').setAttribute('d', arcD(180, 270));
+  $('aDeny').setAttribute('d', arcD(-40, -90, denyR));
+  $('pDenyT').setAttribute('d', arcD(-90, -40, k => denyR(1 - k)));
+  const head = (id, a0, a1, rf) => { const p = arcD(a0, a1, rf).split(' L'); $(id).setAttribute('d', 'M' + p[11].replace('M', '') + ' L' + p[13]); };
+  head('hCall', -90, 0); head('hRun', 0, 90); head('hRes', 90, 180); head('hObs', 180, 270); head('hDeny', -40, -90, denyR);
+}
+function fitMachine() {
+  const w = $('loopwrap').clientWidth, panel = $('loopwrap').parentElement;
+  const h = panel.clientHeight - 60 - (panel.querySelector('.stepbar')?.offsetHeight || 0);
+  $('machine').style.zoom = Math.max(0.55, Math.min(1, w / 720, Math.max(h / 804, 0.78)));
+}
+const PK = { cur: null, raf: 0 };
+function placePk(p) { const c = xy(p); const pk = $('packet'); pk.style.left = (c.x - 11.5) + 'px'; pk.style.top = (c.y - 11.5) + 'px'; }
+function legs(from, to, back) {
+  // 한 번의 이동을 호·직선 구간으로 나눕니다.
+  const polar = p => p.a !== undefined;
+  const arc = (p, q, ccw, rf) => {
+    let d = ((q.a - p.a) % 360 + 360) % 360; if (ccw) d -= 360;
+    if (Math.abs(d) < 0.5) return null;
+    return { len: Math.abs(d) / 90 * 520, at: k => ({ a: p.a + d * k, r: rf ? rf(k) : p.r + (q.r - p.r) * k }) };
+  };
+  const line = (p, q) => { const a = xy(p), b = xy(q); return { len: 420, at: k => ({ x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k }) }; };
+  if ([from, to].some(p => p === DOCK.uUser || p === DOCK.uUserIn)) return [line(from, to)];
+  if (polar(from) && polar(to)) return back ? [arc(from, to, true, denyR)] : [arc(from, to)];
+  if (polar(from)) return [arc(from, DOCK.uExec), line(DOCK.uExec, to)];
+  if (polar(to)) return [line(from, DOCK.uExec), arc(DOCK.uExec, to)];
+  return [line(from, to)];
+}
+function movePacket(unitId, t, tool, animate, opt = {}) {
+  const pk = $('packet');
+  cancelAnimationFrame(PK.raf);
+  if (!unitId) { pk.classList.remove('on'); PK.cur = null; return; }
+  pk.className = 'packet on ' + (t || '') + (unitId === 'uAgent' || unitId === 'uUser' ? ' below' : '');
+  $('packetLabel').textContent = opt.label ?? (tool && tool !== '-' ? tool : '');
+  const to = DOCK[unitId];
+  const from = opt.from ? DOCK[opt.from] : PK.cur;
+  if (!animate || !from) { placePk(to); PK.cur = to; return; }
+  const ls = legs(from, to, opt.back).filter(Boolean);
+  if (!ls.length) { placePk(to); PK.cur = to; return; }
+  const total = Math.min(1100, ls.reduce((n, l) => n + l.len, 0)), t0 = performance.now();
+  const ease = k => k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+  const frame = now => {
+    let k = Math.min(1, (now - t0) / total), d = ease(k) * ls.reduce((n, l) => n + l.len, 0);
+    let p = to;
+    for (const l of ls) { if (d <= l.len) { p = l.at(d / l.len); break; } d -= l.len; }
+    placePk(p); PK.cur = k < 1 ? p : to;
+    if (k < 1) PK.raf = requestAnimationFrame(frame);
+  };
+  PK.raf = requestAnimationFrame(frame);
+}
+const ARC = { request: 'aIn', idle: 'aOut', call: 'aCall', 'hook-in': 'aCall', 'chk-record': 'aCall', 'chk-limit': 'aCall', 'chk-policy': 'aCall',
+  deny: 'aDeny', exec: 'aRun', error: 'aRun', validate: 'aBr', 'appr-req': 'aBr', ask: 'aBr', 'appr-no': 'aBr', submit: 'aBr', after: 'aRes', think: 'aObs' };
+const ARC_TEXT = { aIn: 'tIn', aOut: 'tOut', aCall: 'tCall', aRun: 'tRun', aRes: 'tRes', aObs: 'tObs', aDeny: 'tDeny', aBr: null };
+const ARC_HEAD = { aCall: 'hCall', aRun: 'hRun', aRes: 'hRes', aObs: 'hObs', aDeny: 'hDeny' };
+function renderLoop(steps, vi, s, animate, tool) {
+  // 이번 요청 안에서 몇 번째 도구 호출인지, 직전 시각 단계가 무엇인지 봅니다.
+  let n = 0, start = vi, prev = null, sawResult = false;
+  while (start >= 0 && steps[start].type !== 'request') start--;
+  for (let j = Math.max(0, start); j <= vi; j++) { if (steps[j].type === 'call') n++; }
+  for (let j = vi - 1; j >= Math.max(0, start); j--) if (isVisual(steps[j])) { prev = steps[j]; break; }
+  for (let j = Math.max(0, start); j < vi; j++) if (['after', 'deny', 'error'].includes(steps[j].type)) sawResult = true;
+  const parts = id => [id, ARC_HEAD[id]].filter(Boolean).map($);
+  for (const id of Object.keys(ARC_TEXT)) { parts(id).forEach(el => el.classList.remove('lit', 'ok', 'bad', 'wait')); if (ARC_TEXT[id]) $(ARC_TEXT[id]).classList.remove('lit'); }
+  $('uUser').classList.remove('focus');
+  if (!s) { $('loopN').textContent = '대기 중'; $('loopD').textContent = '요청을 보내면 Agent 루프가 돌기 시작합니다'; movePacket(null); return; }
+  let arc = ARC[s.type];
+  const backFromDeny = prev && prev.type === 'deny' && ['think', 'call', 'idle'].includes(s.type);
+  if (s.type === 'think' && !sawResult) arc = null;
+  if (backFromDeny && s.type !== 'idle') arc = 'aDeny';
+  if (arc) { const tn = tone(s); parts(arc).forEach(el => el.classList.add('lit', ...(tn ? [tn] : []))); if (ARC_TEXT[arc]) $(ARC_TEXT[arc]).classList.add('lit'); }
+  const done = s.type === 'idle';
+  $('loopD').style.visibility = $('verdict').textContent ? 'hidden' : '';
+  $('loopN').textContent = done ? '루프 종료' : n ? '도구 호출 ' + n + '번째' : '생각 중';
+  $('loopD').textContent = done ? '도구 호출 ' + n + '번 뒤에 응답했습니다' : s.type === 'deny' ? 'Hook이 막으면 실행 없이 Agent로 돌아갑니다' : '도구를 고르고, 결과를 보고, 다시 고릅니다';
+  let target = FOCUS[s.type], opt = {};
+  if (s.type === 'request') { opt.from = 'uUserIn'; opt.label = ''; }
+  if (s.type === 'idle') { target = 'uUser'; opt.label = ''; $('uUser').classList.add('focus'); }
+  if (backFromDeny) opt.back = true;
+  if (opt.label === undefined) opt.label = s.type === 'think' ? '' : s.type === 'deny' ? '✕ 오류' : (tool && tool !== '-' ? tool : '');
+  movePacket(target, tone(s), tool, animate, opt);
+}
+function renderLog(animate) {
+  const term = $('term'), steps = tape.steps;
+  if (renderCache.logTape !== tape || renderCache.logLen > steps.length) { term.innerHTML = ''; renderCache.logLen = 0; renderCache.logTape = tape; }
+  for (let i = renderCache.logLen; i < steps.length; i++) {
+    const [src, html] = logHtml(steps[i]);
+    const d = document.createElement('div'); d.className = 'l'; d.dataset.src = src; d.dataset.i = i;
+    d.innerHTML = `<span class="n">${i + 1}</span><span class="src ${src}">${{ h: 'hook', a: 'agent', s: 'lab' }[src]}</span> ${html}`;
+    term.appendChild(d);
+  }
+  renderCache.logLen = steps.length;
+  const showFuture = $('fFuture').checked;
+  for (const d of term.children) {
+    const i = +d.dataset.i, src = d.dataset.src;
+    const hidden = (src === 'h' && !$('fHook').checked) || (src === 'a' && !$('fAgent').checked) || (i > player.cur && !showFuture);
+    d.style.display = hidden ? 'none' : '';
+    d.classList.toggle('cur', i === player.cur);
+    d.classList.toggle('future', i > player.cur);
+    // 플레이헤드 이후 단계의 판정 결과는 나중에 정해질 수 있으므로 다시 그립니다.
+    if (steps[i] && steps[i].type.startsWith('chk-')) { const [, html] = logHtml(steps[i]); d.lastChild && (d.innerHTML = `<span class="n">${i + 1}</span><span class="src ${src}">hook</span> ${html}`); }
+  }
+  const cur = term.querySelector('.l.cur');
+  if (cur) { const top = cur.offsetTop - term.offsetTop; if (top < term.scrollTop || top > term.scrollTop + term.clientHeight - 30) term.scrollTop = top - term.clientHeight / 2; }
+}
+$('term').onclick = e => { const l = e.target.closest('.l'); if (l) { pause(); seek(+l.dataset.i); } };
+['fHook', 'fAgent', 'fFuture'].forEach(id => $(id).onchange = () => render(false));
+
+function renderTimeline() {
+  const steps = tape.steps, n = steps.length, track = $('track');
+  if (renderCache.tlTape !== tape || renderCache.tlLen !== n) {
+    track.querySelectorAll('.tick').forEach(t => t.remove());
+    steps.forEach((s, i) => {
+      if (!isVisual(s)) return;
+      const t = document.createElement('div');
+      const tn = tone(s);
+      t.className = 'tick ' + (['request', 'session', 'config'].includes(s.type) ? 'm' : tn === 'bad' ? 'x' : tn === 'ok' && ['validate', 'submit'].includes(s.type) ? 'o' : tn === 'wait' ? 'w' : s.type === 'call' ? 'c' : '');
+      t.style.left = (n <= 1 ? 50 : (i / (n - 1)) * 100) + '%';
+      track.appendChild(t);
+    });
+    renderCache.tlTape = tape; renderCache.tlLen = n;
+  }
+  const pos = n <= 1 ? (player.cur >= 0 ? 100 : 0) : Math.max(0, player.cur) / (n - 1) * 100;
+  $('tlHead').style.left = pos + '%';
+  $('tlBuf').style.left = pos + '%'; $('tlBuf').style.width = (100 - pos) + '%';
+  $('tlStep').textContent = player.cur + 1; $('tlTotal').textContent = n;
+  const behind = visualAhead();
+  $('tlBehind').textContent = behind ? '실제 실행보다 ' + behind + '단계 뒤에서 보는 중' : (n ? '실시간 위치' : '');
+  $('tLive').classList.toggle('on', behind === 0 && tape === labTape && n > 0);
+  // 단계 버튼
+  let vi = player.cur; while (vi >= 0 && !isVisual(tape.steps[vi])) vi--;
+  $('sInfo').textContent = vi >= 0 ? 'STEP ' + (vi + 1) + ' / ' + n + ' · ' + $('iH').textContent : '처음 위치';
+  const blocked = behind > 0 && !canAdvance();
+  $('sWait').textContent = !n ? '요청을 보내면 단계가 쌓입니다' : behind ? (blocked ? '다음 판정을 기다리는 중…' : '다음 단계 ' + behind + '개가 기다립니다') : '마지막 단계입니다. 새 사건이 오면 이어집니다';
+  $('sWait').className = behind && !blocked ? 'go' : '';
+  $('sPrev').disabled = vi < 0;
+  $('sNext').disabled = !canAdvance();
+  $('sNext').classList.toggle('ready', !player.playing && canAdvance());
+}
+function visualAhead() { let c = 0; for (let i = player.cur + 1; i < tape.steps.length; i++) if (isVisual(tape.steps[i])) c++; return c; }
+$('track').onclick = e => {
+  const r = $('track').getBoundingClientRect(), n = tape.steps.length; if (!n) return;
+  pause(); seek(Math.round((e.clientX - r.left) / r.width * (n - 1)));
+};
+
+// 다음 시각 단계까지의 대기 시간: 실제 간격과 다이얼 간격 중 긴 쪽
+function canAdvance() {
+  const nx = tape.steps[player.cur + 1];
+  return nx && !nx.pending;
+}
+function stepForward(animate = true) {
+  if (!canAdvance()) return false;
+  player.cur++;
+  // 화면에 보이지 않는 단계(로그 전용)는 한꺼번에 넘깁니다.
+  while (!isVisual(tape.steps[player.cur]) && canAdvance()) player.cur++;
+  render(animate);
+  return true;
+}
+function stepBack() {
+  if (player.cur < 0) return;
+  player.cur--;
+  while (player.cur >= 0 && !isVisual(tape.steps[player.cur])) player.cur--;
+  render(true);
+}
+function seek(i) { player.cur = Math.max(-1, Math.min(tape.steps.length - 1, i)); render(false); }
+function schedule() {
+  clearTimeout(player.timer);
+  if (!player.playing) return;
+  if (!canAdvance()) { player.timer = setTimeout(schedule, 120); return; }   // 다음 사건을 기다림
+  const cur = tape.steps[player.cur], nx = tape.steps[player.cur + 1];
+  const realGap = cur ? Math.max(0, nx.t - cur.t) : 0;
+  const wait = player.cur < 0 ? 150 : Math.max(player.gap * 1000, Math.min(realGap, 6000));
+  player.timer = setTimeout(() => { stepForward(true); schedule(); }, wait);
+}
+function play() { player.playing = true; $('tPlay').textContent = '⏸'; dialMode(); schedule(); }
+function pause() { player.playing = false; $('tPlay').textContent = '▶'; clearTimeout(player.timer); dialMode(); }
+$('tPlay').onclick = () => player.playing ? pause() : play();
+// 한 단계씩 보기: 켜 두면 새 사건이 와도 저절로 재생하지 않고, 사람이 다음 단계를 누를 때만 움직입니다.
+let stepMode = false;
+try { stepMode = localStorage.getItem('lab.stepMode') === '1'; } catch {}
+const autoPlay = () => stepMode ? pause() : play();
+$('sMode').checked = stepMode;
+$('sMode').onchange = () => { stepMode = $('sMode').checked; try { localStorage.setItem('lab.stepMode', stepMode ? '1' : '0'); } catch {} if (stepMode) pause(); renderTimeline(); };
+$('sNext').onclick = () => { pause(); stepForward(); };
+$('sPrev').onclick = () => { pause(); stepBack(); };
+$('tNext').onclick = () => { pause(); stepForward(); };
+$('tPrev').onclick = () => { pause(); stepBack(); };
+$('tFirst').onclick = () => { pause(); seek(-1); };
+$('tLive').onclick = () => { seek(tape.steps.length - 1); play(); };
+document.addEventListener('keydown', e => {
+  if (['TEXTAREA', 'INPUT', 'SELECT'].includes(document.activeElement.tagName)) return;
+  if (e.code === 'Space') { e.preventDefault(); $('tPlay').click(); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); $('tNext').click(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); $('tPrev').click(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); setGap(player.gap + 0.2); }
+  else if (e.key === 'ArrowDown') { e.preventDefault(); setGap(player.gap - 0.2); }
+  else if (e.key === 'Home') $('tFirst').click();
+  else if (e.key === 'End') $('tLive').click();
+});
+
+/* ---------- 타임 조그다이얼 ----------
+   재생 중: 돌리면 단계 사이 간격(0~5초)을 바꿉니다.
+   멈춤: 돌리면 한 칸(24°)마다 한 단계씩 앞뒤로 움직입니다(조그).          */
+let dialAngle = 0, jogAcc = 0;
+function setGap(v) { player.gap = Math.round(Math.max(0, Math.min(5, v)) * 10) / 10; $('dGap').textContent = player.gap.toFixed(1); }
+function dialMode() {
+  $('dMode').textContent = player.playing ? '간격 다이얼 (재생 중)' : '조그 다이얼 (멈춤)';
+  $('dHint').textContent = player.playing ? '실제 간격보다 짧으면 이 값만큼 기다립니다' : '한 칸 돌릴 때마다 한 단계씩 움직입니다';
+}
+function turn(delta) {
+  dialAngle += delta; $('notch').style.transform = `rotate(${dialAngle}deg)`;
+  if (player.playing) setGap(player.gap + delta / 120);
+  else {
+    jogAcc += delta;
+    while (jogAcc >= 24) { jogAcc -= 24; stepForward(true); }
+    while (jogAcc <= -24) { jogAcc += 24; stepBack(); }
+  }
+}
+(() => {
+  const dial = $('dial'); let last = null;
+  const ang = e => { const r = dial.getBoundingClientRect(); return Math.atan2(e.clientY - r.top - r.height / 2, e.clientX - r.left - r.width / 2) * 180 / Math.PI; };
+  dial.addEventListener('pointerdown', e => { dial.setPointerCapture(e.pointerId); last = ang(e); });
+  dial.addEventListener('pointermove', e => { if (last === null) return; const a = ang(e); let d = a - last; if (d > 180) d -= 360; if (d < -180) d += 360; last = a; turn(d); });
+  dial.addEventListener('pointerup', () => { last = null; });
+  dial.addEventListener('wheel', e => { e.preventDefault(); turn(e.deltaY > 0 ? -12 : 12); }, { passive: false });
+})();
+
+/* ---------- 사건을 테이프에 넣는 입구 ---------- */
+let pendingPermission = null;
+let heldAsk = null;
+function push(kind, data) {
+  // 재생 중에도 실험 테이프에는 계속 쌓입니다.
+  // 라이브에서는 OpenCode 승인 요청이 Hook 기록(파일)보다 먼저 도착할 수 있어,
+  // approval_requested 기록이 올 때까지(최대 1초) 승인 요청을 잠시 붙잡아 순서를 맞춥니다.
+  if (kind === 'opencode' && data.type === 'permission.asked' && !data._flushed && applied.info.record && !heldAsk) {
+    heldAsk = { data, timer: setTimeout(flushAsk, 1000) }; return;
+  }
+  const spliced = ingest(labTape, kind, data);
+  if (typeof spliced === 'number') {
+    renderCache.logTape = null; renderCache.tlTape = null;
+    if (tape === labTape) { if (spliced <= player.cur) player.cur++; } else if (spliced <= labCursor) labCursor++;
+  }
+  if (kind === 'hook' && data.event === 'approval_requested' && heldAsk) flushAsk();
+  if (tape === labTape) { if (player.cur < 0) render(false); else { renderLog(false); renderTimeline(); } }
+}
+function flushAsk() { if (!heldAsk) return; const h = heldAsk; heldAsk = null; clearTimeout(h.timer); push('opencode', { ...h.data, _flushed: true }); }
+const sys = text => { addStep(labTape, { type: 'log', src: 's', ev: { note: text } }); if (tape === labTape) { renderLog(false); renderTimeline(); } };
+
+/* ---------- Harness 만들기: 기본 과정 ----------
+   폼을 바꿀 때마다 harness.js 전체를 다시 만들고, 바뀐 줄을 강조합니다. 폼 상자에 마우스를 올리면 그 상자가 만든 줄만 밝힙니다. */
+function renderForm() {
+  $('cRecordOn').checked = config.record;
+  $('cToolsOn').checked = config.toolsOn; $('cPathOn').checked = config.pathOn;
+  $('cTools').innerHTML = TOOLS.map(t => `<label><input type="checkbox" value="${t}" ${config.tools.includes(t) ? 'checked' : ''}>${t.replace('quest_', '')}</label>`).join('');
+  $('cRead').value = config.read.join('\n'); $('cWrite').value = config.write.join('\n');
+  $('cLimitOn').checked = config.limitOn; $('cBudget').value = config.budget;
+  $('cChecks').innerHTML = Object.entries(CHECKS).map(([k, v]) => `<label><input type="checkbox" value="${k}" ${config.checks.includes(k) ? 'checked' : ''}>${v}</label>`).join('');
+  $('cSubmit').innerHTML = Object.entries(SUBMITS).map(([k, v]) => `<label><input type="checkbox" value="${k}" ${config.submit.includes(k) ? 'checked' : ''}>${v}</label>`).join('');
+  $('cApproval').value = config.approval; $('advApproval').value = config.approval;
+  dimGroups();
+}
+function dimGroups() {
+  const on = { record: config.record, limit: config.limitOn, tools: config.toolsOn, paths: config.pathOn };
+  document.querySelectorAll('#buildBasic .grp[data-region]').forEach(g => g.classList.toggle('dim', on[g.dataset.region] === false));
+}
+function readForm() {
+  const boxes = id => [...$(id).querySelectorAll('input:checked')].map(i => i.value);
+  const lines = id => $(id).value.split('\n').map(s => s.trim()).filter(Boolean);
+  config = normalizeConfig({ record: $('cRecordOn').checked, toolsOn: $('cToolsOn').checked, tools: boxes('cTools'),
+    pathOn: $('cPathOn').checked, read: lines('cRead'), write: lines('cWrite'),
+    limitOn: $('cLimitOn').checked, budget: +$('cBudget').value || 8,
+    checks: boxes('cChecks'), submit: boxes('cSubmit'), approval: $('cApproval').value });
+}
+// 코드 보기: 주석·문자열·키워드만 가볍게 색을 입힙니다.
+function splitComment(t) {
+  let q = null;
+  for (let i = 0; i < t.length; i++) {
+    const ch = t[i];
+    if (q) { if (ch === '\\') i++; else if (ch === q) q = null; }
+    else if (ch === "'" || ch === '"' || ch === '`') q = ch;
+    else if (ch === '/' && t[i + 1] === '/') return [t.slice(0, i), t.slice(i)];
+  }
+  return [t, ''];
+}
+const colorCode = t => esc(t).replace(/('[^']*'|"[^"]*")|\b(import|from|export|const|async|await|function|return|if|throw|new|try|catch|true|false)\b|\b(\d+)\b/g,
+  (m, str, kw, num) => str ? `<span class="c-s">${str}</span>` : kw ? `<span class="c-k">${kw}</span>` : `<span class="c-n">${num}</span>`);
+function codeLines(lines, regions = [], changed = new Set(), gaps = new Set()) {
+  return lines.map((t, k) => {
+    const [code, comment] = splitComment(t);
+    return `<div class="ln${regions[k] ? ' r-' + regions[k] : ''}${changed.has(k) ? ' chg' : gaps.has(k) ? ' gap' : ''}"><i>${k + 1}</i><span>${colorCode(code)}${comment ? '<span class="c-c">' + esc(comment) + '</span>' : ''}</span></div>`;
+  }).join('');
+}
+// 이전 코드와 줄 단위로 비교해(LCS) 새로 생기거나 바뀐 줄과 빠진 줄 수를 셉니다.
+function diffLines(a, b) {
+  const n = a.length, m = b.length, dp = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const changed = new Set(), gaps = new Set(); let i = 0, j = 0, removed = 0;
+  while (i < n && j < m) {
+    if (a[i] === b[j]) { i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) { i++; removed++; gaps.add(j); }
+    else changed.add(j++);
+  }
+  while (j < m) changed.add(j++);
+  if (i < n) gaps.add(m - 1);
+  return { changed, gaps, removed: removed + n - i };
+}
+let shownCode = null, shownApproval = null;
+function renderBasicCode(animate) {
+  const { source, regions } = harnessSource(config);
+  const lines = source.split('\n');
+  const d = animate && shownCode ? diffLines(shownCode, lines) : { changed: new Set(), gaps: new Set(), removed: 0 };
+  shownCode = lines;
+  $('codeView').innerHTML = codeLines(lines, regions, d.changed, d.gaps);
+  const apprLines = approvalSnippet(config.approval).split('\n');
+  $('approvalView').innerHTML = codeLines(apprLines, [], new Set(animate && shownApproval && shownApproval !== config.approval ? [3] : []));
+  shownApproval = config.approval;
+  $('diffNote').textContent = d.changed.size || d.removed ? '+' + d.changed.size + '줄 · −' + d.removed + '줄' : '';
+  const first = $('codeView').querySelector('.chg, .gap');
+  if (first) scrollCode(first);
+}
+function scrollCode(el) { const box = $('codeView'); box.scrollTo({ top: Math.max(0, el.offsetTop - box.clientHeight / 3), behavior: 'smooth' }); }
+function focusRegion(region, scroll) {
+  const box = $('codeView');
+  box.querySelectorAll('.ln.fo').forEach(x => x.classList.remove('fo'));
+  if (!region) { delete box.dataset.focus; return; }
+  const lines = box.querySelectorAll('.r-' + region);
+  if (!lines.length) { delete box.dataset.focus; return; }
+  box.dataset.focus = region; lines.forEach(x => x.classList.add('fo'));
+  if (scroll) scrollCode(lines[0]);
+}
+document.querySelectorAll('#buildBasic .grp[data-region]').forEach(g => {
+  g.addEventListener('mouseenter', () => focusRegion(g.dataset.region));
+  g.addEventListener('mouseleave', () => focusRegion(null));
+  g.addEventListener('click', () => focusRegion(g.dataset.region, true));
+});
+$('buildBasic').addEventListener('change', () => { readForm(); dimGroups(); $('advApproval').value = config.approval; renderBasicCode(true); markDirty(); });
+document.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
+  config = structuredClone(PRESETS[b.dataset.preset]); renderForm(); renderBasicCode(true); markDirty();
+});
+
+/* ---------- Harness 만들기: 고급 과정 ----------
+   빈 뼈대에서 시작해 직접 씁니다. [검사하기]는 고정 입력으로 코드를 돌려 미션별 통과 여부를 알려 줍니다. */
+const ADV_KEY = 'lab.advSource';
+let advSource = (() => { try { return localStorage.getItem(ADV_KEY) || STARTER; } catch { return STARTER; } })();
+let lastCheck = null;
+function setAdvSource(text) { advSource = text; $('advCode').value = text; try { localStorage.setItem(ADV_KEY, text); } catch {} markDirty(); }
+function renderMissions() {
+  $('missionList').innerHTML = MISSIONS.map((m, i) => {
+    const r = lastCheck && !lastCheck.error ? lastCheck.missions[m.id] : null;
+    const st = !r ? '' : r.pass ? 'pass' : 'fail';
+    return `<li class="ms ${st}"><div class="mh"><span class="dot"></span><b>${i + 1}. ${esc(m.title)}</b></div><p>${esc(m.goal)}</p>` +
+      (st === 'fail' && r.why ? `<p class="why">${esc(r.why)}</p>` : '') +
+      `<details><summary>예시 코드 보기</summary><pre>${esc(m.hint)}</pre></details></li>`;
+  }).join('');
+  const passed = lastCheck && !lastCheck.error ? Object.values(lastCheck.missions).filter(x => x.pass).length : null;
+  $('missionScore').textContent = passed === null ? '' : passed + ' / ' + MISSIONS.length + ' 통과';
+}
+async function runCheck() {
+  lastCheck = await probeHarness(advSource);
+  renderMissions();
+  const box = $('advResult');
+  if (lastCheck.error) { box.className = 'checkres bad'; box.textContent = lastCheck.error; return lastCheck; }
+  const fail = MISSIONS.find(m => !lastCheck.missions[m.id].pass);
+  box.className = 'checkres ' + (fail ? '' : 'good');
+  box.textContent = fail ? '다음 미션: ' + fail.title + '. ' + lastCheck.missions[fail.id].why
+    : '미션 8개를 모두 통과했습니다. 적용하고 예시 요청을 보내 실제로 막히는지 머신에서 확인해 보세요.';
+  return lastCheck;
+}
+$('advCode').addEventListener('input', () => setAdvSource($('advCode').value));
+$('advCode').addEventListener('keydown', e => {
+  if (e.key !== 'Tab' || e.shiftKey) return;
+  e.preventDefault();
+  const t = e.target, a = t.selectionStart;
+  t.setRangeText('  ', a, t.selectionEnd, 'end'); setAdvSource(t.value);
+});
+$('advCheck').onclick = runCheck;
+$('advFromBasic').onclick = () => { setAdvSource(harnessSource(config).source); runCheck(); };
+$('advReset').onclick = () => { if (confirm('편집기의 코드를 처음 뼈대로 되돌릴까요?')) { setAdvSource(STARTER); lastCheck = null; renderMissions(); } };
+$('advApproval').onchange = () => { config.approval = $('advApproval').value; $('cApproval').value = config.approval; renderBasicCode(true); markDirty(); };
+
+function setCourse(c) {
+  course = c;
+  document.querySelectorAll('#courseSeg button').forEach(b => b.classList.toggle('on', b.dataset.course === c));
+  $('buildBasic').hidden = c !== 'basic'; $('buildAdv').hidden = c !== 'advanced';
+  if (c === 'advanced') { $('advCode').value = advSource; renderMissions(); }
+  markDirty();
+}
+document.querySelectorAll('#courseSeg button').forEach(b => b.onclick = () => setCourse(b.dataset.course));
+const currentSource = () => course === 'basic' ? harnessSource(config).source : advSource;
+function markDirty() {
+  const dirty = course !== applied.mode || currentSource() !== applied.source || config.approval !== applied.config.approval;
+  $('dirty').textContent = dirty ? '바뀐 내용이 아직 적용되지 않았습니다' : '';
+}
+
+/* ---------- 브라우저 모의 실행기 (미리보기) ----------
+   적용한 harness.js를 브라우저 안에서 그대로 실행합니다. OpenCode처럼 도구 호출마다 before → 실행 → after를 부릅니다.
+   작업 도구와 파일은 lab/kit/kit.mjs를 흉내 낸 것이고, Agent는 진짜 LLM이 아니라 요청 문장의 낱말로 고르는 고정 시나리오입니다. */
+const sim = (() => {
+  const ORDERS = '{"currency":"KRW","items":[{"id":"A","amount":10000},{"id":"B","amount":5000},{"id":"discount","amount":-2000}]}';
+  const PROTECTED = '{"setting":"do-not-change"}';
+  let files, sessions = new Map(), sessionId = 'sim-1', seq = 1, hooks = null, running = false, approvalResolve = null, aborted = false;
+  function resetFiles() { files = { 'lab/input/orders.json': ORDERS, 'lab/protected/settings.json': PROTECTED }; sessions.clear(); newSession(); }
+  function newSession() { sessionId = 'sim-' + (++seq); }
+  const getState = id => {
+    if (!sessions.has(id)) sessions.set(id, { sessionId: id, attempted: 0, executed: 0, validationAttempts: 0, validation: null, consumed: false });
+    return sessions.get(id);
+  };
+  const agent = data => push('opencode', data);
+  const hashOf = s => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return ('00000000' + (h >>> 0).toString(16)).slice(-8).repeat(8); };
+  function inspect() {
+    let summary = null; try { summary = JSON.parse(files['lab/output/summary.json']); } catch {}
+    const report = files['lab/output/report.md'] || '';
+    const checks = {
+      schemaOK: !!summary && summary.currency === 'KRW' && Number.isInteger(summary.itemCount) && Number.isInteger(summary.total),
+      sumOK: !!summary && summary.total === 13000, reportOK: /13,?000/.test(report),
+      originalsOK: files['lab/input/orders.json'] === ORDERS && files['lab/protected/settings.json'] === PROTECTED };
+    return { checks, hash: hashOf((files['lab/output/summary.json'] || '') + '|' + report), expected: 13000,
+      errors: Object.entries(checks).filter(([, v]) => !v).map(([k]) => k) };
+  }
+  // lab/kit/kit.mjs의 createLabKit을 흉내 냅니다. 판단은 하지 않고 harness가 넘긴 함수만 부릅니다.
+  function createLabKit({ record = () => {}, acceptValidation = () => true, canSubmit = () => true } = {}) {
+    const relative = p => {
+      if (typeof p !== 'string' || p.includes('\\') || p.startsWith('/') || /^[A-Za-z]:/.test(p)) throw new Error('PATH: use a relative slash-separated path');
+      const parts = [];
+      for (const part of p.split('/')) { if (part === '..') parts.pop(); else if (part && part !== '.') parts.push(part); }
+      const rel = parts.join('/');
+      if (!rel.startsWith('lab/')) throw new Error('PATH: outside permitted root');
+      return rel;
+    };
+    async function perform(name, input, context) {
+      const state = getState(context.sessionID);
+      state.executed++;
+      try {
+        if (name === 'quest_status') return { ...state, budget: applied.info.budget };
+        if (name === 'quest_read') { const rel = relative(input.path); if (!(rel in files)) throw new Error('FILE: not found'); return { content: files[rel] }; }
+        if (name === 'quest_write') {
+          const rel = relative(input.path);
+          if (rel.startsWith('lab/submissions/')) throw new Error('PATH: submissions are tool-owned');
+          files[rel] = String(input.content); state.validation = null;
+          record({ event: 'file_written', sessionId: state.sessionId, path: rel }); return { written: rel };
+        }
+        if (name === 'quest_probe') { files['lab/probe/probe.txt'] = 'harmless tool probe'; return { probe: 'executed' }; }
+        if (name === 'quest_validate') {
+          if (state.validationAttempts >= 3) throw new Error('LIMIT: at most 3 validation attempts');
+          state.validationAttempts++;
+          const snap = inspect(); const ok = Boolean(acceptValidation(snap.checks));
+          state.validation = { ok, hash: snap.hash };
+          const result = { ...snap, ok, remaining: 3 - state.validationAttempts };
+          record({ event: 'validation', sessionId: state.sessionId, ...result }); return result;
+        }
+        if (name === 'quest_submit') {
+          const before = inspect();
+          const facts = { valid: state.validation?.ok === true, sameHash: state.validation?.hash === before.hash && input.artifactHash === before.hash,
+            consumed: state.consumed, attemptsAllowed: state.validationAttempts <= 3 };
+          if (!canSubmit(facts)) throw new Error('SUBMIT: invalid or stale validation');
+          record({ event: 'approval_requested', sessionId: state.sessionId, artifactHash: before.hash });
+          try { await context.ask(before.hash); }
+          catch (error) { record({ event: 'approval_rejected', sessionId: state.sessionId, artifactHash: before.hash }); throw error; }
+          state.consumed = true;
+          record({ event: 'submitted', sessionId: state.sessionId, artifactHash: before.hash });
+          return { artifactHash: before.hash, submittedAt: new Date().toISOString() };
+        }
+        throw new Error('TOOL: unknown tool');
+      } catch (error) {
+        record({ event: 'tool_error', sessionId: state.sessionId, tool: name, reason: error.message });
+        throw error;
+      }
+    }
+    const tools = Object.fromEntries(TOOLS.map(name => [name, { description: name, args: {}, execute: async (input, ctx) => JSON.stringify(await perform(name, input, ctx)) }]));
+    return { tools, log: e => push('hook', { time: new Date().toISOString(), ...e }), session: getState, save: () => {}, relative };
+  }
+  // opencode.json의 permission.quest_publish(ask·allow·deny)를 흉내 냅니다.
+  async function ask(hash) {
+    const mode = applied.config.approval;
+    if (mode === 'allow') return;
+    if (mode === 'ask') {
+      agent({ type: 'permission.asked', properties: { id: 'sim-perm', permission: 'quest_publish', patterns: [hash], metadata: { files: ['lab/output/summary.json', 'lab/output/report.md'] } } });
+      const reply = await new Promise(r => { approvalResolve = r; });
+      agent({ type: 'permission.replied', properties: { reply } });
+      if (reply === 'once') return;
+    }
+    throw new Error('The user rejected permission to use this specific tool call.');
+  }
+  async function load() {
+    const factory = compileHarness(applied.source);
+    const toolFn = Object.assign(x => x, { schema: new Proxy({}, { get: () => () => ({}) }) });
+    hooks = await factory(toolFn, createLabKit)({ directory: '/sim' });
+    if (!hooks || typeof hooks !== 'object') throw new Error('플러그인이 Hook 객체를 돌려주지 않았습니다.');
+  }
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  async function callTool(tool, input) {
+    if (aborted) throw new Error('ABORT');
+    agent({ type: 'session.status', properties: { status: { type: 'busy' } } });
+    await wait(300 + Math.random() * 400);   // LLM이 생각하는 시간 흉내
+    const callID = 'sim-' + Math.random().toString(36).slice(2, 7);
+    agent({ type: 'tool', tool, status: 'running', input });
+    await wait(20);
+    const fail = error => { const msg = String(error?.message || error); agent({ type: 'tool', tool, status: 'error', error: msg }); return { error: msg }; };
+    try { await hooks['tool.execute.before']?.({ tool, sessionID: sessionId, callID }, { args: input }); }
+    catch (error) { return fail(error); }
+    const def = hooks.tool?.[tool];
+    if (!def) return fail(new Error('TOOL: ' + tool + ' is not registered (tool: kit.tools가 없습니다)'));
+    let text;
+    try { text = await def.execute(input, { sessionID: sessionId, callID, ask }); }
+    catch (error) { return fail(error); }
+    const output = { title: tool, output: text, metadata: {} };
+    try { await hooks['tool.execute.after']?.({ tool, sessionID: sessionId, callID }, output); } catch {}
+    agent({ type: 'tool', tool, status: 'completed', output: text });
+    return JSON.parse(text);
+  }
+  const say = text => agent({ type: 'text', id: 'sim-' + Math.random(), text });
+  async function script(text) {
+    const t = text.toLowerCase();
+    if (/probe|프로브/.test(t)) {
+      const r = await callTool('quest_probe', {});
+      return say(r.error ? `quest_probe 실행이 거부되었습니다 (${r.error}). 우회하지 않고 보고합니다.` : 'quest_probe를 실행했습니다. lab/probe/probe.txt가 만들어졌습니다.');
+    }
+    if (/protected|보호|settings\.json/.test(t)) {
+      const r = await callTool('quest_write', { path: 'lab/protected/settings.json', content: '{"setting":"changed"}' });
+      return say(r.error ? `보호 파일 쓰기가 거부되었습니다 (${r.error}).` : '보호 파일을 수정했습니다. 원본 보존 검사는 이제 실패할 것입니다.');
+    }
+    if (/반복|번|repeat|\d+\s*times/.test(t) && !/합계|제출/.test(t)) {
+      const n = Math.min(20, +(t.match(/(\d+)\s*번/)?.[1] || 10));
+      for (let i = 0; i < n; i++) { const r = await callTool('quest_read', { path: 'lab/input/orders.json' }); if (r.error) return say(`${i + 1}번째 시도에서 멈췄습니다 (${r.error}).`); }
+      return say(`orders.json을 ${n}번 읽었습니다.`);
+    }
+    if (/status|상태/.test(t)) { const r = await callTool('quest_status', {}); return say('현재 상태: ' + JSON.stringify(r)); }
+    let r = await callTool('quest_read', { path: 'lab/input/orders.json' }); if (r.error) return say('입력 파일을 읽지 못했습니다: ' + r.error);
+    r = await callTool('quest_write', { path: 'lab/output/summary.json', content: '{"currency":"KRW","itemCount":3,"total":15000}' }); if (r.error) return say('summary.json을 쓰지 못했습니다: ' + r.error);
+    r = await callTool('quest_write', { path: 'lab/output/report.md', content: '# Report\nTotal: 13000 KRW' }); if (r.error) return say('report.md를 쓰지 못했습니다: ' + r.error);
+    let v = await callTool('quest_validate', {}); if (v.error) return say('검증하지 못했습니다: ' + v.error);
+    if (!v.ok) {
+      r = await callTool('quest_write', { path: 'lab/output/summary.json', content: '{"currency":"KRW","itemCount":3,"total":13000}' }); if (r.error) return say('수정하지 못했습니다: ' + r.error);
+      v = await callTool('quest_validate', {}); if (v.error) return say('재검증하지 못했습니다: ' + v.error);
+      if (!v.ok) return say('검증을 통과하지 못해 제출하지 않았습니다: ' + v.errors.join(', '));
+    }
+    r = await callTool('quest_submit', { artifactHash: v.hash });
+    if (r.error) return say('제출하지 못했습니다: ' + r.error);
+    const total = JSON.parse(files['lab/output/summary.json']).total;
+    say(`합계 ${total.toLocaleString()}원으로 제출을 마쳤습니다.` + (total !== 13000 ? ' (실제 합계는 13,000원입니다. 검증 규칙이 합계를 보지 않아 틀린 값이 완료로 처리되었습니다.)' : ''));
+  }
+  async function run(text) {
+    if (running) return;
+    running = true; aborted = false;
+    try { if (!hooks) await load(); await script(text); }
+    catch (e) { if (e.message !== 'ABORT') say('오류: ' + e.message); }
+    agent({ type: 'session.idle', properties: {} });
+    running = false;
+  }
+  return { run, resetFiles, newSession, load, approve: reply => { approvalResolve?.(reply); approvalResolve = null; },
+    abort: () => { aborted = true; approvalResolve?.('reject'); } };
+})();
+
+/* ---------- 라이브 연결 ---------- */
+let models = null;
+async function api(route, body) {
+  const r = await fetch(route, body ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) } : {});
+  const data = await r.json(); if (!r.ok) throw new Error(data.error || r.status); return data;
+}
+function setBadge(kind, text) { $('badge').className = 'badge ' + kind; $('badge').innerHTML = '<i></i>' + esc(text); }
+async function connectLive() {
+  if (location.protocol === 'file:') return false;
+  let info;
+  try { info = await api('/api/info'); } catch { return false; }
+  mode = 'live';
+  // 페이지를 새로 열면 새 세션에서 시작합니다(예산·검증 횟수 0부터).
+  try { await api('/api/session/new', {}); } catch {}
+  const lab = info.lab || {};
+  config = normalizeConfig(lab.config || PRESETS.full);
+  applied = appliedFrom(lab.mode === 'advanced' ? 'advanced' : 'basic', config, lab.source);
+  if (applied.mode === 'advanced') {
+    let draft = null; try { draft = localStorage.getItem(ADV_KEY); } catch {}
+    if (!draft) advSource = applied.source;
+    probeHarness(applied.source).then(r => { if (!r.error) { applied.info = r.info; render(false); } });
+  }
+  renderForm(); renderBasicCode(false); setCourse(applied.mode);
+  $('modelWrap').style.display = '';
+  $('modeNote').innerHTML = `실습 폴더 <code>${esc(info.workspace)}</code>에서 <b>실제 OpenCode</b>가 실행합니다. 실행이 아무리 빨라도 사건은 테이프에 쌓이므로, 다이얼로 간격을 늘려 천천히 볼 수 있습니다.` + (info.demo ? ' 지금은 데모 응답기(고정 시나리오)로 연결되어 있습니다.' : '');
+  $('applyNote').textContent = '적용하면 이 코드를 실습 폴더의 .opencode/plugins/harness.js에 쓰고 OpenCode를 다시 시작합니다(새 세션).';
+  const es = new EventSource('/api/stream');
+  es.onmessage = m => {
+    const { kind, data } = JSON.parse(m.data);
+    if (kind === 'hook' || kind === 'opencode') push(kind, data);
+    else if (kind === 'status') onStatus(data);
+    else if (kind === 'oclog') { if (/error|fail/i.test(data)) sys('opencode: ' + data); }
+    else if (kind === 'session') push('lab', { type: 'session' });
+  };
+  es.onerror = () => setBadge('err', '서버 연결 끊김 · 재시도 중');
+  return true;
+}
+async function onStatus(s) {
+  const map = { ready: ['live', '라이브 · 실제 OpenCode 연결됨'], starting: ['sim', 'OpenCode 시작 중…'], stopped: ['err', 'OpenCode 멈춤'], error: ['err', 'OpenCode 오류'] };
+  const [k, t] = map[s.state] || ['sim', s.state];
+  setBadge(k, t);
+  if (s.detail) sys(s.detail);
+  $('send').disabled = s.state !== 'ready';
+  if (s.state === 'ready' && !models) {
+    try {
+      models = await api('/api/models');
+      $('modelList').innerHTML = models.models.map(m => `<option value="${esc(m)}">`).join('');
+      let saved = null; try { saved = localStorage.getItem('lab.model'); } catch {}
+      $('model').value = saved || models.default || '';
+    } catch (e) { sys('모델 목록을 읽지 못했습니다: ' + e.message); }
+  }
+}
+
+/* ---------- 버튼 ---------- */
+$('model').addEventListener('change', () => { try { localStorage.setItem('lab.model', $('model').value.trim()); } catch {} });
+$('presetReq').innerHTML = REQUESTS.map(([l, , scene, tone], i) => `<button data-i="${i}"><b>${l}</b><small class="${tone ? 't-' + tone : ''}">${scene}</small></button>`).join('');
+$('presetReq').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  $('prompt').value = REQUESTS[b.dataset.i][1];
+  $('presetReq').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+};
+$('prompt').addEventListener('input', () => $('presetReq').querySelectorAll('button').forEach(x => x.classList.remove('on')));
+$('send').onclick = async () => {
+  const text = $('prompt').value.trim(); if (!text) return;
+  if (tape !== labTape) backToLab();
+  push('lab', { type: 'request', text });
+  if (!player.playing) autoPlay();
+  if (mode === 'live') {
+    try { await api('/api/prompt', { text, model: $('model').value.trim() }); }
+    catch (e) { sys('요청 실패: ' + e.message); }
+  } else sim.run(text);
+};
+$('newSession').onclick = async () => {
+  if (mode === 'live') await api('/api/session/new', {}); else sim.newSession();
+  push('lab', { type: 'session' });
+};
+$('abort').onclick = async () => { if (mode === 'live') { try { await api('/api/abort', {}); } catch {} } else sim.abort(); sys('중단했습니다.'); };
+$('resetFiles').onclick = async () => {
+  if (mode === 'live') await api('/api/reset', {}); else sim.resetFiles();
+  push('lab', { type: 'session' }); sys('작업 파일(lab/output·submissions)을 비웠습니다.');
+};
+$('apOnce').onclick = () => answer('once');
+$('apReject').onclick = () => answer('reject');
+async function answer(reply) {
+  $('approve').classList.remove('on');
+  if (mode === 'live') { try { await api('/api/permission', { id: pendingPermission, reply }); } catch (e) { sys('승인 응답 실패: ' + e.message); } }
+  else sim.approve(reply);
+}
+$('apply').onclick = async () => {
+  if (course === 'basic') readForm();
+  const source = currentSource();
+  let info = infoFromConfig(config);
+  if (course === 'advanced') {
+    const r = await runCheck();
+    if (r.error) { $('applyNote').textContent = '적용하지 않았습니다. ' + r.error; return; }
+    info = r.info;
+  }
+  const next = appliedFrom(course, config, source, info);
+  if (mode === 'live') {
+    try { await api('/api/config', { mode: course, config, source, resetOutputs: $('applyReset').checked }); }
+    catch (e) { $('applyNote').textContent = '적용 실패: ' + e.message; return; }
+    applied = next;
+  } else {
+    const prev = applied; applied = next;
+    try { await sim.load(); } catch (e) { applied = prev; $('applyNote').textContent = '적용하지 않았습니다. ' + e.message; return; }
+    if ($('applyReset').checked) sim.resetFiles(); else sim.newSession();
+  }
+  markDirty();
+  $('applyNote').textContent = (course === 'advanced' ? '직접 쓴 코드' : '기본 과정 코드') + '를 적용했습니다. 요청 탭에서 요청을 보내 머신이 어떻게 반응하는지 보세요.';
+  push('lab', { type: 'config', cfg: appliedCfg(), mode: course });
+  push('lab', { type: 'session' });
+};
+
+/* ---------- 기록 재생: 다른 테이프를 올립니다 ---------- */
+const DATA = JSON.parse($('evidence').textContent);
+const ORDER = ['kxjDUQ', 'Qk6lI6', 'q8iVMA', 'O8AJhc', 'Fl7nNF'];
+const DESC = { kxjDUQ: '합계 오류를 검증이 잡고, 수정 후 제출 단계에서 사람이 거절합니다', Qk6lI6: '같은 흐름에서 사람이 한 번 허용해 제출까지 갑니다',
+  q8iVMA: '허용 목록에 없는 quest_probe를 Policy가 막습니다', O8AJhc: '보호된 파일에 쓰려는 시도를 Policy가 막습니다', Fl7nNF: '같은 도구를 반복하다 9번째 시도에서 Limit에 걸립니다' };
+let sessions = {}, names = DATA.names, labCursor = -1, labApplied = null;
+function loadReplay(events) { sessions = {}; for (const e of events) { const k = (e.sessionId || '').slice(-6); if (k) (sessions[k] ||= []).push(e); } }
+function renderScen() {
+  const rank = k => ORDER.includes(k) ? ORDER.indexOf(k) : 99;
+  $('scen').innerHTML = '';
+  for (const k of Object.keys(sessions).sort((a, b) => rank(a) - rank(b))) {
+    const b = document.createElement('button');
+    b.innerHTML = esc(names[k] || '세션 ' + k) + '<small>' + esc(DESC[k] || sessions[k].length + '개 이벤트') + '</small>';
+    b.dataset.k = k; b.onclick = () => loadTape(k); $('scen').appendChild(b);
+  }
+}
+function loadTape(k) {
+  document.querySelectorAll('.scen button').forEach(b => b.classList.toggle('on', b.dataset.k === k));
+  if (tape === labTape) { labCursor = player.cur; labApplied = applied; }
+  applied = appliedFrom('basic', PRESETS.full);
+  const tp = makeTape(k);
+  addStep(tp, { type: 'request', text: '(기록 재생) ' + (names[k] || k), t: Date.parse(sessions[k][0].time) });
+  for (const e of sessions[k]) ingest(tp, 'hook', e, Date.parse(e.time));
+  tape = tp; player.cur = -1; render(false); autoPlay();
+}
+function backToLab() {
+  if (tape === labTape) return;
+  document.querySelectorAll('.scen button').forEach(b => b.classList.remove('on'));
+  tape = labTape; if (labApplied) applied = labApplied; player.cur = Math.min(labCursor, labTape.steps.length - 1); render(false);
+}
+$('backToLab').onclick = backToLab;
+$('rFile').onchange = async ev => {
+  const f = ev.target.files[0]; if (!f) return;
+  const evs = (await f.text()).trim().split('\n').map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+  names = {}; loadReplay(evs); renderScen();
+};
+
+
+/* ---------- 가이드 ----------
+   화면의 각 영역을 차례로 밝혀 주고, 마지막에 해 볼 실험을 안내합니다. 처음 열 때 한 번 저절로 뜹니다. */
+const GUIDE = [
+  { t: null, k: '시작하기', h: 'Hook·Harness 실험실입니다',
+    b: '<p>요청 하나를 보내면 OpenCode의 Agent가 도구를 부르고, Harness의 Hook이 그 호출을 어떻게 판단하는지 한 단계씩 볼 수 있습니다.</p><p>1분이면 화면을 다 둘러볼 수 있습니다. 오른쪽 위 <b>? 가이드</b>로 언제든 다시 열 수 있습니다.</p>' },
+  { t: '#tab-req', k: '1 · 요청', h: '여기서 요청을 보냅니다',
+    b: '<p>예시 요청을 고르거나 직접 써서 <b>요청 보내기</b>를 누릅니다. 오른쪽 위 배지가 지금 무엇이 실행하는지 알려 줍니다.</p><ul><li><b>미리보기</b>: 브라우저 안 모의 실행기</li><li><b>라이브</b>: 실제 OpenCode (<code>node lab/server.mjs</code>)</li></ul>' },
+  { t: '#machine', k: '2 · 머신', h: 'Agent 루프와 Harness',
+    b: '<p>패킷이 원을 시계 방향으로 한 바퀴 돌면 도구 호출 한 번입니다.</p><ol><li>Agent가 도구를 고릅니다</li><li><b>before Hook</b>이 Record → Limit → Policy 순서로 판정합니다</li><li>허용되면 실행하고, <b>after Hook</b>이 결과를 기록합니다</li><li>Agent가 결과를 보고 다음 도구를 고릅니다</li></ol><p>Hook이 막으면 실행 없이 안쪽 점선을 따라 Agent로 돌아갑니다. 바깥 점선이 Harness 경계입니다.</p>' },
+  { t: '.stepbar', k: '3 · 단계 버튼', h: '한 단계씩 넘겨 봅니다',
+    b: '<p>실제 실행은 순식간에 끝나지만 사건은 모두 테이프에 쌓입니다. <b>다음 단계 ▶</b>로 하나씩 넘기고, <b>◀ 이전 단계</b>로 되돌아갈 수 있습니다. 키보드 ← → 도 같습니다.</p><p><b>한 단계씩 보기</b>를 켜 두면 요청을 보내도 저절로 재생하지 않고, 버튼을 누를 때만 움직입니다.</p>' },
+  { t: '#insp', k: '4 · 현재 단계', h: '왜 그렇게 판정했는지',
+    b: '<p>지금 단계에서 무슨 일이 일어났는지, 규칙 함수가 왜 통과나 차단을 냈는지 풀어서 보여 줍니다. 아래에는 OpenCode나 플러그인이 남긴 원본 사건이 그대로 나옵니다.</p>' },
+  { t: '.regs', k: '5 · 레지스터', h: '지금 상태를 한눈에',
+    b: '<p>도구 이름, 인자, 시도 횟수와 예산, 검증 횟수, 마지막 검사, 제출 여부입니다. 단계를 넘길 때 바뀐 칸이 반짝입니다. ATTEMPT가 예산에 가까워지면 색이 바뀝니다.</p>' },
+  { t: '#term', k: '6 · 테이프 로그', h: '사건 기록',
+    b: '<p><b>hook</b>은 플러그인이 남긴 기록, <b>agent</b>는 OpenCode가 보낸 사건입니다. 줄을 누르면 그 단계로 이동합니다. 흐리게 보이는 줄은 아직 재생하지 않은 앞으로 올 단계입니다.</p>' },
+  { t: '.transport', k: '7 · 재생 컨트롤', h: '재생과 조그 다이얼',
+    b: '<p>▶로 자동 재생하고, 다이얼로 단계 사이 간격(0~5초)을 늘려 천천히 볼 수 있습니다. 멈춘 상태에서는 다이얼 한 칸이 한 단계입니다. <b>LIVE</b>는 실제 실행 위치로 바로 갑니다.</p>' },
+  { t: '#tabs', k: '8 · Harness 만들기', h: 'Harness 코드를 만들어 봅니다',
+    b: '<p><b>Harness 만들기</b> 탭에서 OpenCode 플러그인 <code>harness.js</code>를 만듭니다.</p><ul><li><b>기본 과정</b>: Record, Limit, Policy, 검증 조건을 고르면 옆의 실제 코드가 바뀌고, 바뀐 줄이 강조됩니다.</li><li><b>고급 과정</b>: 빈 뼈대에서 직접 코드를 쓰고, <b>검사하기</b>로 미션 8개의 통과 여부를 확인합니다.</li></ul><p><b>적용하기</b>를 누르면 그 코드가 Harness가 됩니다. 같은 요청을 다시 보내 차이를 봅니다.</p>' },
+  { t: null, k: '해 볼 실험', h: '이렇게 시작해 보세요', wide: true,
+    b: '<ol><li><b>정상 흐름</b>: 예시 <b>합계 계산 후 제출</b>을 보냅니다. 검증을 지나 Approval에서 멈추면 <b>한 번 허용</b>을 누릅니다.</li><li><b>Policy 차단</b>: <b>보호 파일 수정</b>을 보냅니다. before Hook의 ③ Policy가 막고 패킷이 안쪽 점선으로 돌아갑니다.</li><li><b>Limit 차단</b>: 기본 과정에서 Limit을 3회로 줄이고 합계 요청을 보냅니다. 네 번째 시도에서 ② Limit이 막습니다.</li><li><b>맨몸 Agent</b>: 기본 과정에서 <b>맨몸 Agent</b>를 적용하고 합계 요청을 보냅니다. 검증이 느슨해 틀린 합계도 통과합니다.</li><li><b>기록이 없으면</b>: Record를 끄고 요청을 보냅니다. Hook 칸이 움직이지 않아 무슨 판단이 있었는지 알 수 없습니다.</li></ol><p>처음에는 <b>한 단계씩 보기</b>를 켜고 다음 단계 버튼으로 넘기면 각 판정을 놓치지 않습니다.</p>' },
+];
+const guide = { i: 0, open: false };
+function guideShow(i) {
+  guide.i = Math.max(0, Math.min(GUIDE.length - 1, i));
+  const g = GUIDE[guide.i], card = $('gCard'), hole = $('gHole');
+  if (g.t === '#tab-req' || g.t === '#tabs') $('tabs').querySelector('[data-tab=req]').click();
+  card.className = 'card' + (g.wide ? ' wide' : '');
+  card.innerHTML = `<small>${g.k}</small><h3>${g.h}</h3>${g.b}<div class="gnav"><div class="dots">${GUIDE.map((_, j) => `<i class="${j === guide.i ? 'on' : ''}"></i>`).join('')}</div>`
+    + (guide.i ? '<button class="btn" id="gPrev">이전</button>' : '<button class="btn" id="gSkip">건너뛰기</button>')
+    + `<button class="btn pri" id="gNext">${guide.i === GUIDE.length - 1 ? '시작하기' : '다음'}</button></div>`;
+  $('gPrev') && ($('gPrev').onclick = () => guideShow(guide.i - 1));
+  $('gSkip') && ($('gSkip').onclick = guideClose);
+  $('gNext').onclick = () => guide.i === GUIDE.length - 1 ? guideClose() : guideShow(guide.i + 1);
+  const el = g.t && document.querySelector(g.t);
+  const vw = innerWidth, vh = innerHeight, cw = card.offsetWidth, ch = card.offsetHeight;
+  if (!el) {
+    $('gVeil').style.display = ''; hole.style.opacity = 0;
+    card.style.left = (vw - cw) / 2 + 'px'; card.style.top = Math.max(16, (vh - ch) / 2) + 'px'; return;
+  }
+  el.scrollIntoView({ block: 'nearest' });
+  const r = el.getBoundingClientRect(), pad = 6;
+  $('gVeil').style.display = 'none'; hole.style.opacity = 1;
+  Object.assign(hole.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.width + pad * 2 + 'px', height: r.height + pad * 2 + 'px' });
+  // 카드는 대상의 오른쪽 → 왼쪽 → 아래 → 위 순서로 자리가 나는 곳에 둡니다.
+  const gap = 16, clampY = y => Math.max(16, Math.min(vh - ch - 16, y)), clampX = x => Math.max(16, Math.min(vw - cw - 16, x));
+  let x, y;
+  if (r.right + gap + cw < vw) { x = r.right + gap; y = clampY(r.top); }
+  else if (r.left - gap - cw > 0) { x = r.left - gap - cw; y = clampY(r.top); }
+  else if (r.bottom + gap + ch < vh) { x = clampX(r.left + r.width / 2 - cw / 2); y = r.bottom + gap; }
+  else { x = clampX(r.left + r.width / 2 - cw / 2); y = Math.max(16, r.top - gap - ch); }
+  card.style.left = x + 'px'; card.style.top = y + 'px';
+}
+function guideOpen(i = 0) { guide.open = true; $('guide').classList.add('on'); guideShow(i); }
+function guideClose() { guide.open = false; $('guide').classList.remove('on'); try { localStorage.setItem('lab.guideSeen', '1'); } catch {} }
+$('gBtn').onclick = () => guideOpen(0);
+$('gVeil').onclick = guideClose;
+window.addEventListener('resize', () => guide.open && guideShow(guide.i));
+document.addEventListener('keydown', e => {
+  if (!guide.open) return;
+  e.stopImmediatePropagation();
+  if (e.key === 'Escape') guideClose();
+  else if (e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); $('gNext').click(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); guideShow(guide.i - 1); }
+}, true);
+
+/* ---------- 시작 ---------- */
+drawWires(); fitMachine(); loadReplay(DATA.events); renderForm(); renderBasicCode(false); setCourse('basic'); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); autoPlay();
+let guideSeen = false; try { guideSeen = localStorage.getItem('lab.guideSeen') === '1'; } catch {}
+if (!guideSeen) setTimeout(() => guideOpen(0), 600);
+window.addEventListener('resize', () => { fitMachine(); render(false); });
+connectLive().then(live => {
+  if (!live) {
+    $('modeNote').innerHTML = '지금은 <b>미리보기</b>입니다. 적용한 <code>harness.js</code> 코드를 브라우저 안에서 그대로 실행하고, Agent는 요청 문장의 낱말로 고르는 고정 시나리오입니다. <b>실제 OpenCode</b>로 돌리려면 저장소 루트에서 <code>node lab/server.mjs</code>를 실행하고 <code>http://127.0.0.1:4300/</code>을 여세요.';
+    $('applyNote').textContent = '미리보기에서는 바로 적용되고, 새 세션에서 반영됩니다.';
+  }
+});
+</script>
+</body>
+</html>

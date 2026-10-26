@@ -26,7 +26,8 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:clamp(270px,21vw,330
 .tabs button.on{color:var(--text);border-bottom-color:var(--mint);font-weight:700}
 .tab{display:none}.tab.on{display:block}
 label.f{display:block;font-size:12.5px;color:var(--sub);margin:10px 0 5px}
-textarea,select,input[type=number]{width:100%;background:#0d1222;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px}
+textarea,select,input[type=number],#model{width:100%;background:#0d1222;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px}
+label.f .faint{font-weight:400;color:var(--faint);font-size:11.5px;margin-left:4px}
 textarea{resize:vertical}
 textarea.code{font:12px/1.55 var(--mono);min-height:240px;white-space:pre;tab-size:2}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
@@ -48,6 +49,62 @@ textarea.code{font:12px/1.55 var(--mono);min-height:240px;white-space:pre;tab-si
 .grp textarea{font:12px/1.5 var(--mono);min-height:46px;margin-top:4px}
 .switch{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);font-weight:400}
 .dirty{color:var(--amber);font-size:12px}
+body.building main{grid-template-columns:minmax(600px,47vw) minmax(0,1fr) clamp(270px,21vw,360px)}
+@media(max-width:1500px){body.building main{grid-template-columns:minmax(560px,52vw) minmax(0,1fr)}body.building main>.panel:last-child{display:none}}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.seg button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--card2)}
+.seg button b{display:block;font-size:14px}
+.seg button small{display:block;font-size:11.5px;color:var(--faint);margin-top:2px}
+.seg button.on{border-color:var(--violet);background:rgba(177,155,255,.1)}
+.seg button.on small{color:var(--sub)}
+.seg button:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+.build{display:grid;grid-template-columns:minmax(210px,.72fr) minmax(0,1.5fr);gap:12px;align-items:start}
+.build[hidden]{display:none}
+.presets{margin:0 0 9px!important;flex-wrap:nowrap!important;gap:5px!important}
+.presets .btn{padding:5px 9px;font-size:12.5px;white-space:nowrap}
+.grp{transition:border-color .2s}
+.grp:hover,.grp:focus-within{border-color:#4a557a}
+.grp.dim .row,.grp.dim .pathcols,.grp.dim>.small{opacity:.4}
+.pathcols{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px}
+.pathcols label{display:block}
+.codepane{position:sticky;top:0;min-width:0}
+.codehead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--faint);margin-bottom:5px}
+.codehead code{color:var(--sub)}
+#diffNote{color:var(--mint);font:12px var(--mono)}
+.codev,textarea.code.edit{font-variant-ligatures:none}
+.codev{margin:0;background:#090d18;border:1px solid var(--line);border-radius:10px;padding:8px 0;font:11.5px/1.62 var(--mono);color:#d7dcf0;overflow:auto;max-height:calc(100vh - 330px)}
+.codev .ln{display:flex;white-space:pre-wrap;overflow-wrap:anywhere;padding-right:12px;border-left:3px solid transparent;transition:opacity .2s}
+.codev .ln>i{font-style:normal;color:#454d67;min-width:2.4em;text-align:right;padding-right:12px;flex:none;user-select:none}
+.codev .ln.gap{box-shadow:inset 0 2px 0 var(--coral);animation:lngap 2.8s ease-out forwards}
+@keyframes lngap{0%,40%{box-shadow:inset 0 2px 0 var(--coral)}100%{box-shadow:inset 0 2px 0 transparent}}
+.codev .ln.chg{border-left-color:var(--mint);animation:lnchg 2.8s ease-out}
+@keyframes lnchg{0%,25%{background:rgba(97,222,198,.26)}100%{background:transparent}}
+.codev[data-focus] .ln{opacity:.42}
+.codev[data-focus] .ln.fo{opacity:1;background:rgba(177,155,255,.1);border-left-color:var(--violet)}
+.codev.mini{max-height:none;margin-top:8px}
+.c-c{color:#6c7796}.c-s{color:#9be3c6}.c-k{color:#c4b3ff}.c-n{color:var(--amber)}
+textarea.code.edit{min-height:calc(100vh - 420px);font:11.5px/1.62 var(--mono);background:#090d18;resize:vertical}
+.mhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.mhead span{font-size:12px;color:var(--mint)}
+#missionList{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ms{border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:var(--card2)}
+.ms .mh{display:flex;align-items:center;gap:7px;font-size:13.5px}
+.ms .dot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--faint);flex:none}
+.ms.pass .dot{background:var(--mint);border-color:var(--mint)}
+.ms.fail .dot{border-color:var(--coral)}
+.ms.pass{border-color:rgba(97,222,198,.35)}
+.ms p{margin:3px 0 0;font-size:12px;color:var(--sub);line-height:1.5}
+.ms p.why{color:var(--coral)}
+.ms details{margin-top:3px}
+.ms summary{font-size:11.5px;color:var(--faint);cursor:pointer}
+.ms pre{margin:4px 0 0;font:11px/1.5 var(--mono);color:#cfd5ea;background:#090d18;border-radius:7px;padding:6px 8px;white-space:pre-wrap}
+.checkres{margin-top:8px;font-size:12.5px;color:var(--sub);border:1px solid var(--line);border-radius:9px;padding:7px 10px;line-height:1.5}
+.checkres.good{border-color:rgba(97,222,198,.5);color:var(--mint)}
+.checkres.bad{border-color:rgba(255,138,122,.5);color:var(--coral)}
+.apprrow{margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.apprrow select{width:auto;padding:3px 6px;font-size:12.5px}
+.applybar{position:sticky;bottom:-14px;margin:12px -14px -14px;padding:10px 14px;background:var(--card);border-top:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap;z-index:2}
+
 details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .scen{display:flex;flex-direction:column;gap:7px}
 .scen button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px}
@@ -222,8 +279,8 @@ details.note summary{font-size:12.5px;color:var(--faint)}
 .dialinfo b{color:var(--text);font-size:15px;font-weight:600}
 .dialinfo .mode{color:var(--mint)}
 .keys{font-size:11px;color:#59627e}
-@media(max-width:1150px){main{grid-template-columns:280px minmax(0,1fr)}main>.panel:last-child{grid-column:1/-1}}
-@media(max-width:900px){main{grid-template-columns:1fr}.transport{grid-template-columns:1fr}}
+@media(max-width:1150px){main,body.building main{grid-template-columns:280px minmax(0,1fr)}main>.panel:last-child{grid-column:1/-1}body.building main>.panel:first-child{grid-column:1/-1}}
+@media(max-width:900px){main,body.building main{grid-template-columns:1fr}.build{grid-template-columns:1fr}.transport{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -239,11 +296,11 @@ details.note summary{font-size:12.5px;color:var(--faint)}
   <section class="panel">
     <div class="tabs" id="tabs">
       <button data-tab="req" class="on">요청</button>
-      <button data-tab="cfg">Harness 꾸미기</button>
+      <button data-tab="cfg">Harness 만들기</button>
       <button data-tab="rep">기록 재생</button>
     </div>
     <div class="tab on" id="tab-req">
-      <div id="modelWrap" style="display:none"><label class="f" for="model">모델</label><select id="model"></select></div>
+      <div id="modelWrap" style="display:none"><label class="f" for="model">모델 <span class="faint">목록에 없으면 <code>공급자/모델</code> 형식으로 직접 입력</span></label><input id="model" list="modelList" spellcheck="false" autocomplete="off"><datalist id="modelList"></datalist></div>
       <label class="f" for="prompt">Agent에게 보낼 요청</label>
       <textarea id="prompt" rows="4">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
       <button class="btn pri send" id="send">요청 보내기</button>
@@ -259,34 +316,61 @@ details.note summary{font-size:12.5px;color:var(--faint)}
       <details class="note"><summary>지금 무엇이 실행하나요?</summary><p class="small" id="modeNote"></p></details>
     </div>
     <div class="tab" id="tab-cfg">
-      <div class="btns" style="margin:0 0 10px">
-        <span class="small">빠른 설정</span>
-        <button class="btn" data-preset="naked">맨몸 Agent</button>
-        <button class="btn" data-preset="full">완성 Harness</button>
+      <div class="seg" id="courseSeg">
+        <button data-course="basic" class="on"><b>기본 과정</b><small>설정을 고르면 코드가 바뀝니다</small></button>
+        <button data-course="advanced"><b>고급 과정</b><small>코드를 직접 쓰고 검사합니다</small></button>
       </div>
-      <div class="grp"><h3>Record <small>기록</small><label class="switch"><input type="checkbox" id="cRecordOn"> 켜기</label></h3>
-        <div class="small">Hook 판단을 <code>.quest/events.jsonl</code>에 남깁니다. 끄면 Hook 단계가 테이프에 남지 않습니다.</div></div>
-      <div class="grp"><h3>Policy <small>허용 도구</small></h3><div class="row" id="cTools"></div></div>
-      <div class="grp"><h3>Policy <small>경로 (한 줄에 하나, 앞부분 일치)</small></h3>
-        <div class="small">읽기 허용</div><textarea id="cRead"></textarea>
-        <div class="small" style="margin-top:6px">쓰기 허용</div><textarea id="cWrite"></textarea></div>
-      <div class="grp"><h3>Limit <small>세션당 도구 시도 예산</small><label class="switch"><input type="checkbox" id="cLimitOn"> 켜기</label></h3>
-        <div class="row"><label>예산 <input type="number" id="cBudget" min="1" max="50" style="width:80px"> 회</label></div></div>
-      <div class="grp"><h3>Validation <small>통과로 볼 검사</small></h3><div class="row" id="cChecks"></div></div>
-      <div class="grp"><h3>Approval <small>제출 조건과 사람 승인</small></h3>
-        <div class="row" id="cSubmit"></div>
-        <div class="row" style="margin-top:6px"><label>제출 시 사람에게
-          <select id="cApproval" style="width:auto;padding:3px 6px"><option value="ask">묻기 (ask)</option><option value="allow">묻지 않고 허용 (allow)</option><option value="deny">항상 거절 (deny)</option></select></label></div></div>
-      <details id="codeBox"><summary>만들어지는 <code>learner/rules.mjs</code> 보기 · 직접 고치기</summary>
-        <textarea class="code" id="code" spellcheck="false"></textarea>
-        <div class="small">코드를 직접 고치면 위 설정 대신 이 코드가 그대로 적용됩니다. 설정을 다시 바꾸면 코드가 새로 만들어집니다.</div>
-      </details>
-      <div class="btns">
+      <div class="build" id="buildBasic">
+        <div class="form">
+          <div class="btns presets"><span class="small">빠른 설정</span>
+            <button class="btn" data-preset="naked">맨몸 Agent</button>
+            <button class="btn" data-preset="full">완성 Harness</button></div>
+          <div class="grp" data-region="record"><h3>Record <small>기록</small><label class="switch"><input type="checkbox" id="cRecordOn"> 켜기</label></h3>
+            <div class="small">Hook이 본 것과 판단을 <code>.quest/events.jsonl</code>에 남깁니다.</div></div>
+          <div class="grp" data-region="limit"><h3>Limit <small>시도 횟수</small><label class="switch"><input type="checkbox" id="cLimitOn"> 켜기</label></h3>
+            <div class="row"><label>세션마다 <input type="number" id="cBudget" min="1" max="50" style="width:70px"> 회까지</label></div></div>
+          <div class="grp" data-region="tools"><h3>Policy <small>허용 도구</small><label class="switch"><input type="checkbox" id="cToolsOn"> 켜기</label></h3>
+            <div class="row" id="cTools"></div></div>
+          <div class="grp" data-region="paths"><h3>Policy <small>허용 경로</small><label class="switch"><input type="checkbox" id="cPathOn"> 켜기</label></h3>
+            <div class="small">한 줄에 하나, 앞부분이 같으면 허용</div>
+            <div class="pathcols"><label class="small">읽기<textarea id="cRead"></textarea></label><label class="small">쓰기<textarea id="cWrite"></textarea></label></div></div>
+          <div class="grp" data-region="validation"><h3>Validation <small>통과로 볼 검사</small></h3><div class="row" id="cChecks"></div></div>
+          <div class="grp" data-region="submit"><h3>Approval <small>제출 조건과 사람 승인</small></h3>
+            <div class="row" id="cSubmit"></div>
+            <div class="row" style="margin-top:6px"><label>제출할 때 사람에게
+              <select id="cApproval" style="width:auto;padding:3px 6px"><option value="ask">묻기 (ask)</option><option value="allow">묻지 않고 허용 (allow)</option><option value="deny">항상 거절 (deny)</option></select></label></div></div>
+        </div>
+        <div class="codepane">
+          <div class="codehead"><code>.opencode/plugins/harness.js</code><span id="diffNote"></span></div>
+          <pre class="codev" id="codeView"></pre>
+          <pre class="codev mini" id="approvalView"></pre>
+        </div>
+      </div>
+      <div class="build adv" id="buildAdv" hidden>
+        <div class="missions">
+          <div class="mhead"><b>미션</b><span id="missionScore"></span></div>
+          <ol id="missionList"></ol>
+          <p class="small">검사는 고정 입력으로 코드를 돌려 보는 것입니다. 실제로 막히는지는 적용한 뒤 요청을 보내 머신에서 확인합니다.</p>
+        </div>
+        <div class="codepane">
+          <div class="codehead"><code>.opencode/plugins/harness.js</code><span>Tab 키는 들여쓰기</span></div>
+          <textarea class="code edit" id="advCode" spellcheck="false" autocomplete="off"></textarea>
+          <div class="btns">
+            <button class="btn pri" id="advCheck">검사하기</button>
+            <button class="btn" id="advFromBasic" title="기본 과정에서 고른 설정으로 만든 코드를 편집기에 넣습니다">기본 과정 코드 가져오기</button>
+            <button class="btn" id="advReset" title="미션을 시작할 때의 빈 코드로 되돌립니다">처음 코드로</button>
+          </div>
+          <div class="checkres" id="advResult">코드를 고친 뒤 <b>검사하기</b>를 누르면 미션별로 통과 여부를 알려 줍니다.</div>
+          <div class="row small apprrow"><code>opencode.json</code> 제출할 때 사람에게
+            <select id="advApproval"><option value="ask">묻기 (ask)</option><option value="allow">묻지 않고 허용 (allow)</option><option value="deny">항상 거절 (deny)</option></select></div>
+        </div>
+      </div>
+      <div class="applybar">
         <button class="btn pri" id="apply">적용하기</button>
         <label class="small"><input type="checkbox" id="applyReset" checked> 작업 파일도 비우기</label>
         <span class="dirty" id="dirty"></span>
       </div>
-      <p class="small" id="applyNote"></p>
+      <p class="small" id="applyNote">적용하면 이 코드가 Harness가 됩니다. 그다음 요청을 보내 머신에서 차이를 봅니다.</p>
     </div>
     <div class="tab" id="tab-rep">
       <p class="small" style="margin-top:0">실제 OpenCode 1.19.4 실행기에서 남긴 기록을 테이프에 올려 재생합니다(모델은 고정 응답기).</p>
@@ -333,9 +417,9 @@ details.note summary{font-size:12.5px;color:var(--faint)}
       <div class="unit" id="uAgent" style="left:360px;top:140px;width:272px"><div class="t">Agent <em>LLM</em></div><div class="d">지난 결과를 보고 다음 도구를 고릅니다</div><div class="msg" id="mAgent"></div></div>
       <div class="unit hook" id="uBefore" style="left:574px;top:340px;width:264px"><div class="t">before Hook <em>실행 전</em></div><div class="d">tool.execute.before가 호출을 가로채 판정합니다</div>
         <div class="row">
-          <div class="chip" id="uRecord">① Record<small>shouldRecord</small></div>
-          <div class="chip" id="uLimit">② Limit<small>withinBudget</small></div>
-          <div class="chip" id="uPolicy">③ Policy<small>tool·path</small></div>
+          <div class="chip" id="uRecord">① Record<small>record()</small></div>
+          <div class="chip" id="uLimit">② Limit<small>attempted</small></div>
+          <div class="chip" id="uPolicy">③ Policy<small>도구·경로</small></div>
         </div>
         <div class="msg" id="mBefore"></div>
       </div>
@@ -403,15 +487,324 @@ details.note summary{font-size:12.5px;color:var(--faint)}
 'use strict';
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+// Hook·Harness 실험실의 Harness 코드 생성기와 검사기입니다.
+// 서버(lab/server.mjs)가 import하고, 같은 내용이 lab/index.html에도 그대로 들어갑니다(빌드 시 export만 지움).
+// 브라우저에서도 돌아야 하므로 Node 내장 모듈을 쓰지 않습니다.
+
 const TOOLS = ['quest_read', 'quest_write', 'quest_validate', 'quest_submit', 'quest_status', 'quest_probe'];
 const CHECKS = { schemaOK: '스키마', sumOK: '합계', reportOK: '보고서', originalsOK: '원본 보존' };
 const SUBMITS = { valid: '검증 통과', sameHash: '검증한 파일 그대로', notConsumed: '한 번만 제출', attemptsAllowed: '검사 횟수 이내' };
 const PRESETS = {
-  full: { record: true, tools: TOOLS.filter(t => t !== 'quest_probe'), read: ['lab/input/', 'lab/output/', 'lab/protected/'],
-    write: ['lab/output/'], limitOn: true, budget: 8, checks: Object.keys(CHECKS), submit: Object.keys(SUBMITS), approval: 'ask' },
-  naked: { record: true, tools: TOOLS, read: ['lab/'], write: ['lab/'], limitOn: false, budget: 8,
-    checks: ['schemaOK'], submit: [], approval: 'allow' },
+  full: { record: true, toolsOn: true, tools: TOOLS.filter(t => t !== 'quest_probe'), pathOn: true,
+    read: ['lab/input/', 'lab/output/', 'lab/protected/'], write: ['lab/output/'], limitOn: true, budget: 8,
+    checks: Object.keys(CHECKS), submit: Object.keys(SUBMITS), approval: 'ask' },
+  naked: { record: true, toolsOn: false, tools: TOOLS, pathOn: false, read: ['lab/'], write: ['lab/'], limitOn: false,
+    budget: 8, checks: ['schemaOK'], submit: [], approval: 'allow' },
 };
+
+function normalizeConfig(input = {}) {
+  const base = PRESETS.full;
+  const pick = (value, allowed) => (Array.isArray(value) ? value : []).filter(v => allowed.includes(v));
+  const prefixes = value => (Array.isArray(value) ? value : String(value || '').split('\n'))
+    .map(v => String(v).trim()).filter(v => v && !v.includes('..') && !v.includes("'") && !v.includes('\\'));
+  const flag = (key) => key in input ? Boolean(input[key]) : base[key];
+  return {
+    record: flag('record'), toolsOn: flag('toolsOn'), tools: pick(input.tools ?? base.tools, TOOLS),
+    pathOn: flag('pathOn'), read: prefixes(input.read ?? base.read), write: prefixes(input.write ?? base.write),
+    limitOn: flag('limitOn'), budget: Math.max(1, Math.min(50, Math.floor(Number(input.budget) || 8))),
+    checks: pick(input.checks ?? base.checks, Object.keys(CHECKS)), submit: pick(input.submit ?? base.submit, Object.keys(SUBMITS)),
+    approval: ['ask', 'allow', 'deny'].includes(input.approval) ? input.approval : 'ask',
+  };
+}
+
+const quoteList = list => '[' + list.map(v => "'" + v + "'").join(', ') + ']';
+
+// 기본 과정: 폼 설정으로 .opencode/plugins/harness.js 전체를 만듭니다.
+// 줄마다 어느 폼 항목에서 나온 줄인지(region)를 함께 돌려주어 화면에서 해당 줄을 강조할 수 있게 합니다.
+function harnessSource(input) {
+  const c = normalizeConfig(input);
+  const out = [];
+  const add = (region, ...lines) => lines.forEach(text => out.push({ region, text }));
+  const guarded = c.limitOn || c.toolsOn || c.pathOn;
+  const ind = guarded ? '        ' : '      ';
+  add('', '// .opencode/plugins/harness.js',
+    '// OpenCode는 도구를 실행하기 직전(before)과 직후(after)에 이 파일의 함수를 부릅니다.',
+    '// 실험실 기본 과정에서 고른 설정으로 만든 코드입니다.',
+    "import { tool } from '@opencode-ai/plugin';",
+    "import { createLabKit } from '../lab-kit/kit.mjs';",
+    '',
+    'export const LabHarness = async ({ directory }) => {',
+    '  // 실습 환경(작업 도구·횟수 보관함·기록 파일)입니다. Harness는 아닙니다.',
+    '  const kit = createLabKit({ root: directory, tool, record, acceptValidation, canSubmit });',
+    '');
+  if (c.record) add('record',
+    '  // [Record] 본 것과 판단을 .quest/events.jsonl에 남깁니다.',
+    '  function record(event) {',
+    '    kit.log(event);',
+    '  }');
+  else add('record',
+    '  // [Record] 꺼짐: 아무것도 남기지 않습니다.',
+    '  function record(event) {}');
+  add('', '',
+    '  return {',
+    '    tool: kit.tools,',
+    '',
+    '    // ① 실행 직전. 여기서 throw하면 도구는 실행되지 않습니다.',
+    "    'tool.execute.before': async (input, output) => {",
+    "      if (!input.tool.startsWith('quest_')) return;",
+    '      const call = { sessionId: input.sessionID, callId: input.callID, tool: input.tool };',
+    '      const state = kit.session(input.sessionID);');
+  add('record', "      record({ ...call, event: 'before' });");
+  if (guarded) add('', '      try {');
+  if (c.limitOn) add('limit',
+    ind + '// [Limit] 세션마다 ' + c.budget + '회까지만 받습니다. quest_status는 세지 않습니다.',
+    ind + "if (input.tool !== 'quest_status') {",
+    ind + '  state.attempted += 1;',
+    ind + '  kit.save(state);',
+    ind + '  if (state.attempted > ' + c.budget + ") throw new Error('LIMIT: tool request budget exhausted');",
+    ind + '}',
+    ind + '// 검증에 세 번 실패하면 더 쓰지 못하게 합니다.',
+    ind + "if (input.tool === 'quest_write' && state.validationAttempts >= 3 && !state.validation?.ok)",
+    ind + "  throw new Error('LIMIT: validation attempts exhausted');");
+  if (c.toolsOn) add('tools',
+    ...(c.limitOn ? [''] : []),
+    ind + '// [Policy·도구] 목록에 있는 도구만 실행합니다.',
+    ind + 'const allowedTools = ' + quoteList(c.tools) + ';',
+    ind + "if (!allowedTools.includes(input.tool)) throw new Error('POLICY: tool denied');");
+  if (c.pathOn) add('paths',
+    ...(c.limitOn || c.toolsOn ? [''] : []),
+    ind + '// [Policy·경로] 허용한 경로로 시작할 때만 읽고 씁니다.',
+    ind + "if (input.tool === 'quest_read' || input.tool === 'quest_write') {",
+    ind + '  const where = kit.relative(output.args.path);',
+    ind + "  const allowed = input.tool === 'quest_read'",
+    ind + '    ? ' + quoteList(c.read),
+    ind + '    : ' + quoteList(c.write) + ';',
+    ind + "  if (!allowed.some(prefix => where.startsWith(prefix))) throw new Error('POLICY: path denied');",
+    ind + '}');
+  if (guarded) {
+    add('', '      } catch (error) {');
+    add('record', "        record({ ...call, event: 'denied', reason: error.message, executed: false });");
+    add('', '        throw error; // 다시 던져야 실행이 멈춥니다.', '      }');
+  }
+  add('', '    },', '',
+    '    // ② 실행 직후.',
+    "    'tool.execute.after': async (input, output) => {",
+    "      if (!input.tool.startsWith('quest_')) return;");
+  add('record',
+    "      record({ sessionId: input.sessionID, callId: input.callID, tool: input.tool, event: 'after',",
+    '        output: String(output.output).slice(0, 2000) });');
+  add('', '    },', '  };', '');
+  const checks = c.checks.map(k => 'checks.' + k);
+  add('validation',
+    '  // [Validation] quest_validate가 이 함수로 통과를 정합니다.',
+    '  function acceptValidation(checks) {',
+    ...(checks.length ? ['    return ' + checks.join(' && ') + ';']
+      : ['    return true; // 아무것도 보지 않습니다. 무엇을 써도 통과합니다.']),
+    '  }');
+  const map = { valid: 'facts.valid', sameHash: 'facts.sameHash', notConsumed: '!facts.consumed', attemptsAllowed: 'facts.attemptsAllowed' };
+  const submit = c.submit.map(k => map[k]);
+  add('', '');
+  add('submit',
+    '  // [Approval] quest_submit이 사람에게 묻기 전에 보는 조건입니다.',
+    '  // 물을지 말지는 opencode.json의 quest_publish(ask·allow·deny)가 정합니다.',
+    '  function canSubmit(facts) {',
+    ...(submit.length ? ['    return ' + submit.join(' && ') + ';']
+      : ['    return true; // 아무 조건 없이 제출 요청을 받습니다.']),
+    '  }');
+  add('', '};', '');
+  return { source: out.map(l => l.text).join('\n'), regions: out.map(l => l.region) };
+}
+
+function approvalSnippet(approval) {
+  return '// opencode.json (일부)\n"permission": {\n  "quest_*": "allow",\n  "quest_publish": "' + approval + '"\n}';
+}
+
+// 고급 과정의 출발점입니다. 도구 등록과 Hook 자리만 있고 판단은 비어 있습니다.
+const STARTER = [
+  '// .opencode/plugins/harness.js',
+  '// 고급 과정: 이 파일을 직접 채워 Harness를 만듭니다. 왼쪽 미션을 하나씩 해결하고 [검사하기]로 확인합니다.',
+  'import { tool } from \'@opencode-ai/plugin\';',
+  'import { createLabKit } from \'../lab-kit/kit.mjs\';',
+  '',
+  'export const LabHarness = async ({ directory }) => {',
+  '  // 실습 환경: 작업 도구(quest_*), 세션별 횟수 보관함(kit.session·kit.save), 기록 파일(kit.log).',
+  '  const kit = createLabKit({ root: directory, tool, record, acceptValidation, canSubmit });',
+  '',
+  '  function record(event) {',
+  '    // 미션 2: 여기서 kit.log(event)를 불러 기록을 남기세요.',
+  '  }',
+  '',
+  '  return {',
+  '    tool: kit.tools,',
+  '',
+  '    // 도구를 실행하기 직전. 막으려면 throw new Error(\'POLICY: ...\')처럼 던집니다.',
+  '    \'tool.execute.before\': async (input, output) => {',
+  '      if (!input.tool.startsWith(\'quest_\')) return;',
+  '      const call = { sessionId: input.sessionID, callId: input.callID, tool: input.tool };',
+  '      const state = kit.session(input.sessionID); // { attempted, validationAttempts, validation, consumed }',
+  '',
+  '    },',
+  '',
+  '    // 도구를 실행한 직후. output.output에 결과 문자열이 들어 있습니다.',
+  '    \'tool.execute.after\': async (input, output) => {',
+  '      if (!input.tool.startsWith(\'quest_\')) return;',
+  '',
+  '    },',
+  '  };',
+  '',
+  '  function acceptValidation(checks) { // { schemaOK, sumOK, reportOK, originalsOK }',
+  '    return true; // 미션 7',
+  '  }',
+  '',
+  '  function canSubmit(facts) { // { valid, sameHash, consumed, attemptsAllowed }',
+  '    return true; // 미션 8',
+  '  }',
+  '};',
+  '',
+].join('\n');
+
+// 고급 과정 미션입니다. hint는 막혔을 때 펼쳐 보는 예시 코드입니다.
+const MISSIONS = [
+  { id: 'hook', title: 'Hook 등록', goal: '플러그인이 작업 도구와 before·after Hook을 OpenCode에 돌려줍니다.',
+    hint: "return {\n  tool: kit.tools,\n  'tool.execute.before': async (input, output) => { ... },\n  'tool.execute.after': async (input, output) => { ... },\n};" },
+  { id: 'record', title: 'Record', goal: 'before와 after에서 record()로 사건을 남기고, record()는 kit.log()로 파일에 씁니다.',
+    hint: "function record(event) { kit.log(event); }\n// before 안에서\nrecord({ ...call, event: 'before' });\n// after 안에서\nrecord({ sessionId: input.sessionID, callId: input.callID,\n  tool: input.tool, event: 'after', output: String(output.output) });" },
+  { id: 'paths', title: 'Policy · 경로', goal: '쓰기는 lab/output/ 아래만, 읽기는 lab/input/·lab/output/·lab/protected/만 허용합니다. lab/output-other/ 같은 비슷한 이름도 막아야 합니다.',
+    hint: "if (input.tool === 'quest_read' || input.tool === 'quest_write') {\n  const where = kit.relative(output.args.path);\n  const allowed = input.tool === 'quest_read'\n    ? ['lab/input/', 'lab/output/', 'lab/protected/']\n    : ['lab/output/'];\n  if (!allowed.some(p => where.startsWith(p)))\n    throw new Error('POLICY: path denied');\n}" },
+  { id: 'tools', title: 'Policy · 도구', goal: 'quest_probe는 막고, 업무 도구(read·write·validate·submit·status)만 실행합니다.',
+    hint: "const allowedTools = ['quest_read', 'quest_write', 'quest_validate', 'quest_submit', 'quest_status'];\nif (!allowedTools.includes(input.tool)) throw new Error('POLICY: tool denied');" },
+  { id: 'denied', title: '막은 이유 기록', goal: '막을 때는 throw하기 전에 denied 사건과 이유(reason)를 남깁니다.',
+    hint: "try {\n  // Limit·Policy 검사들\n} catch (error) {\n  record({ ...call, event: 'denied', reason: error.message, executed: false });\n  throw error;\n}" },
+  { id: 'limit', title: 'Limit', goal: '세션마다 도구 시도를 8회까지만 받고 9번째부터 LIMIT으로 막습니다. quest_status는 세지 않습니다.',
+    hint: "if (input.tool !== 'quest_status') {\n  state.attempted += 1;\n  kit.save(state);\n  if (state.attempted > 8) throw new Error('LIMIT: tool request budget exhausted');\n}" },
+  { id: 'validation', title: 'Validation', goal: '네 가지 검사(schemaOK·sumOK·reportOK·originalsOK)가 모두 참일 때만 통과시킵니다.',
+    hint: 'function acceptValidation(checks) {\n  return checks.schemaOK && checks.sumOK && checks.reportOK && checks.originalsOK;\n}' },
+  { id: 'submit', title: '제출 조건', goal: '검증 통과, 검증한 파일 그대로, 아직 제출 안 함, 검사 횟수 이내일 때만 제출 요청을 받습니다.',
+    hint: 'function canSubmit(facts) {\n  return facts.valid && facts.sameHash && !facts.consumed && facts.attemptsAllowed;\n}' },
+];
+
+// ---------- 코드 실행과 검사 ----------
+// 소스의 import·export를 걷어 내고 함수로 만듭니다. tool과 createLabKit은 호출하는 쪽이 넣어 줍니다.
+function compileHarness(source) {
+  const body = String(source)
+    .replace(/^\s*import\s[^;]*?from\s*['"][^'"]+['"];?\s*$/gm, '')
+    .replace(/export\s+const\s+([A-Za-z_$][\w$]*)\s*=/, 'const __harness = ')
+    .replace(/export\s+(async\s+)?function\s+([A-Za-z_$][\w$]*)/, (m, a) => 'const __harness = ' + (a || '') + 'function');
+  if (!/__harness/.test(body)) throw new Error('export const 이름 = async ({ directory }) => { ... } 형태의 플러그인을 찾지 못했습니다.');
+  try { return new Function('tool', 'createLabKit', '"use strict";\n' + body + '\nreturn __harness;'); }
+  catch (error) {
+    const detail = /__harness/.test(error.message) ? '' : ' (' + error.message + ')';
+    throw new Error('문법 오류가 있습니다' + detail + '. 닫히지 않은 괄호나 빠진 쉼표가 없는지 확인하세요.');
+  }
+}
+
+function probeKit() {
+  const sessions = new Map(), events = [];
+  let captured = {};
+  const createLabKit = opts => {
+    captured = opts || {};
+    return {
+      tools: { quest_read: {}, quest_write: {}, quest_validate: {}, quest_submit: {}, quest_status: {}, quest_probe: {} },
+      log: event => events.push(event),
+      session: id => { if (!sessions.has(id)) sessions.set(id, { sessionId: id, attempted: 0, executed: 0, validationAttempts: 0, validation: null, consumed: false }); return sessions.get(id); },
+      save: () => {},
+      relative: p => { if (typeof p !== 'string' || p.includes('..') || p.startsWith('/')) throw new Error('PATH: outside permitted root'); return p.replace(/^\.\//, ''); },
+    };
+  };
+  const tool = Object.assign(x => x, { schema: new Proxy({}, { get: () => () => new Proxy({}, { get: (t, k) => () => t }) }) });
+  return { createLabKit, tool, events, captured: () => captured };
+}
+
+// 코드를 고정 입력으로 돌려 미션별 통과 여부와, 화면이 쓸 실제 동작(info)을 알아냅니다.
+async function probeHarness(source) {
+  const result = { ok: false, error: null, missions: {}, info: null };
+  let factory;
+  try { factory = compileHarness(source); } catch (error) { result.error = '코드를 읽지 못했습니다: ' + error.message; return result; }
+  const kit = probeKit();
+  let hooks, kitObj;
+  try {
+    const plugin = factory(kit.tool, opts => (kitObj = kit.createLabKit(opts)));
+    hooks = await plugin({ directory: '/probe' });
+  } catch (error) { result.error = '플러그인을 만들다 오류가 났습니다: ' + error.message; return result; }
+  if (!hooks || typeof hooks !== 'object') { result.error = '플러그인이 Hook 객체를 돌려주지 않았습니다.'; return result; }
+  let n = 0;
+  async function before(session, tool, args = {}) {
+    const start = kit.events.length;
+    const fn = hooks['tool.execute.before'];
+    try { if (fn) await fn({ tool, sessionID: session, callID: 'c' + (++n) }, { args }); return { ok: true, events: kit.events.slice(start) }; }
+    catch (error) { return { ok: false, reason: String(error?.message || error), events: kit.events.slice(start) }; }
+  }
+  async function after(session, tool) {
+    const start = kit.events.length;
+    try { await hooks['tool.execute.after']?.({ tool, sessionID: session, callID: 'a' + (++n) }, { output: '{"ok":true}', title: '', metadata: {} }); }
+    catch { /* after의 오류는 아래 검사에서 기록 누락으로 드러납니다 */ }
+    return kit.events.slice(start);
+  }
+  const blocked = (r, word) => !r.ok && r.reason.includes(word);
+  const cap = kit.captured();
+  const judge = (fn, arg) => { try { return Boolean(fn?.(arg)); } catch { return null; } };
+  const m = result.missions;
+  const say = (id, pass, why) => { m[id] = { pass: Boolean(pass), why: pass ? '' : why }; };
+
+  say('hook', typeof hooks['tool.execute.before'] === 'function' && typeof hooks['tool.execute.after'] === 'function' && hooks.tool && hooks.tool === kitObj?.tools,
+    !hooks.tool ? 'tool: kit.tools가 없어 Agent가 작업 도구를 쓸 수 없습니다.' : 'tool.execute.before와 tool.execute.after를 둘 다 돌려주어야 합니다.');
+
+  const r1 = await before('rec', 'quest_read', { path: 'lab/input/orders.json' });
+  const a1 = await after('rec', 'quest_read');
+  const recBefore = r1.events.some(e => e.event === 'before' && e.tool === 'quest_read');
+  const recAfter = a1.some(e => e.event === 'after' && e.tool === 'quest_read');
+  say('record', recBefore && recAfter, !recBefore ? "before에서 record({ ...call, event: 'before' })가 kit.log까지 가지 않았습니다." : "after에서 event: 'after' 기록이 없습니다.");
+
+  const pw = [
+    ['lab/protected/settings.json', 'write', false], ['lab/input/orders.json', 'write', false], ['lab/output-other/x.txt', 'write', false],
+    ['lab/output/summary.json', 'write', true], ['lab/input/orders.json', 'read', true], ['lab/protected/settings.json', 'read', true], ['lab/secret.txt', 'read', false],
+  ];
+  const pathFails = [];
+  for (const [p, op, allow] of pw) {
+    const r = await before('path-' + p + op, op === 'read' ? 'quest_read' : 'quest_write', { path: p, content: 'x' });
+    if (allow ? !r.ok : !blocked(r, 'POLICY')) pathFails.push((op === 'read' ? '읽기 ' : '쓰기 ') + p + (allow ? '는 허용해야 합니다' : "는 'POLICY'로 막아야 합니다"));
+  }
+  say('paths', !pathFails.length, pathFails[0]);
+
+  const probe = await before('tool-probe', 'quest_probe');
+  const okTools = [];
+  for (const t of ['quest_read', 'quest_write', 'quest_validate', 'quest_submit', 'quest_status'])
+    if (!(await before('tool-' + t, t, { path: t === 'quest_read' ? 'lab/input/orders.json' : 'lab/output/summary.json', content: 'x' })).ok) okTools.push(t);
+  say('tools', blocked(probe, 'POLICY') && !okTools.length, !blocked(probe, 'POLICY') ? "quest_probe를 'POLICY'로 막아야 합니다." : okTools[0] + '는 허용해야 합니다.');
+
+  const deniedRec = probe.events.some(e => e.event === 'denied' && typeof e.reason === 'string' && e.reason.length > 0);
+  say('denied', !probe.ok && deniedRec, probe.ok ? '먼저 막는 코드가 있어야 확인할 수 있습니다.' : "throw하기 전에 record({ ...call, event: 'denied', reason: error.message })를 남기세요.");
+
+  let budget = null;
+  for (let i = 1; i <= 60; i++) {
+    const r = await before('limit', 'quest_read', { path: 'lab/input/orders.json' });
+    if (!r.ok) { if (r.reason.includes('LIMIT')) budget = i - 1; break; }
+  }
+  let statusFree = true;
+  for (let i = 0; i < 12; i++) await before('limit-status', 'quest_status');
+  if (!(await before('limit-status', 'quest_read', { path: 'lab/input/orders.json' })).ok) statusFree = false;
+  say('limit', budget === 8 && statusFree, budget === null ? "9번째 시도에서 'LIMIT'으로 막아야 합니다." : budget !== 8 ? budget + '번까지 받고 막았습니다. 8번까지 받아야 합니다.' : 'quest_status는 시도 횟수에 넣지 않아야 합니다.');
+
+  const all = { schemaOK: true, sumOK: true, reportOK: true, originalsOK: true };
+  const loose = Object.keys(all).filter(k => judge(cap.acceptValidation, { ...all, [k]: false }) !== false);
+  say('validation', judge(cap.acceptValidation, all) === true && !loose.length,
+    judge(cap.acceptValidation, all) !== true ? '모두 참이면 통과시켜야 합니다.' : loose[0] + '가 거짓인데도 통과시킵니다.');
+
+  const facts = { valid: true, sameHash: true, consumed: false, attemptsAllowed: true };
+  const bad = [['valid', false], ['sameHash', false], ['consumed', true], ['attemptsAllowed', false]]
+    .filter(([k, v]) => judge(cap.canSubmit, { ...facts, [k]: v }) !== false).map(([k]) => k);
+  say('submit', judge(cap.canSubmit, facts) === true && !bad.length,
+    judge(cap.canSubmit, facts) !== true ? '조건을 모두 갖추면 받아야 합니다.' : bad[0] + (bad[0] === 'consumed' ? '(이미 제출함)' : '이 거짓') + '인데도 받습니다.');
+
+  result.ok = Object.values(m).every(x => x.pass);
+  result.info = {
+    record: recBefore, toolsOn: blocked(probe, 'POLICY'),
+    pathOn: blocked(await before('info-path', 'quest_write', { path: 'lab/protected/settings.json', content: 'x' }), 'POLICY'),
+    limitOn: budget !== null, budget: budget ?? 8, checksAll: m.validation.pass,
+  };
+  return result;
+}
+
 const REQUESTS = [
   ['합계 계산 후 제출', 'lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.', '정상 흐름 · 검증과 승인까지', 'ok'],
   ['보호 파일 수정', 'lab/protected/settings.json의 setting 값을 changed로 바꿔 줘.', 'Policy가 경로를 막음', 'bad'],
@@ -421,12 +814,18 @@ const REQUESTS = [
 ];
 let mode = 'sim';           // sim | live
 let config = structuredClone(PRESETS.full);
-let customCode = null;
-let applied = { config: structuredClone(config), custom: null };
+// Harness 만들기: 기본 과정(폼→코드)과 고급 과정(직접 작성). applied는 지금 실행 중인 Harness입니다.
+let course = 'basic';
+const infoFromConfig = c => ({ record: c.record, toolsOn: c.toolsOn, pathOn: c.pathOn, limitOn: c.limitOn, budget: c.budget, checksAll: c.checks.length === 4 });
+const appliedFrom = (m, c, source, info) => ({ mode: m, config: structuredClone(c), source: source ?? harnessSource(c).source, info: info ?? infoFromConfig(c) });
+let applied = appliedFrom('basic', config);
+const appliedCfg = () => ({ ...applied.info, approval: applied.config.approval });
 
 document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.id === 'tab-' + b.dataset.tab));
+  document.body.classList.toggle('building', b.dataset.tab === 'cfg');
+  requestAnimationFrame(() => { if (typeof fitMachine === 'function') fitMachine(); });
 });
 
 /* =====================================================================
@@ -525,7 +924,7 @@ function blankUnits() {
 }
 function fold(steps, upto) {
   const S = { units: blankUnits(), msgs: {}, att: 0, val: 0, last: '-', sub: '아직', tool: '-', args: '-', verdict: null,
-    cfg: applied.config, permission: null, reply: [], record: true };
+    cfg: appliedCfg(), permission: null, reply: [], record: true };
   const reset = () => { S.units = blankUnits(); S.msgs = {}; S.verdict = null; };
   for (let i = 0; i <= upto && i < steps.length; i++) {
     const s = steps[i], e = s.ev || {};
@@ -570,7 +969,7 @@ function fold(steps, upto) {
       case 'submit':
         S.units.uExec = 'ok'; S.units.uAppr = 'ok'; S.msgs.mAppr = S.cfg.approval === 'allow' ? '묻지 않고 통과 (allow)' : '✓ 허용';
         S.units.uSub = 'ok'; S.msgs.mSub = '✓ 영수증 ' + String(e.artifactHash || '').slice(0, 10) + '….json'; S.sub = '완료'; S.permission = null;
-        S.verdict = ['good', S.cfg.checks.length < 4 ? '제출했습니다. 검증 규칙이 느슨하면 틀린 결과도 통과할 수 있습니다.' : '검증과 승인을 지나 제출했습니다.']; break;
+        S.verdict = ['good', !S.cfg.checksAll ? '제출했습니다. 검증 규칙이 느슨하면 틀린 결과도 통과할 수 있습니다.' : '검증과 승인을 지나 제출했습니다.']; break;
       case 'error': S.units.uExec = 'bad'; S.msgs.mExec = '✕ ' + e.reason; break;
       case 'after': if (S.units.uExec !== 'bad') S.units.uExec = 'ok'; S.units.uAfter = 'ok'; S.msgs.mAfter = '결과 기록 완료'; break;
       case 'text': S.reply.push([e.id, e.text]); break;
@@ -591,21 +990,22 @@ function describe(s, S) {
   switch (s.type) {
     case 'request': return ['요청', '사용자가 요청을 보냈습니다', '“' + s.text + '”'];
     case 'session': return ['세션', '새 세션을 시작합니다', '도구 시도 횟수와 검증 횟수를 0부터 다시 셉니다.'];
-    case 'config': return ['설정', '규칙을 적용했습니다', s.custom ? '직접 고친 rules.mjs가 적용되었습니다.' : '꾸미기에서 고른 설정으로 rules.mjs를 만들어 적용했습니다.'];
+    case 'config': return ['설정', 'Harness를 적용했습니다', s.mode === 'advanced' ? '직접 작성한 harness.js가 Harness가 됩니다. 이제부터 모든 도구 호출이 이 코드를 지납니다.' : '기본 과정에서 고른 설정으로 만든 harness.js가 Harness가 됩니다.'];
     case 'think': return ['Agent', 'LLM이 다음 행동을 생각합니다', '대화와 지난 도구 결과를 보고 다음에 부를 도구를 고릅니다.'];
     case 'call': return ['Agent', 'Agent가 ' + e.tool + '을 호출합니다', '입력: ' + JSON.stringify(e.input || {})];
-    case 'hook-in': return ['Hook', 'tool.execute.before가 호출을 가로챕니다', '도구가 실행되기 전에 Harness 규칙이 차례대로 판정합니다. 여기서 예외를 던지면 도구는 실행되지 않습니다.'];
-    case 'chk-record': return ['① Record', 'shouldRecord() → true', '이 판단을 .quest/events.jsonl에 기록합니다. 기록이 있어야 나중에 무슨 일이 있었는지 볼 수 있습니다.'];
+    case 'hook-in': return ['Hook', 'tool.execute.before가 호출을 가로챕니다', 'harness.js의 before 함수가 위에서부터 차례로 검사합니다. 여기서 throw하면 도구는 실행되지 않습니다.'];
+    case 'chk-record': return ['① Record', "record({ event: 'before' })", '이 판단을 .quest/events.jsonl에 기록합니다. 기록이 있어야 나중에 무슨 일이 있었는지 볼 수 있습니다.'];
     case 'chk-limit': {
       if (s.pending) return ['② Limit', '판정을 기다립니다', '다음 기록이 들어오면 결과가 정해집니다.'];
-      if (!S.cfg.limitOn) return ['② Limit', 'withinBudget() → true', 'Limit이 꺼져 있어 횟수와 상관없이 통과합니다.'];
+      if (!S.cfg.limitOn) return ['② Limit', 'Limit 코드 없음', 'harness.js에 시도 횟수를 세는 코드가 없어 몇 번이든 통과합니다.'];
       if (e.tool === 'quest_status') return ['② Limit', '세지 않는 도구', 'quest_status는 시도 횟수에 넣지 않습니다.'];
-      return ['② Limit', 'withinBudget(' + S.att + ', ' + S.cfg.budget + ') → ' + (s.result === 'ok'), s.result === 'ok' ? '이번이 ' + S.att + '번째 시도이고 예산 ' + S.cfg.budget + '회 이하라서 통과합니다.' : S.att + '번째 시도라서 예산 ' + S.cfg.budget + '회를 넘었습니다. 여기서 막습니다.'];
+      return ['② Limit', 'state.attempted ' + S.att + (s.result === 'ok' ? ' ≤ ' : ' > ') + S.cfg.budget + ' → ' + (s.result === 'ok' ? '통과' : '막음'), s.result === 'ok' ? '이번이 ' + S.att + '번째 시도이고 예산 ' + S.cfg.budget + '회 이하라서 통과합니다.' : S.att + '번째 시도라서 예산 ' + S.cfg.budget + '회를 넘었습니다. 여기서 막습니다.'];
     }
     case 'chk-policy':
       if (s.pending) return ['③ Policy', '판정을 기다립니다', '다음 기록이 들어오면 결과가 정해집니다.'];
       if (s.result === 'skip') return ['③ Policy', '판정하지 않음', 'Limit에서 이미 막혀 Policy까지 오지 않았습니다.'];
-      return ['③ Policy', 'allowTool · allowPath → ' + (s.result === 'ok'), s.result === 'ok' ? e.tool + arg + '은 허용 목록과 경로 규칙을 통과합니다.' : e.tool + arg + '은 허용 목록이나 경로 규칙에 맞지 않습니다. 여기서 막습니다.'];
+      if (!S.cfg.toolsOn && !S.cfg.pathOn) return ['③ Policy', 'Policy 코드 없음', 'harness.js에 도구·경로를 검사하는 코드가 없어 그대로 통과합니다.'];
+      return ['③ Policy', 'allowedTools · 허용 경로 → ' + (s.result === 'ok' ? '통과' : '막음'), s.result === 'ok' ? e.tool + arg + '은 허용 목록과 경로 규칙을 통과합니다.' : e.tool + arg + '은 허용 목록이나 경로 규칙에 맞지 않습니다. 여기서 막습니다.'];
     case 'deny': return ['차단', 'Hook이 실행을 막았습니다: ' + e.reason, 'before Hook이 예외를 던졌습니다. 도구는 실행되지 않고, Agent는 이 오류를 결과로 받습니다.'];
     case 'exec': return ['실행', e.path ? e.path + ' 파일을 썼습니다' : (e.tool || '도구') + '가 실행되었습니다', e.path ? '쓰기가 실제로 일어났습니다. 검증 상태는 초기화됩니다.' : 'Hook을 통과한 도구가 실제로 동작했습니다.'];
     case 'validate': return ['Validation', e.ok ? '검증 통과' : '검증 실패: ' + (e.errors || []).join(', '),
@@ -681,6 +1081,7 @@ function render(animate) {
   }
   $('uRecord').classList.toggle('off', !S.cfg.record);
   $('uLimit').classList.toggle('off', !S.cfg.limitOn);
+  $('uPolicy').classList.toggle('off', !S.cfg.toolsOn && !S.cfg.pathOn);
   for (const m of ['mAgent', 'mBefore', 'mExec', 'mVal', 'mAppr', 'mAfter', 'mSub']) $(m).textContent = S.msgs[m] || '';
   $('verdict').textContent = S.verdict ? S.verdict[1] : ''; $('verdict').className = 'verdict ' + (S.verdict ? S.verdict[0] : '');
   $('approve').classList.toggle('on', Boolean(S.permission));
@@ -970,7 +1371,7 @@ function push(kind, data) {
   // 재생 중에도 실험 테이프에는 계속 쌓입니다.
   // 라이브에서는 OpenCode 승인 요청이 Hook 기록(파일)보다 먼저 도착할 수 있어,
   // approval_requested 기록이 올 때까지(최대 1초) 승인 요청을 잠시 붙잡아 순서를 맞춥니다.
-  if (kind === 'opencode' && data.type === 'permission.asked' && !data._flushed && applied.config.record && !heldAsk) {
+  if (kind === 'opencode' && data.type === 'permission.asked' && !data._flushed && applied.info.record && !heldAsk) {
     heldAsk = { data, timer: setTimeout(flushAsk, 1000) }; return;
   }
   const spliced = ingest(labTape, kind, data);
@@ -984,82 +1385,165 @@ function push(kind, data) {
 function flushAsk() { if (!heldAsk) return; const h = heldAsk; heldAsk = null; clearTimeout(h.timer); push('opencode', { ...h.data, _flushed: true }); }
 const sys = text => { addStep(labTape, { type: 'log', src: 's', ev: { note: text } }); if (tape === labTape) { renderLog(false); renderTimeline(); } };
 
-/* ---------- 꾸미기 폼 ---------- */
+/* ---------- Harness 만들기: 기본 과정 ----------
+   폼을 바꿀 때마다 harness.js 전체를 다시 만들고, 바뀐 줄을 강조합니다. 폼 상자에 마우스를 올리면 그 상자가 만든 줄만 밝힙니다. */
 function renderForm() {
   $('cRecordOn').checked = config.record;
+  $('cToolsOn').checked = config.toolsOn; $('cPathOn').checked = config.pathOn;
   $('cTools').innerHTML = TOOLS.map(t => `<label><input type="checkbox" value="${t}" ${config.tools.includes(t) ? 'checked' : ''}>${t.replace('quest_', '')}</label>`).join('');
   $('cRead').value = config.read.join('\n'); $('cWrite').value = config.write.join('\n');
   $('cLimitOn').checked = config.limitOn; $('cBudget').value = config.budget;
   $('cChecks').innerHTML = Object.entries(CHECKS).map(([k, v]) => `<label><input type="checkbox" value="${k}" ${config.checks.includes(k) ? 'checked' : ''}>${v}</label>`).join('');
   $('cSubmit').innerHTML = Object.entries(SUBMITS).map(([k, v]) => `<label><input type="checkbox" value="${k}" ${config.submit.includes(k) ? 'checked' : ''}>${v}</label>`).join('');
-  $('cApproval').value = config.approval;
-  if (!customCode) $('code').value = rulesSource(config);
+  $('cApproval').value = config.approval; $('advApproval').value = config.approval;
+  dimGroups();
+}
+function dimGroups() {
+  const on = { record: config.record, limit: config.limitOn, tools: config.toolsOn, paths: config.pathOn };
+  document.querySelectorAll('#buildBasic .grp[data-region]').forEach(g => g.classList.toggle('dim', on[g.dataset.region] === false));
 }
 function readForm() {
   const boxes = id => [...$(id).querySelectorAll('input:checked')].map(i => i.value);
   const lines = id => $(id).value.split('\n').map(s => s.trim()).filter(Boolean);
-  config = { record: $('cRecordOn').checked, tools: boxes('cTools'), read: lines('cRead'), write: lines('cWrite'),
-    limitOn: $('cLimitOn').checked, budget: Math.max(1, Math.min(50, +$('cBudget').value || 8)),
-    checks: boxes('cChecks'), submit: boxes('cSubmit'), approval: $('cApproval').value };
+  config = normalizeConfig({ record: $('cRecordOn').checked, toolsOn: $('cToolsOn').checked, tools: boxes('cTools'),
+    pathOn: $('cPathOn').checked, read: lines('cRead'), write: lines('cWrite'),
+    limitOn: $('cLimitOn').checked, budget: +$('cBudget').value || 8,
+    checks: boxes('cChecks'), submit: boxes('cSubmit'), approval: $('cApproval').value });
 }
-function rulesSource(c) {
-  const checks = c.checks.length ? c.checks.map(k => 'checks.' + k).join(' && ') : 'true';
-  const map = { valid: 'facts.valid', sameHash: 'facts.sameHash', notConsumed: '!facts.consumed', attemptsAllowed: 'facts.attemptsAllowed' };
-  const submit = c.submit.length ? c.submit.map(k => map[k]).join(' && ') : 'true';
-  return `// Hook·Harness 실험실에서 만든 규칙입니다. 편집기에서 바꾸고 적용하면 이 파일을 다시 씁니다.
-// Record: Hook 판단을 .quest/events.jsonl에 남길지 정합니다.
-export function shouldRecord() { return ${Boolean(c.record)}; }
-
-// Policy(경로): 읽기·쓰기를 허용할 경로의 앞부분입니다.
-export function allowPath(relative, operation) {
-  const read = ${JSON.stringify(c.read)};
-  const write = ${JSON.stringify(c.write)};
-  return (operation === 'read' ? read : write).some(prefix => relative.startsWith(prefix));
+// 코드 보기: 주석·문자열·키워드만 가볍게 색을 입힙니다.
+function splitComment(t) {
+  let q = null;
+  for (let i = 0; i < t.length; i++) {
+    const ch = t[i];
+    if (q) { if (ch === '\\') i++; else if (ch === q) q = null; }
+    else if (ch === "'" || ch === '"' || ch === '`') q = ch;
+    else if (ch === '/' && t[i + 1] === '/') return [t.slice(0, i), t.slice(i)];
+  }
+  return [t, ''];
 }
-
-// Policy(도구): 실행을 허용할 도구 목록입니다.
-export function allowTool(name) {
-  return ${JSON.stringify(c.tools)}.includes(name);
+const colorCode = t => esc(t).replace(/('[^']*'|"[^"]*")|\b(import|from|export|const|async|await|function|return|if|throw|new|try|catch|true|false)\b|\b(\d+)\b/g,
+  (m, str, kw, num) => str ? `<span class="c-s">${str}</span>` : kw ? `<span class="c-k">${kw}</span>` : `<span class="c-n">${num}</span>`);
+function codeLines(lines, regions = [], changed = new Set(), gaps = new Set()) {
+  return lines.map((t, k) => {
+    const [code, comment] = splitComment(t);
+    return `<div class="ln${regions[k] ? ' r-' + regions[k] : ''}${changed.has(k) ? ' chg' : gaps.has(k) ? ' gap' : ''}"><i>${k + 1}</i><span>${colorCode(code)}${comment ? '<span class="c-c">' + esc(comment) + '</span>' : ''}</span></div>`;
+  }).join('');
 }
-
-// Limit: 세션마다 도구 시도 횟수를 예산(${c.budget}회) 안으로 제한합니다.
-export function withinBudget(attempted, limit) { return ${c.limitOn ? 'attempted <= limit' : 'true'}; }
-
-// Validation: 이 검사들이 모두 참일 때만 통과로 봅니다.
-export function acceptValidation(checks) {
-  return ${checks};
+// 이전 코드와 줄 단위로 비교해(LCS) 새로 생기거나 바뀐 줄과 빠진 줄 수를 셉니다.
+function diffLines(a, b) {
+  const n = a.length, m = b.length, dp = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const changed = new Set(), gaps = new Set(); let i = 0, j = 0, removed = 0;
+  while (i < n && j < m) {
+    if (a[i] === b[j]) { i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) { i++; removed++; gaps.add(j); }
+    else changed.add(j++);
+  }
+  while (j < m) changed.add(j++);
+  if (i < n) gaps.add(m - 1);
+  return { changed, gaps, removed: removed + n - i };
 }
-
-// Approval 전 확인: 제출 요청을 받아들일 조건입니다.
-export function canSubmit(facts) {
-  return ${submit};
+let shownCode = null, shownApproval = null;
+function renderBasicCode(animate) {
+  const { source, regions } = harnessSource(config);
+  const lines = source.split('\n');
+  const d = animate && shownCode ? diffLines(shownCode, lines) : { changed: new Set(), gaps: new Set(), removed: 0 };
+  shownCode = lines;
+  $('codeView').innerHTML = codeLines(lines, regions, d.changed, d.gaps);
+  const apprLines = approvalSnippet(config.approval).split('\n');
+  $('approvalView').innerHTML = codeLines(apprLines, [], new Set(animate && shownApproval && shownApproval !== config.approval ? [3] : []));
+  shownApproval = config.approval;
+  $('diffNote').textContent = d.changed.size || d.removed ? '+' + d.changed.size + '줄 · −' + d.removed + '줄' : '';
+  const first = $('codeView').querySelector('.chg, .gap');
+  if (first) scrollCode(first);
 }
-`;
+function scrollCode(el) { const box = $('codeView'); box.scrollTo({ top: Math.max(0, el.offsetTop - box.clientHeight / 3), behavior: 'smooth' }); }
+function focusRegion(region, scroll) {
+  const box = $('codeView');
+  box.querySelectorAll('.ln.fo').forEach(x => x.classList.remove('fo'));
+  if (!region) { delete box.dataset.focus; return; }
+  const lines = box.querySelectorAll('.r-' + region);
+  if (!lines.length) { delete box.dataset.focus; return; }
+  box.dataset.focus = region; lines.forEach(x => x.classList.add('fo'));
+  if (scroll) scrollCode(lines[0]);
 }
-function markDirty() { $('dirty').textContent = '바뀐 설정이 아직 적용되지 않았습니다'; }
-$('tab-cfg').addEventListener('change', e => {
-  if (e.target.id === 'applyReset' || e.target.id === 'code') return;
-  readForm(); customCode = null; $('code').value = rulesSource(config); markDirty();
+document.querySelectorAll('#buildBasic .grp[data-region]').forEach(g => {
+  g.addEventListener('mouseenter', () => focusRegion(g.dataset.region));
+  g.addEventListener('mouseleave', () => focusRegion(null));
+  g.addEventListener('click', () => focusRegion(g.dataset.region, true));
 });
-$('code').addEventListener('input', () => { customCode = $('code').value; markDirty(); });
+$('buildBasic').addEventListener('change', () => { readForm(); dimGroups(); $('advApproval').value = config.approval; renderBasicCode(true); markDirty(); });
 document.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
-  config = structuredClone(PRESETS[b.dataset.preset]); customCode = null; renderForm(); markDirty();
+  config = structuredClone(PRESETS[b.dataset.preset]); renderForm(); renderBasicCode(true); markDirty();
 });
+
+/* ---------- Harness 만들기: 고급 과정 ----------
+   빈 뼈대에서 시작해 직접 씁니다. [검사하기]는 고정 입력으로 코드를 돌려 미션별 통과 여부를 알려 줍니다. */
+const ADV_KEY = 'lab.advSource';
+let advSource = (() => { try { return localStorage.getItem(ADV_KEY) || STARTER; } catch { return STARTER; } })();
+let lastCheck = null;
+function setAdvSource(text) { advSource = text; $('advCode').value = text; try { localStorage.setItem(ADV_KEY, text); } catch {} markDirty(); }
+function renderMissions() {
+  $('missionList').innerHTML = MISSIONS.map((m, i) => {
+    const r = lastCheck && !lastCheck.error ? lastCheck.missions[m.id] : null;
+    const st = !r ? '' : r.pass ? 'pass' : 'fail';
+    return `<li class="ms ${st}"><div class="mh"><span class="dot"></span><b>${i + 1}. ${esc(m.title)}</b></div><p>${esc(m.goal)}</p>` +
+      (st === 'fail' && r.why ? `<p class="why">${esc(r.why)}</p>` : '') +
+      `<details><summary>예시 코드 보기</summary><pre>${esc(m.hint)}</pre></details></li>`;
+  }).join('');
+  const passed = lastCheck && !lastCheck.error ? Object.values(lastCheck.missions).filter(x => x.pass).length : null;
+  $('missionScore').textContent = passed === null ? '' : passed + ' / ' + MISSIONS.length + ' 통과';
+}
+async function runCheck() {
+  lastCheck = await probeHarness(advSource);
+  renderMissions();
+  const box = $('advResult');
+  if (lastCheck.error) { box.className = 'checkres bad'; box.textContent = lastCheck.error; return lastCheck; }
+  const fail = MISSIONS.find(m => !lastCheck.missions[m.id].pass);
+  box.className = 'checkres ' + (fail ? '' : 'good');
+  box.textContent = fail ? '다음 미션: ' + fail.title + '. ' + lastCheck.missions[fail.id].why
+    : '미션 8개를 모두 통과했습니다. 적용하고 예시 요청을 보내 실제로 막히는지 머신에서 확인해 보세요.';
+  return lastCheck;
+}
+$('advCode').addEventListener('input', () => setAdvSource($('advCode').value));
+$('advCode').addEventListener('keydown', e => {
+  if (e.key !== 'Tab' || e.shiftKey) return;
+  e.preventDefault();
+  const t = e.target, a = t.selectionStart;
+  t.setRangeText('  ', a, t.selectionEnd, 'end'); setAdvSource(t.value);
+});
+$('advCheck').onclick = runCheck;
+$('advFromBasic').onclick = () => { setAdvSource(harnessSource(config).source); runCheck(); };
+$('advReset').onclick = () => { if (confirm('편집기의 코드를 처음 뼈대로 되돌릴까요?')) { setAdvSource(STARTER); lastCheck = null; renderMissions(); } };
+$('advApproval').onchange = () => { config.approval = $('advApproval').value; $('cApproval').value = config.approval; renderBasicCode(true); markDirty(); };
+
+function setCourse(c) {
+  course = c;
+  document.querySelectorAll('#courseSeg button').forEach(b => b.classList.toggle('on', b.dataset.course === c));
+  $('buildBasic').hidden = c !== 'basic'; $('buildAdv').hidden = c !== 'advanced';
+  if (c === 'advanced') { $('advCode').value = advSource; renderMissions(); }
+  markDirty();
+}
+document.querySelectorAll('#courseSeg button').forEach(b => b.onclick = () => setCourse(b.dataset.course));
+const currentSource = () => course === 'basic' ? harnessSource(config).source : advSource;
+function markDirty() {
+  const dirty = course !== applied.mode || currentSource() !== applied.source || config.approval !== applied.config.approval;
+  $('dirty').textContent = dirty ? '바뀐 내용이 아직 적용되지 않았습니다' : '';
+}
 
 /* ---------- 브라우저 모의 실행기 (미리보기) ----------
-   실제 플러그인(quest/lib/runtime.mjs)과 같은 순서로 판단하고 같은 이벤트를 만듭니다.
-   Agent는 진짜 LLM이 아니라 요청 문장의 낱말로 고르는 고정 시나리오입니다.            */
+   적용한 harness.js를 브라우저 안에서 그대로 실행합니다. OpenCode처럼 도구 호출마다 before → 실행 → after를 부릅니다.
+   작업 도구와 파일은 lab/kit/kit.mjs를 흉내 낸 것이고, Agent는 진짜 LLM이 아니라 요청 문장의 낱말로 고르는 고정 시나리오입니다. */
 const sim = (() => {
   const ORDERS = '{"currency":"KRW","items":[{"id":"A","amount":10000},{"id":"B","amount":5000},{"id":"discount","amount":-2000}]}';
   const PROTECTED = '{"setting":"do-not-change"}';
-  let files, state, rules, running = false, approvalResolve = null, aborted = false;
-  function resetFiles() { files = { 'lab/input/orders.json': ORDERS, 'lab/protected/settings.json': PROTECTED }; newSession(); }
-  function newSession() { state = { attempted: 0, validationAttempts: 0, validation: null, consumed: false }; }
-  function compile(source) {
-    return new Function(source.replace(/export\s+function/g, 'function') + '\nreturn {shouldRecord,allowPath,allowTool,withinBudget,acceptValidation,canSubmit};')();
-  }
-  function load() { rules = compile(applied.custom || rulesSource(applied.config)); }
-  const emit = (e, mandatory) => { if (mandatory || rules.shouldRecord()) push('hook', { time: new Date().toISOString(), ...e }); };
+  let files, sessions = new Map(), sessionId = 'sim-1', seq = 1, hooks = null, running = false, approvalResolve = null, aborted = false;
+  function resetFiles() { files = { 'lab/input/orders.json': ORDERS, 'lab/protected/settings.json': PROTECTED }; sessions.clear(); newSession(); }
+  function newSession() { sessionId = 'sim-' + (++seq); }
+  const getState = id => {
+    if (!sessions.has(id)) sessions.set(id, { sessionId: id, attempted: 0, executed: 0, validationAttempts: 0, validation: null, consumed: false });
+    return sessions.get(id);
+  };
   const agent = data => push('opencode', data);
   const hashOf = s => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return ('00000000' + (h >>> 0).toString(16)).slice(-8).repeat(8); };
   function inspect() {
@@ -1072,76 +1556,96 @@ const sim = (() => {
     return { checks, hash: hashOf((files['lab/output/summary.json'] || '') + '|' + report), expected: 13000,
       errors: Object.entries(checks).filter(([, v]) => !v).map(([k]) => k) };
   }
+  // lab/kit/kit.mjs의 createLabKit을 흉내 냅니다. 판단은 하지 않고 harness가 넘긴 함수만 부릅니다.
+  function createLabKit({ record = () => {}, acceptValidation = () => true, canSubmit = () => true } = {}) {
+    const relative = p => {
+      if (typeof p !== 'string' || p.includes('\\') || p.startsWith('/') || /^[A-Za-z]:/.test(p)) throw new Error('PATH: use a relative slash-separated path');
+      const parts = [];
+      for (const part of p.split('/')) { if (part === '..') parts.pop(); else if (part && part !== '.') parts.push(part); }
+      const rel = parts.join('/');
+      if (!rel.startsWith('lab/')) throw new Error('PATH: outside permitted root');
+      return rel;
+    };
+    async function perform(name, input, context) {
+      const state = getState(context.sessionID);
+      state.executed++;
+      try {
+        if (name === 'quest_status') return { ...state, budget: applied.info.budget };
+        if (name === 'quest_read') { const rel = relative(input.path); if (!(rel in files)) throw new Error('FILE: not found'); return { content: files[rel] }; }
+        if (name === 'quest_write') {
+          const rel = relative(input.path);
+          if (rel.startsWith('lab/submissions/')) throw new Error('PATH: submissions are tool-owned');
+          files[rel] = String(input.content); state.validation = null;
+          record({ event: 'file_written', sessionId: state.sessionId, path: rel }); return { written: rel };
+        }
+        if (name === 'quest_probe') { files['lab/probe/probe.txt'] = 'harmless tool probe'; return { probe: 'executed' }; }
+        if (name === 'quest_validate') {
+          if (state.validationAttempts >= 3) throw new Error('LIMIT: at most 3 validation attempts');
+          state.validationAttempts++;
+          const snap = inspect(); const ok = Boolean(acceptValidation(snap.checks));
+          state.validation = { ok, hash: snap.hash };
+          const result = { ...snap, ok, remaining: 3 - state.validationAttempts };
+          record({ event: 'validation', sessionId: state.sessionId, ...result }); return result;
+        }
+        if (name === 'quest_submit') {
+          const before = inspect();
+          const facts = { valid: state.validation?.ok === true, sameHash: state.validation?.hash === before.hash && input.artifactHash === before.hash,
+            consumed: state.consumed, attemptsAllowed: state.validationAttempts <= 3 };
+          if (!canSubmit(facts)) throw new Error('SUBMIT: invalid or stale validation');
+          record({ event: 'approval_requested', sessionId: state.sessionId, artifactHash: before.hash });
+          try { await context.ask(before.hash); }
+          catch (error) { record({ event: 'approval_rejected', sessionId: state.sessionId, artifactHash: before.hash }); throw error; }
+          state.consumed = true;
+          record({ event: 'submitted', sessionId: state.sessionId, artifactHash: before.hash });
+          return { artifactHash: before.hash, submittedAt: new Date().toISOString() };
+        }
+        throw new Error('TOOL: unknown tool');
+      } catch (error) {
+        record({ event: 'tool_error', sessionId: state.sessionId, tool: name, reason: error.message });
+        throw error;
+      }
+    }
+    const tools = Object.fromEntries(TOOLS.map(name => [name, { description: name, args: {}, execute: async (input, ctx) => JSON.stringify(await perform(name, input, ctx)) }]));
+    return { tools, log: e => push('hook', { time: new Date().toISOString(), ...e }), session: getState, save: () => {}, relative };
+  }
+  // opencode.json의 permission.quest_publish(ask·allow·deny)를 흉내 냅니다.
+  async function ask(hash) {
+    const mode = applied.config.approval;
+    if (mode === 'allow') return;
+    if (mode === 'ask') {
+      agent({ type: 'permission.asked', properties: { id: 'sim-perm', permission: 'quest_publish', patterns: [hash], metadata: { files: ['lab/output/summary.json', 'lab/output/report.md'] } } });
+      const reply = await new Promise(r => { approvalResolve = r; });
+      agent({ type: 'permission.replied', properties: { reply } });
+      if (reply === 'once') return;
+    }
+    throw new Error('The user rejected permission to use this specific tool call.');
+  }
+  async function load() {
+    const factory = compileHarness(applied.source);
+    const toolFn = Object.assign(x => x, { schema: new Proxy({}, { get: () => () => ({}) }) });
+    hooks = await factory(toolFn, createLabKit)({ directory: '/sim' });
+    if (!hooks || typeof hooks !== 'object') throw new Error('플러그인이 Hook 객체를 돌려주지 않았습니다.');
+  }
   const wait = ms => new Promise(r => setTimeout(r, ms));
   async function callTool(tool, input) {
     if (aborted) throw new Error('ABORT');
     agent({ type: 'session.status', properties: { status: { type: 'busy' } } });
     await wait(300 + Math.random() * 400);   // LLM이 생각하는 시간 흉내
-    const callId = 'sim-' + Math.random().toString(36).slice(2, 7);
+    const callID = 'sim-' + Math.random().toString(36).slice(2, 7);
     agent({ type: 'tool', tool, status: 'running', input });
     await wait(20);
-    emit({ event: 'before', callId, tool });
-    try {
-      if (tool !== 'quest_status') {
-        state.attempted++;
-        if (!rules.withinBudget(state.attempted, applied.config.budget)) throw new Error('LIMIT: tool request budget exhausted');
-      }
-      if (!rules.allowTool(tool)) throw new Error('POLICY: tool denied');
-      if (tool === 'quest_read' || tool === 'quest_write')
-        if (!rules.allowPath(input.path, tool === 'quest_read' ? 'read' : 'write')) throw new Error('POLICY: path denied');
-      if (tool === 'quest_write' && state.validationAttempts >= 3 && !state.validation?.ok) throw new Error('LIMIT: validation attempts exhausted');
-    } catch (error) {
-      emit({ event: 'denied', callId, tool, reason: error.message, executed: false });
-      agent({ type: 'tool', tool, status: 'error', error: error.message });
-      return { error: error.message };
-    }
-    let out;
-    try { out = await perform(tool, input); }
-    catch (error) {
-      emit({ event: 'tool_error', tool, reason: error.message });
-      agent({ type: 'tool', tool, status: 'error', error: error.message });
-      return { error: error.message };
-    }
-    const text = JSON.stringify(out);
-    emit({ event: 'after', callId, tool, output: text });
+    const fail = error => { const msg = String(error?.message || error); agent({ type: 'tool', tool, status: 'error', error: msg }); return { error: msg }; };
+    try { await hooks['tool.execute.before']?.({ tool, sessionID: sessionId, callID }, { args: input }); }
+    catch (error) { return fail(error); }
+    const def = hooks.tool?.[tool];
+    if (!def) return fail(new Error('TOOL: ' + tool + ' is not registered (tool: kit.tools가 없습니다)'));
+    let text;
+    try { text = await def.execute(input, { sessionID: sessionId, callID, ask }); }
+    catch (error) { return fail(error); }
+    const output = { title: tool, output: text, metadata: {} };
+    try { await hooks['tool.execute.after']?.({ tool, sessionID: sessionId, callID }, output); } catch {}
     agent({ type: 'tool', tool, status: 'completed', output: text });
-    return out;
-  }
-  async function perform(tool, input) {
-    if (tool === 'quest_status') return { ...state, budget: applied.config.budget };
-    if (tool === 'quest_read') { if (!(input.path in files)) throw new Error('FILE: not found'); return { content: files[input.path] }; }
-    if (tool === 'quest_write') {
-      if (input.path.startsWith('lab/submissions/')) throw new Error('PATH: submissions are tool-owned');
-      files[input.path] = input.content; state.validation = null;
-      emit({ event: 'file_written', path: input.path }); return { written: input.path };
-    }
-    if (tool === 'quest_probe') { files['lab/probe/probe.txt'] = 'harmless tool probe'; return { probe: 'executed' }; }
-    if (tool === 'quest_validate') {
-      if (state.validationAttempts >= 3) throw new Error('LIMIT: at most 3 validation attempts');
-      state.validationAttempts++;
-      const snap = inspect(); const ok = Boolean(rules.acceptValidation(snap.checks));
-      state.validation = { ok, hash: snap.hash };
-      const result = { ...snap, ok, remaining: 3 - state.validationAttempts };
-      emit({ event: 'validation', ...result }); return result;
-    }
-    if (tool === 'quest_submit') {
-      const before = inspect();
-      const facts = { valid: state.validation?.ok === true, sameHash: state.validation?.hash === before.hash && input.artifactHash === before.hash,
-        consumed: state.consumed, attemptsAllowed: state.validationAttempts <= 3 };
-      if (!rules.canSubmit(facts)) throw new Error('SUBMIT: invalid or stale validation');
-      emit({ event: 'approval_requested', artifactHash: before.hash });
-      let reply = applied.config.approval === 'allow' ? 'once' : applied.config.approval === 'deny' ? 'reject' : null;
-      if (!reply) {
-        agent({ type: 'permission.asked', properties: { id: 'sim-perm', permission: 'quest_publish', patterns: [before.hash], metadata: { files: ['lab/output/summary.json', 'lab/output/report.md'] } } });
-        reply = await new Promise(r => { approvalResolve = r; });
-        agent({ type: 'permission.replied', properties: { reply } });
-      }
-      if (reply !== 'once') { emit({ event: 'approval_rejected', artifactHash: before.hash }); throw new Error('The user rejected permission to use this specific tool call.'); }
-      state.consumed = true;
-      emit({ event: 'submitted', artifactHash: before.hash });
-      return { artifactHash: before.hash, submittedAt: new Date().toISOString() };
-    }
-    throw new Error('TOOL: unknown tool');
+    return JSON.parse(text);
   }
   const say = text => agent({ type: 'text', id: 'sim-' + Math.random(), text });
   async function script(text) {
@@ -1176,13 +1680,14 @@ const sim = (() => {
   }
   async function run(text) {
     if (running) return;
-    running = true; aborted = false; load();
-    try { await script(text); } catch (e) { if (e.message !== 'ABORT') say('오류: ' + e.message); }
+    running = true; aborted = false;
+    try { if (!hooks) await load(); await script(text); }
+    catch (e) { if (e.message !== 'ABORT') say('오류: ' + e.message); }
     agent({ type: 'session.idle', properties: {} });
     running = false;
   }
   return { run, resetFiles, newSession, load, approve: reply => { approvalResolve?.(reply); approvalResolve = null; },
-    abort: () => { aborted = true; approvalResolve?.('reject'); }, compile };
+    abort: () => { aborted = true; approvalResolve?.('reject'); } };
 })();
 
 /* ---------- 라이브 연결 ---------- */
@@ -1199,13 +1704,18 @@ async function connectLive() {
   mode = 'live';
   // 페이지를 새로 열면 새 세션에서 시작합니다(예산·검증 횟수 0부터).
   try { await api('/api/session/new', {}); } catch {}
-  config = { ...PRESETS.full, ...info.config }; delete config.custom;
-  customCode = info.config.custom ? info.rules : null;
-  applied = { config: structuredClone(config), custom: customCode };
-  renderForm(); if (customCode) $('code').value = customCode;
+  const lab = info.lab || {};
+  config = normalizeConfig(lab.config || PRESETS.full);
+  applied = appliedFrom(lab.mode === 'advanced' ? 'advanced' : 'basic', config, lab.source);
+  if (applied.mode === 'advanced') {
+    let draft = null; try { draft = localStorage.getItem(ADV_KEY); } catch {}
+    if (!draft) advSource = applied.source;
+    probeHarness(applied.source).then(r => { if (!r.error) { applied.info = r.info; render(false); } });
+  }
+  renderForm(); renderBasicCode(false); setCourse(applied.mode);
   $('modelWrap').style.display = '';
   $('modeNote').innerHTML = `실습 폴더 <code>${esc(info.workspace)}</code>에서 <b>실제 OpenCode</b>가 실행합니다. 실행이 아무리 빨라도 사건은 테이프에 쌓이므로, 다이얼로 간격을 늘려 천천히 볼 수 있습니다.` + (info.demo ? ' 지금은 데모 응답기(고정 시나리오)로 연결되어 있습니다.' : '');
-  $('applyNote').textContent = '적용하면 rules.mjs·예산·승인 설정을 실습 폴더에 쓰고 OpenCode를 다시 시작합니다(새 세션).';
+  $('applyNote').textContent = '적용하면 이 코드를 실습 폴더의 .opencode/plugins/harness.js에 쓰고 OpenCode를 다시 시작합니다(새 세션).';
   const es = new EventSource('/api/stream');
   es.onmessage = m => {
     const { kind, data } = JSON.parse(m.data);
@@ -1226,12 +1736,15 @@ async function onStatus(s) {
   if (s.state === 'ready' && !models) {
     try {
       models = await api('/api/models');
-      $('model').innerHTML = models.models.map(m => `<option ${m === models.default ? 'selected' : ''}>${esc(m)}</option>`).join('');
+      $('modelList').innerHTML = models.models.map(m => `<option value="${esc(m)}">`).join('');
+      let saved = null; try { saved = localStorage.getItem('lab.model'); } catch {}
+      $('model').value = saved || models.default || '';
     } catch (e) { sys('모델 목록을 읽지 못했습니다: ' + e.message); }
   }
 }
 
 /* ---------- 버튼 ---------- */
+$('model').addEventListener('change', () => { try { localStorage.setItem('lab.model', $('model').value.trim()); } catch {} });
 $('presetReq').innerHTML = REQUESTS.map(([l, , scene, tone], i) => `<button data-i="${i}"><b>${l}</b><small class="${tone ? 't-' + tone : ''}">${scene}</small></button>`).join('');
 $('presetReq').onclick = e => {
   const b = e.target.closest('button'); if (!b) return;
@@ -1245,7 +1758,7 @@ $('send').onclick = async () => {
   push('lab', { type: 'request', text });
   if (!player.playing) autoPlay();
   if (mode === 'live') {
-    try { await api('/api/prompt', { text, model: $('model').value }); }
+    try { await api('/api/prompt', { text, model: $('model').value.trim() }); }
     catch (e) { sys('요청 실패: ' + e.message); }
   } else sim.run(text);
 };
@@ -1266,15 +1779,27 @@ async function answer(reply) {
   else sim.approve(reply);
 }
 $('apply').onclick = async () => {
-  readForm();
-  if (customCode) { try { sim.compile(customCode); } catch (e) { $('applyNote').textContent = '코드 오류: ' + e.message; return; } }
-  applied = { config: structuredClone(config), custom: customCode };
-  $('dirty').textContent = '';
+  if (course === 'basic') readForm();
+  const source = currentSource();
+  let info = infoFromConfig(config);
+  if (course === 'advanced') {
+    const r = await runCheck();
+    if (r.error) { $('applyNote').textContent = '적용하지 않았습니다. ' + r.error; return; }
+    info = r.info;
+  }
+  const next = appliedFrom(course, config, source, info);
   if (mode === 'live') {
-    try { await api('/api/config', { config, source: customCode, resetOutputs: $('applyReset').checked }); }
+    try { await api('/api/config', { mode: course, config, source, resetOutputs: $('applyReset').checked }); }
     catch (e) { $('applyNote').textContent = '적용 실패: ' + e.message; return; }
-  } else { sim.load(); if ($('applyReset').checked) sim.resetFiles(); else sim.newSession(); }
-  push('lab', { type: 'config', cfg: structuredClone(config), custom: Boolean(customCode) });
+    applied = next;
+  } else {
+    const prev = applied; applied = next;
+    try { await sim.load(); } catch (e) { applied = prev; $('applyNote').textContent = '적용하지 않았습니다. ' + e.message; return; }
+    if ($('applyReset').checked) sim.resetFiles(); else sim.newSession();
+  }
+  markDirty();
+  $('applyNote').textContent = (course === 'advanced' ? '직접 쓴 코드' : '기본 과정 코드') + '를 적용했습니다. 요청 탭에서 요청을 보내 머신이 어떻게 반응하는지 보세요.';
+  push('lab', { type: 'config', cfg: appliedCfg(), mode: course });
   push('lab', { type: 'session' });
 };
 
@@ -1297,7 +1822,7 @@ function renderScen() {
 function loadTape(k) {
   document.querySelectorAll('.scen button').forEach(b => b.classList.toggle('on', b.dataset.k === k));
   if (tape === labTape) { labCursor = player.cur; labApplied = applied; }
-  applied = { config: structuredClone(PRESETS.full), custom: null };
+  applied = appliedFrom('basic', PRESETS.full);
   const tp = makeTape(k);
   addStep(tp, { type: 'request', text: '(기록 재생) ' + (names[k] || k), t: Date.parse(sessions[k][0].time) });
   for (const e of sessions[k]) ingest(tp, 'hook', e, Date.parse(e.time));
@@ -1335,10 +1860,10 @@ const GUIDE = [
     b: '<p><b>hook</b>은 플러그인이 남긴 기록, <b>agent</b>는 OpenCode가 보낸 사건입니다. 줄을 누르면 그 단계로 이동합니다. 흐리게 보이는 줄은 아직 재생하지 않은 앞으로 올 단계입니다.</p>' },
   { t: '.transport', k: '7 · 재생 컨트롤', h: '재생과 조그 다이얼',
     b: '<p>▶로 자동 재생하고, 다이얼로 단계 사이 간격(0~5초)을 늘려 천천히 볼 수 있습니다. 멈춘 상태에서는 다이얼 한 칸이 한 단계입니다. <b>LIVE</b>는 실제 실행 위치로 바로 갑니다.</p>' },
-  { t: '#tabs', k: '8 · Harness 꾸미기', h: '규칙을 바꿔 봅니다',
-    b: '<p><b>Harness 꾸미기</b> 탭에서 Record, 허용 도구, 경로, 예산, 검증 조건, 승인 방식을 바꾸고 <b>적용하기</b>를 누릅니다. 만들어지는 <code>rules.mjs</code>를 직접 고칠 수도 있습니다. 바꾼 뒤 같은 요청을 다시 보내 차이를 봅니다.</p>' },
+  { t: '#tabs', k: '8 · Harness 만들기', h: 'Harness 코드를 만들어 봅니다',
+    b: '<p><b>Harness 만들기</b> 탭에서 OpenCode 플러그인 <code>harness.js</code>를 만듭니다.</p><ul><li><b>기본 과정</b>: Record, Limit, Policy, 검증 조건을 고르면 옆의 실제 코드가 바뀌고, 바뀐 줄이 강조됩니다.</li><li><b>고급 과정</b>: 빈 뼈대에서 직접 코드를 쓰고, <b>검사하기</b>로 미션 8개의 통과 여부를 확인합니다.</li></ul><p><b>적용하기</b>를 누르면 그 코드가 Harness가 됩니다. 같은 요청을 다시 보내 차이를 봅니다.</p>' },
   { t: null, k: '해 볼 실험', h: '이렇게 시작해 보세요', wide: true,
-    b: '<ol><li><b>정상 흐름</b>: 예시 <b>합계 계산 후 제출</b>을 보냅니다. 검증을 지나 Approval에서 멈추면 <b>한 번 허용</b>을 누릅니다.</li><li><b>Policy 차단</b>: <b>보호 파일 수정</b>을 보냅니다. before Hook의 ③ Policy가 막고 패킷이 안쪽 점선으로 돌아갑니다.</li><li><b>Limit 차단</b>: 꾸미기에서 예산을 3으로 줄이고 합계 요청을 보냅니다. 네 번째 시도에서 ② Limit이 막습니다.</li><li><b>맨몸 Agent</b>: 꾸미기에서 <b>맨몸 Agent</b>를 적용하고 합계 요청을 보냅니다. 검증이 느슨해 틀린 합계도 통과합니다.</li><li><b>기록이 없으면</b>: Record를 끄고 요청을 보냅니다. Hook 칸이 움직이지 않아 무슨 판단이 있었는지 알 수 없습니다.</li></ol><p>처음에는 <b>한 단계씩 보기</b>를 켜고 다음 단계 버튼으로 넘기면 각 판정을 놓치지 않습니다.</p>' },
+    b: '<ol><li><b>정상 흐름</b>: 예시 <b>합계 계산 후 제출</b>을 보냅니다. 검증을 지나 Approval에서 멈추면 <b>한 번 허용</b>을 누릅니다.</li><li><b>Policy 차단</b>: <b>보호 파일 수정</b>을 보냅니다. before Hook의 ③ Policy가 막고 패킷이 안쪽 점선으로 돌아갑니다.</li><li><b>Limit 차단</b>: 기본 과정에서 Limit을 3회로 줄이고 합계 요청을 보냅니다. 네 번째 시도에서 ② Limit이 막습니다.</li><li><b>맨몸 Agent</b>: 기본 과정에서 <b>맨몸 Agent</b>를 적용하고 합계 요청을 보냅니다. 검증이 느슨해 틀린 합계도 통과합니다.</li><li><b>기록이 없으면</b>: Record를 끄고 요청을 보냅니다. Hook 칸이 움직이지 않아 무슨 판단이 있었는지 알 수 없습니다.</li></ol><p>처음에는 <b>한 단계씩 보기</b>를 켜고 다음 단계 버튼으로 넘기면 각 판정을 놓치지 않습니다.</p>' },
 ];
 const guide = { i: 0, open: false };
 function guideShow(i) {
@@ -1385,13 +1910,13 @@ document.addEventListener('keydown', e => {
 }, true);
 
 /* ---------- 시작 ---------- */
-drawWires(); fitMachine(); loadReplay(DATA.events); renderForm(); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); autoPlay();
+drawWires(); fitMachine(); loadReplay(DATA.events); renderForm(); renderBasicCode(false); setCourse('basic'); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); autoPlay();
 let guideSeen = false; try { guideSeen = localStorage.getItem('lab.guideSeen') === '1'; } catch {}
 if (!guideSeen) setTimeout(() => guideOpen(0), 600);
 window.addEventListener('resize', () => { fitMachine(); render(false); });
 connectLive().then(live => {
   if (!live) {
-    $('modeNote').innerHTML = '지금은 <b>미리보기</b>입니다. 판단 규칙은 실제 플러그인과 같은 순서로 브라우저에서 돌리고, Agent는 요청 문장의 낱말로 고르는 고정 시나리오입니다. <b>실제 OpenCode</b>로 돌리려면 저장소 루트에서 <code>node lab/server.mjs</code>를 실행하고 <code>http://127.0.0.1:4300/</code>을 여세요.';
+    $('modeNote').innerHTML = '지금은 <b>미리보기</b>입니다. 적용한 <code>harness.js</code> 코드를 브라우저 안에서 그대로 실행하고, Agent는 요청 문장의 낱말로 고르는 고정 시나리오입니다. <b>실제 OpenCode</b>로 돌리려면 저장소 루트에서 <code>node lab/server.mjs</code>를 실행하고 <code>http://127.0.0.1:4300/</code>을 여세요.';
     $('applyNote').textContent = '미리보기에서는 바로 적용되고, 새 세션에서 반영됩니다.';
   }
 });

@@ -12,6 +12,7 @@
     "check:source": "node quest/scripts/check-source.mjs",
     "check:docs": "node quest/scripts/check-docs.mjs",
     "lab": "node lab/server.mjs",
-    "lab:demo": "node lab/server.mjs --demo"
+    "lab:demo": "node lab/server.mjs --demo",
+    "lab:build": "node lab/build.mjs"
   }
 }

@@ -9,6 +9,7 @@ import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { initProject } from '../quest/lib/setup.mjs';
+import { PRESETS, TOOLS, normalizeConfig, harnessSource, compileHarness } from './kit/harness-source.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(here, '..');
@@ -18,6 +19,9 @@ const PORT = Number(option('--port', 4300));
 const WORKSPACE = path.resolve(option('--workspace', path.join(repo, 'workshops', 'lab')));
 const OPENCODE = option('--opencode', 'opencode');
 const DEMO = args.includes('--demo');
+// 실습 폴더 밖에서 쓰던 모델을 그대로 쓰기 위한 옵션입니다. 평소 쓰는 opencode.json 경로를 주면 OpenCode가 함께 읽습니다.
+const MODEL = option('--model', process.env.LAB_MODEL || '');
+const EXTRA_CONFIG = option('--opencode-config', '');
 const isWindows = process.platform === 'win32';
 
 // Windows의 opencode·npm은 보통 .cmd 파일이라 cmd.exe를 거쳐야 실행됩니다. cmd.exe는 명령줄을 다시 쪼개므로
@@ -34,64 +38,9 @@ function samePath(a, b) {
   return isWindows ? x.toLowerCase() === y.toLowerCase() : x === y;
 }
 
-const TOOLS = ['quest_read', 'quest_write', 'quest_validate', 'quest_submit', 'quest_status', 'quest_probe'];
-const CHECKS = ['schemaOK', 'sumOK', 'reportOK', 'originalsOK'];
-const SUBMIT = ['valid', 'sameHash', 'notConsumed', 'attemptsAllowed'];
-export const PRESETS = {
-  full: { record: true, tools: TOOLS.filter(t => t !== 'quest_probe'), read: ['lab/input/', 'lab/output/', 'lab/protected/'],
-    write: ['lab/output/'], limitOn: true, budget: 8, checks: CHECKS, submit: SUBMIT, approval: 'ask' },
-  naked: { record: true, tools: TOOLS, read: ['lab/'], write: ['lab/'], limitOn: false, budget: 8,
-    checks: ['schemaOK'], submit: [], approval: 'allow' },
-};
+export { PRESETS };
 
 function log(...parts) { console.log('[lab]', ...parts); }
-
-// ---------- 규칙 생성 ----------
-export function rulesSource(c) {
-  const list = value => JSON.stringify(value);
-  const checks = c.checks.length ? c.checks.map(k => 'checks.' + k).join(' && ') : 'true';
-  const submitMap = { valid: 'facts.valid', sameHash: 'facts.sameHash', notConsumed: '!facts.consumed',
-    attemptsAllowed: 'facts.attemptsAllowed' };
-  const submit = c.submit.length ? c.submit.map(k => submitMap[k]).join(' && ') : 'true';
-  return `// Hook·Harness 실험실에서 만든 규칙입니다. 편집기에서 바꾸고 적용하면 이 파일을 다시 씁니다.
-// Record: Hook 판단을 .quest/events.jsonl에 남길지 정합니다.
-export function shouldRecord() { return ${Boolean(c.record)}; }
-
-// Policy(경로): 읽기·쓰기를 허용할 경로의 앞부분입니다.
-export function allowPath(relative, operation) {
-  const read = ${list(c.read)};
-  const write = ${list(c.write)};
-  return (operation === 'read' ? read : write).some(prefix => relative.startsWith(prefix));
-}
-
-// Policy(도구): 실행을 허용할 도구 목록입니다.
-export function allowTool(name) {
-  return ${list(c.tools)}.includes(name);
-}
-
-// Limit: 세션마다 도구 시도 횟수를 예산(${c.budget}회) 안으로 제한합니다.
-export function withinBudget(attempted, limit) { return ${c.limitOn ? 'attempted <= limit' : 'true'}; }
-
-// Validation: 이 검사들이 모두 참일 때만 통과로 봅니다.
-export function acceptValidation(checks) {
-  return ${checks};
-}
-
-// Approval 전 확인: 제출 요청을 받아들일 조건입니다.
-export function canSubmit(facts) {
-  return ${submit};
-}
-`;
-}
-function normalize(input) {
-  const pick = (value, allowed) => (Array.isArray(value) ? value : []).filter(v => allowed.includes(v));
-  const prefixes = value => (Array.isArray(value) ? value : String(value || '').split('\n'))
-    .map(v => String(v).trim()).filter(v => v && !v.includes('..'));
-  const budget = Math.max(1, Math.min(50, Math.floor(Number(input.budget) || 8)));
-  return { record: Boolean(input.record), tools: pick(input.tools, TOOLS), read: prefixes(input.read),
-    write: prefixes(input.write), limitOn: Boolean(input.limitOn), budget, checks: pick(input.checks, CHECKS),
-    submit: pick(input.submit, SUBMIT), approval: ['ask', 'allow', 'deny'].includes(input.approval) ? input.approval : 'ask' };
-}
 
 // ---------- 실습 폴더 ----------
 const questDir = path.join(WORKSPACE, '.quest');
@@ -109,9 +58,10 @@ function prepareWorkspace() {
   const vendorDir = path.join(pluginDir, 'lab-vendor');
   fs.mkdirSync(vendorDir, { recursive: true });
   for (const name of ['zod.mjs', 'plugin-tool.mjs']) fs.copyFileSync(path.join(here, 'vendor', name), path.join(vendorDir, name));
-  const pluginFile = path.join(pluginDir, 'plugins', 'harness.js');
-  fs.writeFileSync(pluginFile, fs.readFileSync(pluginFile, 'utf8')
-    .replace("from '@opencode-ai/plugin'", "from '../lab-vendor/plugin-tool.mjs'"));
+  // Harness 코드(plugins/harness.js)가 쓰는 실습 환경: 작업 도구·세션 횟수·기록 파일.
+  const kitDir = path.join(pluginDir, 'lab-kit');
+  fs.mkdirSync(kitDir, { recursive: true });
+  fs.copyFileSync(path.join(here, 'kit', 'kit.mjs'), path.join(kitDir, 'kit.mjs'));
   // OpenCode는 시작할 때 node_modules에 @opencode-ai/plugin이 없으면 npm으로 받으려 하고, 사내망에서는
   // 실패하거나 재시도로 수십 초를 기다립니다. 같은 이름의 작은 패키지를 두어 설치 단계를 건너뜁니다.
   const stubDir = path.join(pluginDir, 'node_modules', '@opencode-ai', 'plugin');
@@ -127,20 +77,26 @@ function prepareWorkspace() {
     fs.writeFileSync(lockFile, JSON.stringify({ name: 'opencode-lab', lockfileVersion: 3, requires: true, packages: {
       '': { dependencies: { '@opencode-ai/plugin': '1.19.4' } },
       'node_modules/@opencode-ai/plugin': { version: '1.19.4' } } }, null, 2) + '\n');
-  if (!fs.existsSync(labConfigFile)) writeConfig(PRESETS.full, null);
+  // 예전 실험실(rules.mjs 방식) 설정이면 기본 과정의 완성 Harness로 바꿉니다.
+  if (typeof readJson(labConfigFile, {}).source !== 'string') writeConfig({ mode: 'basic', config: PRESETS.full });
 }
-function writeConfig(config, customSource) {
+// 실험실 상태를 실습 폴더에 씁니다. Harness 코드는 .opencode/plugins/harness.js 한 파일이고,
+// 기본 과정은 폼 설정으로 만든 코드, 고급 과정은 사용자가 직접 쓴 코드를 그대로 씁니다.
+function writeConfig({ mode, config, source }) {
+  const settingsConfig = normalizeConfig(config);
+  const code = mode === 'advanced' ? source : harnessSource(settingsConfig).source;
   fs.mkdirSync(questDir, { recursive: true });
-  fs.writeFileSync(labConfigFile, JSON.stringify({ ...config, custom: Boolean(customSource) }, null, 2));
-  fs.writeFileSync(path.join(WORKSPACE, 'learner', 'rules.mjs'), customSource ?? rulesSource(config));
+  fs.writeFileSync(labConfigFile, JSON.stringify({ mode, config: settingsConfig, source: code }, null, 2));
+  fs.writeFileSync(path.join(WORKSPACE, '.opencode', 'plugins', 'harness.js'), code);
   const settingsFile = path.join(questDir, 'settings.json');
   const settings = readJson(settingsFile, {});
-  fs.writeFileSync(settingsFile, JSON.stringify({ ...settings, level: 6, budget: config.budget,
+  fs.writeFileSync(settingsFile, JSON.stringify({ ...settings, level: 6, budget: settingsConfig.budget,
     runId: crypto.randomUUID() }, null, 2) + '\n');
   const ocFile = path.join(WORKSPACE, 'opencode.json');
   const oc = readJson(ocFile, {});
-  oc.agent.quest.permission.quest_publish = config.approval;
+  oc.agent.quest.permission.quest_publish = settingsConfig.approval;
   fs.writeFileSync(ocFile, JSON.stringify(oc, null, 2));
+  return { mode, config: settingsConfig, source: code };
 }
 function resetOutputs() {
   for (const dir of ['lab/output', 'lab/submissions', 'lab/probe', 'lab/output-other']) {
@@ -197,12 +153,25 @@ async function applyDemoProvider() {
   fs.writeFileSync(file, JSON.stringify(config, null, 2));
 }
 
+// --demo로 한 번 실행하면 실습 폴더 opencode.json에 데모 공급자가 남습니다. 실제 모델로 실행할 때는 지우고,
+// --model을 주었으면 그 모델을 기본값으로 씁니다.
+function applyLiveModel() {
+  const file = path.join(WORKSPACE, 'opencode.json');
+  const config = readJson(file, {});
+  if (config.provider) delete config.provider['quest-fixture'];
+  if (config.provider && !Object.keys(config.provider).length) delete config.provider;
+  for (const key of ['model', 'small_model']) if (String(config[key] || '').startsWith('quest-fixture/')) delete config[key];
+  if (MODEL) config.model = MODEL;
+  fs.writeFileSync(file, JSON.stringify(config, null, 2));
+}
+
 async function startOpenCode() {
-  if (DEMO) await applyDemoProvider();
+  if (DEMO) await applyDemoProvider(); else applyLiveModel();
   setState('starting', 'OpenCode를 시작합니다');
   const port = await freePort();
   ocUrl = 'http://127.0.0.1:' + port;
   const env = { ...process.env, OPENCODE_DISABLE_AUTOUPDATE: '1' };
+  if (EXTRA_CONFIG) env.OPENCODE_CONFIG = path.resolve(EXTRA_CONFIG);
   oc = spawnTool(OPENCODE, ['serve', '--hostname', '127.0.0.1', '--port', String(port)],
     { cwd: WORKSPACE, env, stdio: ['ignore', 'pipe', 'pipe'] });
   const child = oc;
@@ -324,6 +293,7 @@ async function sendPrompt({ text, model, newSession }) {
   await ocApi('/session/' + session + '/prompt_async', body);
   return { session };
 }
+const extraConfigPath = () => EXTRA_CONFIG ? path.resolve(EXTRA_CONFIG) : (process.env.OPENCODE_CONFIG || null);
 async function listModels() {
   if (DEMO) return { models: ['quest-fixture/fixture'], default: 'quest-fixture/fixture' };
   const data = await ocApi('/config/providers');
@@ -332,7 +302,9 @@ async function listModels() {
     for (const id of Object.keys(provider.models || {})) models.push(provider.id + '/' + id);
   const fallback = Object.entries(data.default || {})[0];
   const configured = readJson(path.join(WORKSPACE, 'opencode.json'), {}).model;
-  return { models, default: configured || (fallback ? fallback[0] + '/' + fallback[1] : models[0]) };
+  const chosen = configured || (fallback ? fallback[0] + '/' + fallback[1] : models[0]);
+  if (chosen && !models.includes(chosen)) models.unshift(chosen);
+  return { models, default: chosen, extraConfig: extraConfigPath() };
 }
 
 // ---------- HTTP ----------
@@ -346,8 +318,7 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
   try {
     if (url.pathname === '/api/info') return send(res, 200, { live: true, demo: DEMO, workspace: WORKSPACE, state: ocState,
-      session, config: readJson(labConfigFile, PRESETS.full), presets: PRESETS, tools: TOOLS,
-      rules: fs.readFileSync(path.join(WORKSPACE, 'learner', 'rules.mjs'), 'utf8') });
+      session, lab: readJson(labConfigFile, null), tools: TOOLS });
     if (url.pathname === '/api/stream') {
       res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'no-cache', connection: 'keep-alive' });
       res.write('data: ' + JSON.stringify({ kind: 'status', data: { state: ocState } }) + '\n\n');
@@ -371,12 +342,15 @@ const server = http.createServer(async (req, res) => {
     }
     if (req.method === 'POST' && url.pathname === '/api/config') {
       const body = await readBody(req);
-      const config = normalize(body.config || {});
-      const custom = typeof body.source === 'string' && body.source.trim() ? body.source : null;
-      writeConfig(config, custom);
+      const mode = body.mode === 'advanced' ? 'advanced' : 'basic';
+      if (mode === 'advanced') {
+        if (typeof body.source !== 'string' || !body.source.trim()) return send(res, 400, { error: '코드가 비어 있습니다' });
+        try { compileHarness(body.source); } catch (error) { return send(res, 400, { error: '코드 오류: ' + error.message }); }
+      }
+      const lab = writeConfig({ mode, config: body.config || {}, source: body.source });
       if (body.resetOutputs) resetOutputs();
-      send(res, 200, { ok: true, config, rules: custom ?? rulesSource(config) });
-      broadcast('config', { config, custom: Boolean(custom) });
+      send(res, 200, { ok: true, ...lab });
+      broadcast('config', { mode, config: lab.config });
       restartOpenCode().catch(error => setState('error', error.message));
       return;
     }
