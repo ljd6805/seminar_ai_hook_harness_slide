@@ -26,7 +26,7 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:clamp(270px,21vw,330
 .tabs button.on{color:var(--text);border-bottom-color:var(--mint);font-weight:700}
 .tab{display:none}.tab.on{display:block}
 label.f{display:block;font-size:12.5px;color:var(--sub);margin:10px 0 5px}
-textarea,select,input[type=number],#model{width:100%;background:#0d1222;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px}
+textarea,select,input[type=number],#modelCustom{width:100%;background:#0d1222;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px}
 label.f .faint{font-weight:400;color:var(--faint);font-size:11.5px;margin-left:4px}
 textarea{resize:vertical}
 textarea.code{font:12px/1.55 var(--mono);min-height:240px;white-space:pre;tab-size:2}
@@ -300,7 +300,8 @@ details.note summary{font-size:12.5px;color:var(--faint)}
       <button data-tab="rep">기록 재생</button>
     </div>
     <div class="tab on" id="tab-req">
-      <div id="modelWrap" style="display:none"><label class="f" for="model">모델 <span class="faint">목록에 없으면 <code>공급자/모델</code> 형식으로 직접 입력</span></label><input id="model" list="modelList" spellcheck="false" autocomplete="off"><datalist id="modelList"></datalist></div>
+      <div id="modelWrap" style="display:none"><label class="f" for="model">모델</label><select id="model"></select>
+        <input id="modelCustom" placeholder="공급자/모델 (예: myprovider/gpt-6-luna)" spellcheck="false" autocomplete="off" style="display:none;margin-top:6px"></div>
       <label class="f" for="prompt">Agent에게 보낼 요청</label>
       <textarea id="prompt" rows="4">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
       <button class="btn pri send" id="send">요청 보내기</button>
@@ -1419,15 +1420,26 @@ async function onStatus(s) {
   if (s.state === 'ready' && !models) {
     try {
       models = await api('/api/models');
-      $('modelList').innerHTML = models.models.map(m => `<option value="${esc(m)}">`).join('');
       let saved = null; try { saved = localStorage.getItem('lab.model'); } catch {}
-      $('model').value = saved || models.default || '';
+      const want = saved || models.default || '';
+      $('model').innerHTML = models.models.map(m => `<option value="${esc(m)}">${esc(m)}</option>`).join('') +
+        '<option value="__custom">직접 입력… (목록에 없는 모델)</option>';
+      if (want && !models.models.includes(want)) { $('model').value = '__custom'; $('modelCustom').value = want; }
+      else $('model').value = want || models.models[0] || '__custom';
+      syncModel();
     } catch (e) { sys('모델 목록을 읽지 못했습니다: ' + e.message); }
   }
 }
 
 /* ---------- 버튼 ---------- */
-$('model').addEventListener('change', () => { try { localStorage.setItem('lab.model', $('model').value.trim()); } catch {} });
+// 목록에서 고르거나 "직접 입력"으로 공급자/모델을 적습니다. 고른 값은 브라우저에 기억합니다.
+const chosenModel = () => $('model').value === '__custom' ? $('modelCustom').value.trim() : $('model').value;
+function syncModel() {
+  $('modelCustom').style.display = $('model').value === '__custom' ? '' : 'none';
+  try { if (chosenModel()) localStorage.setItem('lab.model', chosenModel()); } catch {}
+}
+$('model').addEventListener('change', () => { syncModel(); if ($('model').value === '__custom') $('modelCustom').focus(); });
+$('modelCustom').addEventListener('change', syncModel);
 $('presetReq').innerHTML = REQUESTS.map(([l, , scene, tone], i) => `<button data-i="${i}"><b>${l}</b><small class="${tone ? 't-' + tone : ''}">${scene}</small></button>`).join('');
 $('presetReq').onclick = e => {
   const b = e.target.closest('button'); if (!b) return;
@@ -1441,7 +1453,7 @@ $('send').onclick = async () => {
   push('lab', { type: 'request', text });
   if (!player.playing) autoPlay();
   if (mode === 'live') {
-    try { await api('/api/prompt', { text, model: $('model').value.trim() }); }
+    try { await api('/api/prompt', { text, model: chosenModel() }); }
     catch (e) { sys('요청 실패: ' + e.message); }
   } else sim.run(text);
 };
