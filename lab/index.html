@@ -103,7 +103,21 @@ textarea.code.edit{min-height:calc(100vh - 420px);font:11.5px/1.62 var(--mono);b
 .checkres.bad{border-color:rgba(255,138,122,.5);color:var(--coral)}
 .apprrow{margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .apprrow select{width:auto;padding:3px 6px;font-size:12.5px}
-.applybar{position:sticky;bottom:-14px;margin:12px -14px -14px;padding:10px 14px;background:var(--card);border-top:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap;z-index:2}
+.applybar{position:sticky;bottom:-14px;margin:12px -14px -14px;padding:10px 14px 8px;background:var(--card);border-top:1px solid var(--line);z-index:2}
+.applybar #applyNote{margin:6px 0 0}
+.tb-main{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center}
+.tb-label{font-size:13px;font-weight:700;color:var(--sub);white-space:nowrap}
+.tb-main select{padding:7px 9px;font-size:13.5px}
+#tReqText{width:100%;margin-top:6px;background:#0d1222;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:7px 10px;font:inherit;font-size:13.5px}
+.tb-sub{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
+.tb-sub .dirty{margin-right:auto}
+.tb-sub .btn{padding:4px 10px;font-size:12.5px}
+.applied{border:1px solid var(--line);border-radius:11px;padding:9px 12px;margin-bottom:12px;background:var(--card2);font-size:13px;color:var(--sub);line-height:1.5}
+.applied b{color:var(--text)}
+.applied .ah{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:2px;font-size:12px;color:var(--faint)}
+.applied button{all:unset;cursor:pointer;color:var(--violet);font-size:12px}
+.applied button:hover{text-decoration:underline}
+.applied .warn{color:var(--amber);font-size:12px;margin-top:3px}
 
 details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .scen{display:flex;flex-direction:column;gap:7px}
@@ -300,6 +314,7 @@ details.note summary{font-size:12.5px;color:var(--faint)}
       <button data-tab="rep">기록 재생</button>
     </div>
     <div class="tab on" id="tab-req">
+      <div class="applied" id="appliedCard"></div>
       <div id="modelWrap" style="display:none"><label class="f" for="model">모델</label><select id="model"></select>
         <input id="modelCustom" placeholder="공급자/모델 (예: myprovider/gpt-6-luna)" spellcheck="false" autocomplete="off" style="display:none;margin-top:6px"></div>
       <label class="f" for="prompt">Agent에게 보낼 요청</label>
@@ -367,11 +382,19 @@ details.note summary{font-size:12.5px;color:var(--faint)}
         </div>
       </div>
       <div class="applybar">
-        <button class="btn pri" id="apply">적용하기</button>
-        <label class="small"><input type="checkbox" id="applyReset" checked> 작업 파일도 비우기</label>
-        <span class="dirty" id="dirty"></span>
+        <div class="tb-main">
+          <span class="tb-label">이 코드로 테스트</span>
+          <select id="tReq"></select>
+          <button class="btn pri" id="applySend">적용하고 보내기 ▶</button>
+        </div>
+        <input id="tReqText" placeholder="Agent에게 보낼 요청" style="display:none">
+        <div class="tb-sub">
+          <span class="dirty" id="dirty"></span>
+          <label class="small"><input type="checkbox" id="applyReset" checked> 작업 파일도 비우기</label>
+          <button class="btn" id="apply" title="요청은 보내지 않고 코드만 적용합니다">적용만 하기</button>
+        </div>
+        <p class="small" id="applyNote">고른 요청을 보내면 먼저 이 코드를 적용하고, 머신에서 이 코드가 어떻게 판단하는지 바로 보여 줍니다.</p>
       </div>
-      <p class="small" id="applyNote">적용하면 이 코드가 Harness가 됩니다. 그다음 요청을 보내 머신에서 차이를 봅니다.</p>
     </div>
     <div class="tab" id="tab-rep">
       <p class="small" style="margin-top:0">실제 OpenCode 1.19.4 실행기에서 남긴 기록을 테이프에 올려 재생합니다(모델은 고정 응답기).</p>
@@ -1530,6 +1553,7 @@ const currentSource = () => course === 'basic' ? harnessSource(config).source : 
 function markDirty() {
   const dirty = course !== applied.mode || currentSource() !== applied.source || config.approval !== applied.config.approval;
   $('dirty').textContent = dirty ? '바뀐 내용이 아직 적용되지 않았습니다' : '';
+  if (typeof renderApplied === 'function') renderApplied();
 }
 
 /* ---------- 브라우저 모의 실행기 (미리보기) ----------
@@ -1711,7 +1735,7 @@ async function connectLive() {
   if (applied.mode === 'advanced') {
     let draft = null; try { draft = localStorage.getItem(ADV_KEY); } catch {}
     if (!draft) advSource = applied.source;
-    probeHarness(applied.source).then(r => { if (!r.error) { applied.info = r.info; render(false); } });
+    probeHarness(applied.source).then(r => { if (!r.error) { applied.info = r.info; render(false); renderApplied(); } });
   }
   renderForm(); renderBasicCode(false); setCourse(applied.mode);
   $('modelWrap').style.display = '';
@@ -1764,8 +1788,9 @@ $('presetReq').onclick = e => {
   $('presetReq').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
 };
 $('prompt').addEventListener('input', () => $('presetReq').querySelectorAll('button').forEach(x => x.classList.remove('on')));
-$('send').onclick = async () => {
-  const text = $('prompt').value.trim(); if (!text) return;
+$('send').onclick = () => sendRequest($('prompt').value.trim());
+async function sendRequest(text) {
+  if (!text) return;
   if (tape !== labTape) backToLab();
   push('lab', { type: 'request', text });
   if (!player.playing) autoPlay();
@@ -1773,7 +1798,7 @@ $('send').onclick = async () => {
     try { await api('/api/prompt', { text, model: chosenModel() }); }
     catch (e) { sys('요청 실패: ' + e.message); }
   } else sim.run(text);
-};
+}
 $('newSession').onclick = async () => {
   if (mode === 'live') await api('/api/session/new', {}); else sim.newSession();
   push('lab', { type: 'session' });
@@ -1790,30 +1815,77 @@ async function answer(reply) {
   if (mode === 'live') { try { await api('/api/permission', { id: pendingPermission, reply }); } catch (e) { sys('승인 응답 실패: ' + e.message); } }
   else sim.approve(reply);
 }
-$('apply').onclick = async () => {
+async function applyHarness() {
   if (course === 'basic') readForm();
   const source = currentSource();
   let info = infoFromConfig(config);
   if (course === 'advanced') {
     const r = await runCheck();
-    if (r.error) { $('applyNote').textContent = '적용하지 않았습니다. ' + r.error; return; }
+    if (r.error) { $('applyNote').textContent = '적용하지 않았습니다. ' + r.error; return false; }
     info = r.info;
   }
   const next = appliedFrom(course, config, source, info);
   if (mode === 'live') {
     try { await api('/api/config', { mode: course, config, source, resetOutputs: $('applyReset').checked }); }
-    catch (e) { $('applyNote').textContent = '적용 실패: ' + e.message; return; }
+    catch (e) { $('applyNote').textContent = '적용 실패: ' + e.message; return false; }
     applied = next;
   } else {
     const prev = applied; applied = next;
-    try { await sim.load(); } catch (e) { applied = prev; $('applyNote').textContent = '적용하지 않았습니다. ' + e.message; return; }
+    try { await sim.load(); } catch (e) { applied = prev; $('applyNote').textContent = '적용하지 않았습니다. ' + e.message; return false; }
     if ($('applyReset').checked) sim.resetFiles(); else sim.newSession();
   }
   markDirty();
-  $('applyNote').textContent = (course === 'advanced' ? '직접 쓴 코드' : '기본 과정 코드') + '를 적용했습니다. 요청 탭에서 요청을 보내 머신이 어떻게 반응하는지 보세요.';
+  $('applyNote').textContent = (course === 'advanced' ? '직접 쓴 코드' : '기본 과정 코드') + '를 적용했습니다. 위에서 요청을 골라 보내면 이 코드로 돕니다.';
   push('lab', { type: 'config', cfg: appliedCfg(), mode: course });
   push('lab', { type: 'session' });
+  renderApplied();
+  return true;
+}
+$('apply').onclick = applyHarness;
+
+// "이 코드로 테스트": 바뀐 게 있으면 먼저 적용하고, 고른 요청을 보냅니다. 라이브에서는 OpenCode가 다시 뜰 때까지 기다립니다.
+$('tReq').innerHTML = REQUESTS.map(([l, , scene], i) => `<option value="${i}">${esc(l)} · ${esc(scene)}</option>`).join('') + '<option value="custom">직접 쓰기…</option>';
+$('tReq').onchange = () => { $('tReqText').style.display = $('tReq').value === 'custom' ? '' : 'none'; if ($('tReq').value === 'custom') $('tReqText').focus(); };
+async function waitReady() {
+  const state = async () => { try { return (await api('/api/info')).state; } catch { return null; } };
+  // 적용 직후에는 아직 예전 OpenCode가 ready일 수 있어, 다시 시작이 시작될 때까지 잠깐 기다립니다.
+  for (let i = 0; i < 10 && (await state()) === 'ready'; i++) await new Promise(r => setTimeout(r, 300));
+  for (let i = 0; i < 200; i++) {
+    try { if ((await api('/api/info')).state === 'ready') return true; } catch {}
+    await new Promise(r => setTimeout(r, 300));
+  }
+  return false;
+}
+$('applySend').onclick = async () => {
+  const text = $('tReq').value === 'custom' ? $('tReqText').value.trim() : REQUESTS[+$('tReq').value][1];
+  if (!text) { $('tReqText').focus(); return; }
+  $('applySend').disabled = true;
+  try {
+    if ($('dirty').textContent || course !== applied.mode) {
+      if (!(await applyHarness())) return;
+      if (mode === 'live') { $('applyNote').textContent = 'OpenCode를 이 코드로 다시 시작하는 중입니다…'; if (!(await waitReady())) { $('applyNote').textContent = 'OpenCode가 다시 뜨지 않았습니다. 로그를 확인하세요.'; return; } }
+    }
+    $('prompt').value = text;
+    $('applyNote').textContent = '적용된 이 코드로 “' + text.slice(0, 40) + (text.length > 40 ? '…' : '') + '” 요청을 보냈습니다. 머신과 로그에서 판단을 보세요.';
+    await sendRequest(text);
+  } finally { $('applySend').disabled = false; }
 };
+
+// 요청 탭 위 카드: 지금 실제로 돌고 있는 Harness가 무엇인지 보여 줍니다.
+function describeApplied() {
+  const i = applied.info;
+  return [i.record ? 'Record' : 'Record 없음', i.limitOn ? 'Limit ' + i.budget + '회' : 'Limit 없음',
+    i.toolsOn && i.pathOn ? 'Policy 도구·경로' : i.toolsOn ? 'Policy 도구만' : i.pathOn ? 'Policy 경로만' : 'Policy 없음',
+    i.checksAll ? '검증 4가지 모두' : '검증 느슨함', '승인 ' + applied.config.approval].join(' · ');
+}
+function renderApplied() {
+  const card = $('appliedCard'); if (!card) return;
+  const dirty = Boolean($('dirty').textContent);
+  card.innerHTML = `<div class="ah"><span>지금 돌고 있는 Harness</span><button id="appliedEdit">코드 보기·고치기 →</button></div>` +
+    `<b>${applied.mode === 'advanced' ? '고급 과정 · 직접 쓴 코드' : '기본 과정 코드'}</b><div>${esc(describeApplied())}</div>` +
+    (dirty ? '<div class="warn">Harness 만들기에 아직 적용하지 않은 변경이 있습니다. 이 요청은 위의 적용된 코드로 돕니다.</div>' : '');
+  $('appliedEdit').onclick = () => document.querySelector('#tabs button[data-tab="cfg"]').click();
+}
 
 /* ---------- 기록 재생: 다른 테이프를 올립니다 ---------- */
 const DATA = JSON.parse($('evidence').textContent);
@@ -1873,7 +1945,7 @@ const GUIDE = [
   { t: '.transport', k: '7 · 재생 컨트롤', h: '재생과 조그 다이얼',
     b: '<p>▶로 자동 재생하고, 다이얼로 단계 사이 간격(0~5초)을 늘려 천천히 볼 수 있습니다. 멈춘 상태에서는 다이얼 한 칸이 한 단계입니다. <b>LIVE</b>는 실제 실행 위치로 바로 갑니다.</p>' },
   { t: '#tabs', k: '8 · Harness 만들기', h: 'Harness 코드를 만들어 봅니다',
-    b: '<p><b>Harness 만들기</b> 탭에서 OpenCode 플러그인 <code>harness.js</code>를 만듭니다.</p><ul><li><b>기본 과정</b>: Record, Limit, Policy, 검증 조건을 고르면 옆의 실제 코드가 바뀌고, 바뀐 줄이 강조됩니다.</li><li><b>고급 과정</b>: 빈 뼈대에서 직접 코드를 쓰고, <b>검사하기</b>로 미션 8개의 통과 여부를 확인합니다.</li></ul><p><b>적용하기</b>를 누르면 그 코드가 Harness가 됩니다. 같은 요청을 다시 보내 차이를 봅니다.</p>' },
+    b: '<p><b>Harness 만들기</b> 탭에서 OpenCode 플러그인 <code>harness.js</code>를 만듭니다.</p><ul><li><b>기본 과정</b>: Record, Limit, Policy, 검증 조건을 고르면 옆의 실제 코드가 바뀌고, 바뀐 줄이 강조됩니다.</li><li><b>고급 과정</b>: 빈 뼈대에서 직접 코드를 쓰고, <b>검사하기</b>로 미션 8개의 통과 여부를 확인합니다.</li></ul><p>아래 <b>이 코드로 테스트</b>에서 요청을 고르고 <b>적용하고 보내기</b>를 누르면, 그 코드를 적용한 뒤 바로 요청을 보냅니다. 요청 탭도 언제나 마지막으로 적용한 같은 코드로 돌고, 탭 맨 위 카드에 무엇이 적용되어 있는지 나옵니다.</p>' },
   { t: null, k: '해 볼 실험', h: '이렇게 시작해 보세요', wide: true,
     b: '<ol><li><b>정상 흐름</b>: 예시 <b>합계 계산 후 제출</b>을 보냅니다. 검증을 지나 Approval에서 멈추면 <b>한 번 허용</b>을 누릅니다.</li><li><b>Policy 차단</b>: <b>보호 파일 수정</b>을 보냅니다. before Hook의 ③ Policy가 막고 패킷이 안쪽 점선으로 돌아갑니다.</li><li><b>Limit 차단</b>: 기본 과정에서 Limit을 3회로 줄이고 합계 요청을 보냅니다. 네 번째 시도에서 ② Limit이 막습니다.</li><li><b>맨몸 Agent</b>: 기본 과정에서 <b>맨몸 Agent</b>를 적용하고 합계 요청을 보냅니다. 검증이 느슨해 틀린 합계도 통과합니다.</li><li><b>기록이 없으면</b>: Record를 끄고 요청을 보냅니다. Hook 칸이 움직이지 않아 무슨 판단이 있었는지 알 수 없습니다.</li></ol><p>처음에는 <b>한 단계씩 보기</b>를 켜고 다음 단계 버튼으로 넘기면 각 판정을 놓치지 않습니다.</p>' },
 ];

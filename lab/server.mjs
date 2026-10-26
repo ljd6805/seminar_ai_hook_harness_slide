@@ -349,6 +349,7 @@ const server = http.createServer(async (req, res) => {
       }
       const lab = writeConfig({ mode, config: body.config || {}, source: body.source });
       if (body.resetOutputs) resetOutputs();
+      setState('starting', '새 Harness로 OpenCode를 다시 시작합니다');
       send(res, 200, { ok: true, ...lab });
       broadcast('config', { mode, config: lab.config });
       restartOpenCode().catch(error => setState('error', error.message));
