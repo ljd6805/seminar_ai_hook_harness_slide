@@ -4,98 +4,147 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hook·Harness 실험실</title>
 <style>
-:root{color-scheme:dark;--bg:#0e1220;--card:#171d30;--card2:#141a2b;--line:#303951;--text:#edf0fa;--sub:#b2bbd2;--faint:#7d87a3;--mint:#61dec6;--coral:#ff8a7a;--amber:#ffcc7a;--violet:#b19bff;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+:root{color-scheme:dark;--bg:#0b0f1a;--card:#151b2c;--card2:#111727;--line:#2c3550;--text:#edf0fa;--sub:#b2bbd2;--faint:#7d87a3;--mint:#61dec6;--coral:#ff8a7a;--amber:#ffcc7a;--violet:#b19bff;--blue:#8fb7ff;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 "Pretendard Variable","Apple SD Gothic Neo","Malgun Gothic",sans-serif;word-break:keep-all}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 "Pretendard Variable","Apple SD Gothic Neo","Malgun Gothic",sans-serif;word-break:keep-all;display:flex;flex-direction:column}
 a{color:var(--mint);text-underline-offset:4px}
 code{font-family:var(--mono);font-size:.92em}
-header{display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-header .home{border:1px solid var(--line);border-radius:8px;padding:5px 12px;text-decoration:none;font-size:13px}
-header h1{font-size:19px;margin:0}
+header{display:flex;align-items:center;gap:16px;padding:10px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:#0d1220}
+header .home{border:1px solid var(--line);border-radius:8px;padding:4px 11px;text-decoration:none;font-size:13px}
+header h1{font-size:18px;margin:0}
+header .sub{font-size:12px;color:var(--faint)}
 .badge{margin-left:auto;font-size:12px;border:1px solid var(--line);border-radius:30px;padding:3px 12px;color:var(--sub)}
 .badge.live{color:var(--mint);border-color:#316459}.badge.sim{color:var(--amber);border-color:#6a5437}.badge.err{color:var(--coral);border-color:#7a3d3d}
 .badge i{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px}
-main{display:grid;grid-template-columns:360px minmax(0,1fr) 440px;gap:16px;padding:16px 24px}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
-.panel h2{font-size:12px;letter-spacing:.12em;color:var(--violet);margin:0 0 10px;font-weight:700}
-.tabs{display:flex;gap:4px;margin:-4px 0 14px;border-bottom:1px solid var(--line)}
-.tabs button{all:unset;cursor:pointer;padding:7px 12px 9px;font-size:14px;color:var(--sub);border-bottom:2px solid transparent;margin-bottom:-1px}
+main{flex:1;min-height:0;display:grid;grid-template-columns:340px minmax(0,1fr) 430px;gap:14px;padding:14px 20px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0;min-height:0;overflow:auto}
+.panel h2{font-size:11.5px;letter-spacing:.14em;color:var(--violet);margin:0 0 10px;font-weight:700}
+.tabs{display:flex;gap:4px;margin:-4px 0 12px;border-bottom:1px solid var(--line)}
+.tabs button{all:unset;cursor:pointer;padding:6px 11px 8px;font-size:14px;color:var(--sub);border-bottom:2px solid transparent;margin-bottom:-1px}
 .tabs button.on{color:var(--text);border-bottom-color:var(--mint);font-weight:700}
 .tab{display:none}.tab.on{display:block}
-label.f{display:block;font-size:12.5px;color:var(--sub);margin:12px 0 5px}
-textarea,select,input[type=number]{width:100%;background:#0f1424;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px}
+label.f{display:block;font-size:12.5px;color:var(--sub);margin:10px 0 5px}
+textarea,select,input[type=number]{width:100%;background:#0d1222;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px}
 textarea{resize:vertical}
-textarea.code{font:12px/1.55 var(--mono);min-height:260px;white-space:pre;tab-size:2}
+textarea.code{font:12px/1.55 var(--mono);min-height:240px;white-space:pre;tab-size:2}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chips button{background:#1d2440;color:var(--sub);border:1px solid var(--line);border-radius:20px;padding:4px 10px;font:inherit;font-size:12.5px;cursor:pointer;text-align:left}
+.chips button{background:#1b2240;color:var(--sub);border:1px solid var(--line);border-radius:20px;padding:4px 10px;font:inherit;font-size:12.5px;cursor:pointer}
 .chips button:hover{color:var(--text);border-color:var(--violet)}
 .btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
-.btn{background:#20283f;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 13px;cursor:pointer;font:inherit;font-size:13.5px}
+.btn{background:#1e2640;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font:inherit;font-size:13.5px}
 .btn.pri{border-color:var(--mint);color:var(--mint)}
 .btn.warn{border-color:var(--amber);color:var(--amber)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .small{font-size:12px;color:var(--faint);overflow-wrap:anywhere}
-.reply{margin-top:12px;background:#0f1424;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px;min-height:56px;white-space:pre-wrap;color:var(--sub);max-height:180px;overflow:auto}
+.reply{margin-top:12px;background:#0d1222;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;min-height:52px;white-space:pre-wrap;color:var(--sub);max-height:170px;overflow:auto}
 .reply b{color:var(--violet);font-weight:600;font-size:12px;display:block;margin-bottom:3px}
-.state{margin-top:14px;border-top:1px solid var(--line);padding-top:12px;font-size:13px}
-.state div{display:flex;justify-content:space-between;padding:2px 0;color:var(--sub)}
-.state b{color:var(--text);font-family:var(--mono);font-weight:500}
-.meter{height:7px;border-radius:5px;background:#252d45;overflow:hidden;margin:3px 0 8px}
-.meter i{display:block;height:100%;width:0;background:var(--mint);transition:width .3s,background .3s}
-/* 꾸미기 */
-.grp{border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin-bottom:10px;background:var(--card2)}
+.grp{border:1px solid var(--line);border-radius:11px;padding:9px 12px;margin-bottom:9px;background:var(--card2)}
 .grp h3{margin:0 0 4px;font-size:14px;display:flex;align-items:center;gap:8px}
 .grp h3 small{font-weight:400;color:var(--faint);font-size:12px}
 .grp .row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;color:var(--sub)}
 .grp .row label{display:flex;align-items:center;gap:5px;cursor:pointer}
-.grp textarea{font:12px/1.5 var(--mono);min-height:48px;margin-top:4px}
+.grp textarea{font:12px/1.5 var(--mono);min-height:46px;margin-top:4px}
 .switch{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);font-weight:400}
 .dirty{color:var(--amber);font-size:12px}
 details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
-/* 재생 */
 .scen{display:flex;flex-direction:column;gap:7px}
 .scen button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px}
 .scen button small{display:block;color:var(--faint);font-size:12px}
 .scen button.on{border-color:var(--mint);background:#13302c}
-/* 흐름도 */
-.legend{display:flex;gap:12px;font-size:12px;color:var(--sub);margin-bottom:10px;flex-wrap:wrap}
-.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c)}
-.flow{display:flex;flex-direction:column;align-items:center}
-.node{position:relative;width:min(100%,460px);border:1.5px solid var(--line);border-radius:12px;padding:9px 15px;background:var(--card2);transition:border-color .25s,background .25s,box-shadow .25s,opacity .25s}
-.node .t{font-weight:700;font-size:15px}
-.node .d{font-size:12px;color:var(--faint)}
-.node .msg{font-size:12.5px;font-family:var(--mono);color:var(--sub);margin-top:2px;word-break:break-all}
-.node.hook{border-style:dashed}
-.node .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
-.chip{border:1.5px solid var(--line);border-radius:9px;padding:5px 8px;text-align:center;font-size:13px;transition:all .25s}
+
+/* ---------- 머신(흐름도) ---------- */
+.machine{position:relative;display:flex;flex-direction:column;align-items:center;padding:4px 0 8px 54px}
+.bus{position:absolute;left:22px;top:18px;bottom:22px;width:3px;border-radius:3px;background:linear-gradient(var(--line),var(--line))}
+.packet{position:absolute;left:12px;top:20px;width:23px;height:23px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 5px #b19bff33,0 0 22px #b19bffaa;transition:top .45s cubic-bezier(.5,0,.2,1),background .3s,box-shadow .3s;z-index:3;opacity:0}
+.packet.on{opacity:1}
+.packet.bad{background:var(--coral);box-shadow:0 0 0 5px #ff8a7a33,0 0 22px #ff8a7aaa}
+.packet.ok{background:var(--mint);box-shadow:0 0 0 5px #61dec633,0 0 22px #61dec6aa}
+.packet.wait{background:var(--amber);box-shadow:0 0 0 5px #ffcc7a33,0 0 22px #ffcc7aaa;animation:blink 1s infinite}
+.packet span{position:absolute;left:-4px;top:-19px;font:11px var(--mono);color:var(--sub);white-space:nowrap;background:#0b0f1acc;padding:0 5px;border-radius:4px}
+.packet.noanim{transition:none}
+@keyframes blink{50%{opacity:.45}}
+.unit{position:relative;width:min(100%,520px);border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;background:var(--card2);transition:border-color .25s,background .25s,box-shadow .25s,opacity .25s,transform .3s}
+.unit .t{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.unit .t em{font-style:normal;font:10.5px var(--mono);color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:0 5px}
+.unit .d{font-size:12px;color:var(--faint)}
+.unit .msg{font-size:12.5px;font-family:var(--mono);color:var(--sub);margin-top:2px;word-break:break-all;min-height:0}
+.unit.hook{border-style:dashed}
+.unit .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:7px}
+.chip{position:relative;border:1.5px solid var(--line);border-radius:9px;padding:5px 8px;text-align:center;font-size:13px;transition:all .25s;overflow:hidden}
 .chip small{display:block;font-size:11px;color:var(--faint)}
 .chip.off{opacity:.4;border-style:dotted}
-.arrow{width:2px;height:18px;background:var(--line);position:relative}
-.arrow::after{content:"";position:absolute;left:-4px;bottom:-2px;border:5px solid transparent;border-top-color:var(--line)}
-.active{border-color:var(--violet)!important;box-shadow:0 0 0 3px #b19bff30;background:#1d1a33!important}
-.ok{border-color:var(--mint)!important;background:#12302b!important}
-.bad{border-color:var(--coral)!important;background:#3a1d1d!important;box-shadow:0 0 0 3px #ff8a7a30}
-.wait{border-color:var(--amber)!important;background:#3a2e17!important;box-shadow:0 0 0 3px #ffcc7a30}
-.skip{opacity:.35}
-.pulse{animation:pulse 1.2s ease-in-out infinite}
-@keyframes pulse{50%{box-shadow:0 0 0 6px #b19bff20}}
+.link{width:3px;height:16px;background:var(--line)}
+.active{border-color:var(--violet)!important;background:#1d1a33!important}
+.ok{border-color:var(--mint)!important;background:#11302a!important}
+.bad{border-color:var(--coral)!important;background:#3a1d1d!important}
+.wait{border-color:var(--amber)!important;background:#3a2e17!important}
+.skip{opacity:.32}
+.focus{transform:scale(1.025);box-shadow:0 0 0 3px #b19bff55,0 0 28px #b19bff44!important;z-index:2}
+.focus.bad{box-shadow:0 0 0 3px #ff8a7a66,0 0 28px #ff8a7a44!important}
+.focus.ok{box-shadow:0 0 0 3px #61dec666,0 0 28px #61dec644!important}
+.focus.wait{box-shadow:0 0 0 3px #ffcc7a66,0 0 28px #ffcc7a44!important}
+.chip.focus::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,#ffffff22,transparent);animation:sweep .7s ease-out}
+@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
 .approve{display:none;margin-top:8px;gap:8px}
 .approve.on{display:flex}
-.verdict{margin-top:14px;text-align:center;font-size:15px;min-height:24px}
+.verdict{margin-top:10px;text-align:center;font-size:14.5px;min-height:22px}
 .verdict.good{color:var(--mint)}.verdict.no{color:var(--coral)}.verdict.hold{color:var(--amber)}
-/* 터미널 */
-.term{background:#0a0d17;border:1px solid var(--line);border-radius:10px;padding:10px 12px;height:calc(100vh - 170px);min-height:420px;overflow:auto;font:12px/1.65 var(--mono)}
-.term .l{white-space:pre-wrap;word-break:break-all;animation:in .25s ease-out}
-@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
-.term .tm{color:#5b6585}.term .src{display:inline-block;min-width:3.4em;color:#5b6585}
-.term .src.h{color:var(--violet)}.term .src.a{color:#8fb7ff}.term .src.s{color:var(--faint)}
-.term .evn{display:inline-block;min-width:9.5em}
-.term .tool{color:var(--text)}
-.term .okc{color:var(--mint)}.term .badc{color:var(--coral)}.term .waitc{color:var(--amber)}.term .dim{color:var(--faint)}.term .ev{color:var(--violet)}
-.term-ctl{display:flex;gap:10px;align-items:center;margin-bottom:8px;font-size:12px;color:var(--sub)}
+
+/* ---------- 레지스터·인스펙터·로그 ---------- */
+.regs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;margin-bottom:12px}
+.reg{background:#0d1222;border:1px solid var(--line);border-radius:8px;padding:5px 9px;transition:border-color .3s,background .3s}
+.reg small{display:block;font:10px var(--mono);letter-spacing:.08em;color:var(--faint)}
+.reg b{font:500 13px var(--mono);color:var(--text);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.reg.flash{border-color:var(--violet);background:#1d1a33}
+.reg.warn b{color:var(--amber)}.reg.bad b{color:var(--coral)}.reg.good b{color:var(--mint)}
+.insp{background:#0d1222;border:1px solid var(--line);border-left:3px solid var(--violet);border-radius:10px;padding:9px 12px;margin-bottom:12px}
+.insp .k{font:11px var(--mono);color:var(--faint)}
+.insp .h{font-weight:700;font-size:14.5px;margin:2px 0}
+.insp .p{font-size:13.5px;color:var(--sub)}
+.insp pre{margin:6px 0 0;font:11px/1.5 var(--mono);color:var(--faint);white-space:pre-wrap;word-break:break-all;max-height:96px;overflow:auto}
+.insp.bad{border-left-color:var(--coral)}.insp.ok{border-left-color:var(--mint)}.insp.wait{border-left-color:var(--amber)}
+.term{background:#080b14;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:11.5px/1.6 var(--mono);height:300px;overflow:auto}
+.term .l{white-space:pre-wrap;word-break:break-all;padding:0 4px;border-radius:4px;cursor:pointer}
+.term .l:hover{background:#ffffff08}
+.term .l.cur{background:#b19bff1f;outline:1px solid #b19bff55}
+.term .l.future{opacity:.25}
+.term .n{color:#4a536e;display:inline-block;min-width:2.6em}
+.term .src{display:inline-block;min-width:3.4em}
+.term .src.h{color:var(--violet)}.term .src.a{color:var(--blue)}.term .src.s{color:var(--faint)}
+.term .okc{color:var(--mint)}.term .badc{color:var(--coral)}.term .waitc{color:var(--amber)}.term .dim{color:var(--faint)}.term .tool{color:var(--text)}
+.term-ctl{display:flex;gap:10px;align-items:center;margin:0 0 6px;font-size:12px;color:var(--sub)}
 .term-ctl label{display:flex;gap:4px;align-items:center}
-.term-ctl button{margin-left:auto}
-@media(max-width:1250px){main{grid-template-columns:1fr}.term{height:440px}}
+
+/* ---------- 트랜스포트(에뮬레이터 컨트롤) ---------- */
+.transport{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center;padding:10px 20px 12px;border-top:1px solid var(--line);background:#0d1220}
+.tbtns{display:flex;gap:6px}
+.tb{width:40px;height:38px;border-radius:9px;border:1px solid var(--line);background:#182039;color:var(--text);font-size:15px;cursor:pointer;display:grid;place-items:center}
+.tb:hover{border-color:var(--violet)}
+.tb.play{width:52px;border-color:var(--mint);color:var(--mint);font-size:17px}
+.tb.live{width:auto;padding:0 12px;font:600 12px var(--mono);letter-spacing:.06em}
+.tb.live.on{color:var(--coral);border-color:#7a3d3d}
+.tb.live.on::before{content:"●";margin-right:5px;animation:blink 1.2s infinite}
+.tl{min-width:0}
+.tl-top{display:flex;justify-content:space-between;font:11.5px var(--mono);color:var(--faint);margin-bottom:5px;gap:10px}
+.tl-top b{color:var(--text);font-weight:500}
+.track{position:relative;height:30px;background:#0a0e1a;border:1px solid var(--line);border-radius:8px;cursor:pointer;overflow:hidden}
+.track .buf{position:absolute;top:0;bottom:0;background:#b19bff14}
+.track .tick{position:absolute;top:7px;bottom:7px;width:3px;border-radius:2px;background:#3d4766;transform:translateX(-1px)}
+.track .tick.c{background:var(--violet)}.track .tick.x{background:var(--coral)}.track .tick.o{background:var(--mint)}.track .tick.w{background:var(--amber)}.track .tick.m{background:#5b6585;top:3px;bottom:3px;width:2px}
+.track .head{position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 8px #fff;transition:left .25s}
+.track .head::before{content:"";position:absolute;top:-1px;left:-5px;border:6px solid transparent;border-top-color:#fff}
+.dialbox{display:flex;align-items:center;gap:12px}
+.dial{width:66px;height:66px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#2a3352,#121829 70%);border:1px solid #3a4466;position:relative;cursor:grab;touch-action:none;box-shadow:inset 0 -3px 8px #0008,0 2px 10px #0006}
+.dial:active{cursor:grabbing}
+.dial .notch{position:absolute;left:50%;top:5px;width:4px;height:14px;margin-left:-2px;border-radius:2px;background:var(--mint);box-shadow:0 0 8px var(--mint);transform-origin:2px 28px}
+.dial .ring{position:absolute;inset:-6px;border-radius:50%;background:repeating-conic-gradient(#3a4466 0 2deg,transparent 2deg 15deg);-webkit-mask:radial-gradient(circle,transparent 37px,#000 38px);mask:radial-gradient(circle,transparent 37px,#000 38px);pointer-events:none}
+.dialinfo{font:12px/1.5 var(--mono);color:var(--faint);min-width:150px}
+.dialinfo b{color:var(--text);font-size:15px;font-weight:600}
+.dialinfo .mode{color:var(--mint)}
+.keys{font-size:11px;color:#59627e}
+@media(max-width:1300px){main{grid-template-columns:320px minmax(0,1fr)}main>.panel:last-child{grid-column:1/-1}}
+@media(max-width:900px){main{grid-template-columns:1fr}.transport{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -103,17 +152,17 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 <header>
   <a class="home" href="../docs/index.html">← 문서 허브</a>
   <h1>Hook·Harness 실험실</h1>
+  <span class="sub">요청 → Agent → Hook → 실행 → 검증 → 승인을 한 단계씩 돌려 보는 에뮬레이터</span>
   <span class="badge sim" id="badge"><i></i>미리보기 · 브라우저 모의 실행</span>
 </header>
 <main>
-  <!-- 왼쪽: 요청 · 꾸미기 · 재생 -->
+  <!-- 왼쪽: 입력 -->
   <section class="panel">
     <div class="tabs" id="tabs">
       <button data-tab="req" class="on">요청</button>
       <button data-tab="cfg">Harness 꾸미기</button>
       <button data-tab="rep">기록 재생</button>
     </div>
-
     <div class="tab on" id="tab-req">
       <div id="modelWrap" style="display:none"><label class="f" for="model">모델</label><select id="model"></select></div>
       <label class="f" for="prompt">Agent에게 보낼 요청</label>
@@ -121,22 +170,13 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
       <div class="chips" id="presetReq"></div>
       <div class="btns">
         <button class="btn pri" id="send">요청 보내기</button>
-        <button class="btn" id="newSession" title="예산·검증 횟수가 처음부터 다시 셉니다">새 세션</button>
+        <button class="btn" id="newSession" title="예산·검증 횟수를 처음부터 다시 셉니다">새 세션</button>
         <button class="btn" id="abort">중단</button>
         <button class="btn" id="resetFiles" title="lab/output·submissions를 비웁니다">작업 파일 비우기</button>
       </div>
-      <div class="reply" id="reply"><b>Agent 응답</b><span id="replyText">아직 요청을 보내지 않았습니다.</span></div>
-      <div class="state">
-        <div><span>도구 시도 (예산 <span id="sBudget">8</span>회)</span><b id="sAtt">0 / 8</b></div>
-        <div class="meter"><i id="mAtt"></i></div>
-        <div>검증 시도 (최대 3)<b id="sVal">0 / 3</b></div>
-        <div class="meter"><i id="mVal"></i></div>
-        <div>마지막 검증<b id="sLast">없음</b></div>
-        <div>제출<b id="sSub">아직</b></div>
-      </div>
+      <div class="reply"><b>Agent 응답</b><span id="replyText">아직 요청을 보내지 않았습니다.</span></div>
       <p class="small" id="modeNote"></p>
     </div>
-
     <div class="tab" id="tab-cfg">
       <div class="btns" style="margin:0 0 10px">
         <span class="small">빠른 설정</span>
@@ -144,7 +184,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
         <button class="btn" data-preset="full">완성 Harness</button>
       </div>
       <div class="grp"><h3>Record <small>기록</small><label class="switch"><input type="checkbox" id="cRecordOn"> 켜기</label></h3>
-        <div class="small">Hook 판단을 <code>.quest/events.jsonl</code>에 남깁니다. 끄면 흐름도의 Hook 칸이 움직이지 않습니다.</div></div>
+        <div class="small">Hook 판단을 <code>.quest/events.jsonl</code>에 남깁니다. 끄면 Hook 단계가 테이프에 남지 않습니다.</div></div>
       <div class="grp"><h3>Policy <small>허용 도구</small></h3><div class="row" id="cTools"></div></div>
       <div class="grp"><h3>Policy <small>경로 (한 줄에 하나, 앞부분 일치)</small></h3>
         <div class="small">읽기 허용</div><textarea id="cRead"></textarea>
@@ -167,60 +207,87 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
       </div>
       <p class="small" id="applyNote"></p>
     </div>
-
     <div class="tab" id="tab-rep">
-      <p class="small" style="margin-top:0">실제 OpenCode 1.19.4 실행기에서 남긴 기록을 다시 재생합니다(모델은 고정 응답기).</p>
+      <p class="small" style="margin-top:0">실제 OpenCode 1.19.4 실행기에서 남긴 기록을 테이프에 올려 재생합니다(모델은 고정 응답기).</p>
       <div class="scen" id="scen"></div>
       <div class="btns">
-        <button class="btn pri" id="rPlay">▶ 재생</button>
-        <button class="btn" id="rStep">한 단계</button>
+        <button class="btn" id="backToLab">실험 테이프로 돌아가기</button>
         <label class="small">다른 기록 <input type="file" id="rFile" accept=".jsonl,.json,.txt" style="width:150px"></label>
       </div>
     </div>
   </section>
 
-  <!-- 가운데: 흐름도 -->
+  <!-- 가운데: 머신 -->
   <section class="panel">
-    <h2>HARNESS 흐름</h2>
-    <div class="legend"><span style="--c:var(--violet)">진행 중</span><span style="--c:var(--mint)">통과</span><span style="--c:var(--coral)">거부·실패</span><span style="--c:var(--amber)">사람 확인 대기</span></div>
-    <div class="flow">
-      <div class="node" id="nAgent"><div class="t">Agent가 도구를 호출합니다</div><div class="d">LLM이 quest_* 도구 중 하나를 고릅니다</div><div class="msg" id="mAgent"></div></div>
-      <div class="arrow"></div>
-      <div class="node hook" id="nBefore"><div class="t">Hook · tool.execute.before</div><div class="d">실행 전에 끼어들어 규칙으로 판단합니다</div>
+    <h2>HARNESS 머신</h2>
+    <div class="machine" id="machine">
+      <div class="bus"></div>
+      <div class="packet" id="packet"><span id="packetLabel"></span></div>
+      <div class="unit" id="uAgent"><div class="t">Agent <em>LLM</em></div><div class="d">요청을 읽고 quest_* 도구 중 하나를 고릅니다</div><div class="msg" id="mAgent"></div></div>
+      <div class="link"></div>
+      <div class="unit hook" id="uBefore"><div class="t">Hook · tool.execute.before <em>실행 전</em></div><div class="d">실행 전에 가로채서 규칙 함수로 차례대로 판정합니다</div>
         <div class="row">
-          <div class="chip" id="cRecord">Record<small>기록</small></div>
-          <div class="chip" id="cLimit">Limit<small>예산</small></div>
-          <div class="chip" id="cPolicy">Policy<small>도구·경로</small></div>
+          <div class="chip" id="uRecord">① Record<small>shouldRecord</small></div>
+          <div class="chip" id="uLimit">② Limit<small>withinBudget</small></div>
+          <div class="chip" id="uPolicy">③ Policy<small>allowTool · allowPath</small></div>
         </div>
         <div class="msg" id="mBefore"></div>
       </div>
-      <div class="arrow"></div>
-      <div class="node" id="nExec"><div class="t">도구 실행</div><div class="d">실제 파일을 읽고 씁니다</div><div class="msg" id="mExec"></div></div>
-      <div class="arrow"></div>
-      <div class="node hook" id="nAfter"><div class="t">Hook · tool.execute.after</div><div class="d">결과를 기록합니다</div><div class="msg" id="mAfter"></div></div>
-      <div class="arrow"></div>
-      <div class="node" id="nVal"><div class="t">Validation · 산출물 검증</div><div class="d">스키마·합계·보고서·원본 보존을 검사합니다</div><div class="msg" id="mVal"></div></div>
-      <div class="arrow"></div>
-      <div class="node" id="nAppr"><div class="t">Approval · 사람 승인</div><div class="d">제출 전에 OpenCode가 사람에게 묻습니다</div><div class="msg" id="mAppr"></div>
+      <div class="link"></div>
+      <div class="unit" id="uExec"><div class="t">도구 실행 <em>execute</em></div><div class="d">실제 파일을 읽고 씁니다</div><div class="msg" id="mExec"></div></div>
+      <div class="link"></div>
+      <div class="unit" id="uVal"><div class="t">Validation <em>acceptValidation</em></div><div class="d">스키마·합계·보고서·원본 보존을 검사합니다</div><div class="msg" id="mVal"></div></div>
+      <div class="link"></div>
+      <div class="unit" id="uAppr"><div class="t">Approval <em>canSubmit · ask</em></div><div class="d">제출 전에 OpenCode가 사람에게 묻습니다</div><div class="msg" id="mAppr"></div>
         <div class="approve" id="approve"><button class="btn pri" id="apOnce">한 번 허용</button><button class="btn warn" id="apReject">거절</button></div></div>
-      <div class="arrow"></div>
-      <div class="node" id="nSub"><div class="t">제출</div><div class="d">로컬 영수증을 한 번만 만듭니다</div><div class="msg" id="mSub"></div></div>
+      <div class="link"></div>
+      <div class="unit hook" id="uAfter"><div class="t">Hook · tool.execute.after <em>실행 후</em></div><div class="d">결과를 기록합니다</div><div class="msg" id="mAfter"></div></div>
+      <div class="link"></div>
+      <div class="unit" id="uSub"><div class="t">제출 <em>receipt</em></div><div class="d">로컬 영수증을 한 번만 만듭니다</div><div class="msg" id="mSub"></div></div>
     </div>
     <div class="verdict" id="verdict"></div>
   </section>
 
-  <!-- 오른쪽: 로그 -->
+  <!-- 오른쪽: 레지스터·인스펙터·로그 -->
   <section class="panel">
-    <h2>실행 로그</h2>
+    <h2>레지스터</h2>
+    <div class="regs">
+      <div class="reg" id="rTool"><small>TOOL</small><b>-</b></div>
+      <div class="reg" id="rArg"><small>ARGS</small><b>-</b></div>
+      <div class="reg" id="rAtt"><small>ATTEMPT / BUDGET</small><b>0 / 8</b></div>
+      <div class="reg" id="rVal"><small>VALIDATION / 3</small><b>0 / 3</b></div>
+      <div class="reg" id="rLast"><small>LAST CHECK</small><b>-</b></div>
+      <div class="reg" id="rSub"><small>SUBMIT</small><b>아직</b></div>
+    </div>
+    <h2>현재 단계</h2>
+    <div class="insp" id="insp"><div class="k" id="iK">STEP 0 / 0</div><div class="h" id="iH">테이프가 비어 있습니다</div><div class="p" id="iP">요청을 보내면 OpenCode와 Hook이 만드는 사건이 이 테이프에 쌓이고, 아래 컨트롤로 한 단계씩 돌려 볼 수 있습니다.</div><pre id="iRaw"></pre></div>
+    <h2>테이프 로그</h2>
     <div class="term-ctl">
-      <label><input type="checkbox" id="fHook" checked> hook 기록</label>
-      <label><input type="checkbox" id="fAgent" checked> agent 이벤트</label>
-      <label>속도 <select id="speed" style="width:auto;padding:2px 4px"><option value="900">느리게</option><option value="450" selected>보통</option><option value="150">빠르게</option></select></label>
-      <button class="btn" id="clearLog" style="padding:3px 9px;font-size:12px">지우기</button>
+      <label><input type="checkbox" id="fHook" checked> hook</label>
+      <label><input type="checkbox" id="fAgent" checked> agent</label>
+      <label><input type="checkbox" id="fFuture" checked> 앞으로 올 단계도 흐리게 보기</label>
     </div>
     <div class="term" id="term"></div>
   </section>
 </main>
+
+<footer class="transport">
+  <div class="tbtns">
+    <button class="tb" id="tFirst" title="처음 (Home)">⏮</button>
+    <button class="tb" id="tPrev" title="한 단계 뒤 (←)">◀</button>
+    <button class="tb play" id="tPlay" title="재생/일시정지 (Space)">▶</button>
+    <button class="tb" id="tNext" title="한 단계 앞 (→)">▶|</button>
+    <button class="tb live" id="tLive" title="실시간 위치로 (End)">LIVE</button>
+  </div>
+  <div class="tl">
+    <div class="tl-top"><span>STEP <b id="tlStep">0</b> / <b id="tlTotal">0</b></span><span id="tlBehind"></span><span class="keys">Space 재생 · ←/→ 한 단계 · ↑/↓ 간격 · 다이얼 드래그·휠</span></div>
+    <div class="track" id="track"><div class="buf" id="tlBuf"></div><div class="head" id="tlHead"></div></div>
+  </div>
+  <div class="dialbox">
+    <div class="dial" id="dial" title="재생 중: 단계 사이 간격 조절 · 멈춤: 한 단계씩 조그"><div class="ring"></div><div class="notch" id="notch"></div></div>
+    <div class="dialinfo"><div class="mode" id="dMode">간격 다이얼</div><div><b id="dGap">0.8</b> 초 / 단계</div><div id="dHint">실제 간격보다 짧으면 이 값만큼 기다립니다</div></div>
+  </div>
+</footer>
 
 <script id="evidence" type="application/json">{"names": {"kxjDUQ": "정상 흐름 · 승인 거절", "Qk6lI6": "정상 흐름 · 승인 허용", "q8iVMA": "허용되지 않은 도구", "O8AJhc": "금지된 경로 쓰기", "Fl7nNF": "예산 초과"}, "events": [{"time": "2026-10-23T06:16:18.552Z", "level": 6, "event": "plugin_loaded", "pluginVersion": "0.1.0", "apiTarget": "1.19.4"}, {"time": "2026-10-23T06:16:19.459Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-1", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:19.461Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-1", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:19.497Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-2", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.498Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.498Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-2", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.538Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-3", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.538Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/report.md"}, {"time": "2026-10-23T06:16:19.539Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-3", "tool": "quest_write", "output": "{\"written\":\"lab/output/report.md\"}"}, {"time": "2026-10-23T06:16:19.566Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-4", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:19.567Z", "level": 6, "event": "validation", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "checks": {"schemaOK": true, "sumOK": false, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba780eb2d", "errors": ["sumOK"], "ok": false, "remaining": 2}, {"time": "2026-10-23T06:16:19.567Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-4", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":false,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba7"}, {"time": "2026-10-23T06:16:19.616Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-5", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.617Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.617Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-5", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.644Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-6", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:19.645Z", "level": 6, "event": "validation", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "checks": {"schemaOK": true, "sumOK": true, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd", "errors": [], "ok": true, "remaining": 1}, {"time": "2026-10-23T06:16:19.645Z", "level": 6, "event": "after", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-6", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":true,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968"}, {"time": "2026-10-23T06:16:19.671Z", "level": 6, "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "callId": "fixture-7", "tool": "quest_submit", "event": "before"}, {"time": "2026-10-23T06:16:19.672Z", "level": 6, "event": "approval_requested", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:19.749Z", "level": 6, "event": "approval_rejected", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:19.749Z", "level": 6, "event": "tool_error", "sessionId": "ses_e9898ce81ffe3F5AHyoWkxjDUQ", "tool": "quest_submit", "reason": "The user rejected permission to use this specific tool call."}, {"time": "2026-10-23T06:16:19.930Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-8", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:19.930Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-8", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:19.951Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-9", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.952Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:19.952Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-9", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-10", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/report.md"}, {"time": "2026-10-23T06:16:19.985Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-10", "tool": "quest_write", "output": "{\"written\":\"lab/output/report.md\"}"}, {"time": "2026-10-23T06:16:20.004Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-11", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:20.005Z", "level": 6, "event": "validation", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "checks": {"schemaOK": true, "sumOK": false, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba780eb2d", "errors": ["sumOK"], "ok": false, "remaining": 2}, {"time": "2026-10-23T06:16:20.005Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-11", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":false,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"83c6775965a087806a50402783ccefdeb43285938b4283da25afa80ba7"}, {"time": "2026-10-23T06:16:20.032Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-12", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:20.032Z", "level": 6, "event": "file_written", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "path": "lab/output/summary.json"}, {"time": "2026-10-23T06:16:20.033Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-12", "tool": "quest_write", "output": "{\"written\":\"lab/output/summary.json\"}"}, {"time": "2026-10-23T06:16:20.060Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-13", "tool": "quest_validate", "event": "before"}, {"time": "2026-10-23T06:16:20.062Z", "level": 6, "event": "validation", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "checks": {"schemaOK": true, "sumOK": true, "reportOK": true, "originalsOK": true}, "expected": 13000, "hash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd", "errors": [], "ok": true, "remaining": 1}, {"time": "2026-10-23T06:16:20.062Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-13", "tool": "quest_validate", "output": "{\"checks\":{\"schemaOK\":true,\"sumOK\":true,\"reportOK\":true,\"originalsOK\":true},\"expected\":13000,\"hash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968"}, {"time": "2026-10-23T06:16:20.088Z", "level": 6, "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-14", "tool": "quest_submit", "event": "before"}, {"time": "2026-10-23T06:16:20.089Z", "level": 6, "event": "approval_requested", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:20.237Z", "level": 6, "event": "submitted", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "artifactHash": "0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd"}, {"time": "2026-10-23T06:16:20.237Z", "level": 6, "event": "after", "sessionId": "ses_e9898c941ffenIh0OeoJQk6lI6", "callId": "fixture-14", "tool": "quest_submit", "output": "{\"sessionId\":\"ses_e9898c941ffenIh0OeoJQk6lI6\",\"artifactHash\":\"0bbc1aff41dd0c488a8c6c53ba169c7a3b3fa80dfe644cf213d603e0968fbfcd\",\"submittedAt\":\"2026-10-23T06:16:"}, {"time": "2026-10-23T06:16:20.414Z", "level": 6, "sessionId": "ses_e9898c759ffeRbQcXfVmq8iVMA", "callId": "fixture-16", "tool": "quest_probe", "event": "before"}, {"time": "2026-10-23T06:16:20.414Z", "level": 6, "sessionId": "ses_e9898c759ffeRbQcXfVmq8iVMA", "callId": "fixture-16", "tool": "quest_probe", "event": "denied", "reason": "POLICY: tool denied", "executed": false}, {"time": "2026-10-23T06:16:20.572Z", "level": 6, "sessionId": "ses_e9898c6b9ffezqEV6JXCO8AJhc", "callId": "fixture-18", "tool": "quest_write", "event": "before"}, {"time": "2026-10-23T06:16:20.572Z", "level": 6, "sessionId": "ses_e9898c6b9ffezqEV6JXCO8AJhc", "callId": "fixture-18", "tool": "quest_write", "event": "denied", "reason": "POLICY: path denied", "executed": false}, {"time": "2026-10-23T06:16:20.733Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-20", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.734Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-20", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.752Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-21", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.753Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-21", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.775Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-22", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.776Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-22", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.794Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-23", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.794Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-23", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.812Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-24", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.813Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-24", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.830Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-25", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.831Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-25", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.849Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-26", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.850Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-26", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.869Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-27", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.870Z", "level": 6, "event": "after", "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-27", "tool": "quest_read", "output": "{\"content\":\"{\\n  \\\"currency\\\": \\\"KRW\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"A\\\",\\n      \\\"amount\\\": 10000\\n    },\\n    {\\n      \\\"id\\\": \\\"B\\\",\\n      \\\"amou"}, {"time": "2026-10-23T06:16:20.889Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-28", "tool": "quest_read", "event": "before"}, {"time": "2026-10-23T06:16:20.889Z", "level": 6, "sessionId": "ses_e9898c61affeEoOymw22Fl7nNF", "callId": "fixture-28", "tool": "quest_read", "event": "denied", "reason": "LIMIT: tool request budget exhausted", "executed": false}]}</script>
 <script>
@@ -243,179 +310,466 @@ const REQUESTS = [
   ['예산 초과', 'lab/input/orders.json을 10번 반복해서 읽어 줘.'],
   ['상태 확인', 'quest_status로 지금 상태를 알려 줘.'],
 ];
-
-let mode = 'sim';           // sim | live | replay
+let mode = 'sim';           // sim | live
 let config = structuredClone(PRESETS.full);
-let customCode = null;      // 사용자가 직접 고친 rules.mjs
+let customCode = null;
 let applied = { config: structuredClone(config), custom: null };
 
-/* ---------- 탭 ---------- */
 document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.id === 'tab-' + b.dataset.tab));
 });
 
-/* ---------- 로그 ---------- */
-function termLine(src, html) {
-  const d = document.createElement('div');
-  d.className = 'l'; d.dataset.src = src;
-  const t = new Date().toTimeString().slice(0, 8);
-  const tag = { h: 'hook', a: 'agent', s: 'lab' }[src];
-  d.innerHTML = `<span class="tm">${t}</span> <span class="src ${src}">${tag}</span> ${html}`;
-  if ((src === 'h' && !$('fHook').checked) || (src === 'a' && !$('fAgent').checked)) d.style.display = 'none';
-  $('term').appendChild(d); $('term').scrollTop = $('term').scrollHeight;
-}
-['fHook', 'fAgent'].forEach(id => $(id).onchange = () => {
-  document.querySelectorAll('#term .l').forEach(l => {
-    const hide = (l.dataset.src === 'h' && !$('fHook').checked) || (l.dataset.src === 'a' && !$('fAgent').checked);
-    l.style.display = hide ? 'none' : '';
-  });
-});
-$('clearLog').onclick = () => { $('term').innerHTML = ''; };
-const sys = text => termLine('s', `<span class="dim">${esc(text)}</span>`);
+/* =====================================================================
+   테이프: 들어온 사건을 "단계(step)"로 펼쳐 쌓습니다.
+   화면은 언제나 "테이프의 0번부터 플레이헤드까지"를 접어서(fold) 그립니다.
+   그래서 앞뒤로 자유롭게 움직일 수 있고, 실제 실행이 빨라도 천천히 볼 수 있습니다.
+   ===================================================================== */
+function makeTape(name) { return { name, steps: [], open: null, lastInput: null }; }
+let labTape = makeTape('lab'), tape = labTape;
 
-/* ---------- 흐름도 ---------- */
-const NODES = ['nAgent', 'nBefore', 'nExec', 'nAfter', 'nVal', 'nAppr', 'nSub', 'cRecord', 'cLimit', 'cPolicy'];
-const cls = (id, c) => { $(id).classList.remove('active', 'ok', 'bad', 'wait', 'skip', 'pulse'); if (c) c.split(' ').forEach(x => $(id).classList.add(x)); };
-const msg = (id, t) => { $(id).textContent = t || ''; };
-let st, pendingBefore = false;
-function resetFlow(full = true) {
-  NODES.forEach(n => cls(n));
-  ['mAgent', 'mBefore', 'mExec', 'mAfter', 'mVal', 'mAppr', 'mSub'].forEach(m => msg(m, ''));
-  $('verdict').textContent = ''; $('verdict').className = 'verdict';
-  $('approve').classList.remove('on');
-  pendingBefore = false;
-  if (full) { st = { att: 0, val: 0, last: '없음', sub: '아직' }; paintState(); }
+const VISUAL = new Set(['request', 'think', 'call', 'hook-in', 'chk-record', 'chk-limit', 'chk-policy', 'deny', 'exec',
+  'validate', 'appr-req', 'ask', 'appr-no', 'submit', 'error', 'after', 'idle', 'session', 'config']);
+function addStep(tp, s) { s.t = s.t ?? performance.now(); tp.steps.push(s); return undefined; }
+function resolveChecks(tp, ev) {
+  // before 뒤에 오는 첫 hook 사건으로 ①②③ 판정 결과를 정합니다.
+  if (!tp.open) return;
+  const reason = ev.event === 'denied' ? String(ev.reason) : null;
+  const lim = reason?.startsWith('LIMIT'), pol = reason?.startsWith('POLICY');
+  tp.open.limit.result = lim ? 'bad' : 'ok';
+  tp.open.policy.result = lim ? 'skip' : pol ? 'bad' : 'ok';
+  if (reason && !lim && !pol) tp.open.policy.result = 'bad';
+  for (const s of [tp.open.record, tp.open.limit, tp.open.policy]) s.pending = false;
+  tp.open = null;
 }
-function paintState() {
-  const budget = applied.config.budget;
-  $('sBudget').textContent = budget;
-  $('sAtt').textContent = st.att + ' / ' + budget;
-  $('mAtt').style.width = Math.min(100, st.att / budget * 100) + '%';
-  $('mAtt').style.background = st.att > budget ? 'var(--coral)' : st.att >= budget - 2 ? 'var(--amber)' : 'var(--mint)';
-  $('sVal').textContent = st.val + ' / 3'; $('mVal').style.width = (st.val / 3 * 100) + '%';
-  $('sLast').textContent = st.last; $('sSub').textContent = st.sub;
-}
-function paintChipsOff() {
-  $('cRecord').classList.toggle('off', !applied.config.record);
-  $('cLimit').classList.toggle('off', !applied.config.limitOn);
-}
-function settleBefore() {
-  if (!pendingBefore) return;
-  pendingBefore = false;
-  cls('cLimit', 'ok'); cls('cPolicy', 'ok'); cls('nBefore', 'ok');
-  msg('mBefore', '통과 → 실행 허용');
-}
-function hookLine(e) {
-  let body = '', c = 'ev';
-  switch (e.event) {
-    case 'plugin_loaded': body = '<span class="dim">플러그인 로드 · level ' + e.level + '</span>'; break;
-    case 'before': body = `<span class="tool">${e.tool}</span> <span class="dim">hook 진입</span>`; break;
-    case 'denied': c = 'badc'; body = `<span class="tool">${e.tool}</span> <span class="badc">✕ ${esc(e.reason)}</span> <span class="dim">executed=false</span>`; break;
-    case 'file_written': body = `<span class="okc">${esc(e.path)}</span>`; break;
-    case 'after': body = `<span class="tool">${e.tool}</span> <span class="dim">${esc((e.output || '').slice(0, 48))}</span>`; break;
-    case 'validation': c = e.ok ? 'okc' : 'badc'; body = e.ok ? `<span class="okc">✓ 통과</span> <span class="dim">hash ${String(e.hash).slice(0, 10)}… 남은 횟수 ${e.remaining}</span>` : `<span class="badc">✕ 실패: ${(e.errors || []).join(', ')}</span> <span class="dim">기대 합계 ${e.expected} · 남은 횟수 ${e.remaining}</span>`; break;
-    case 'approval_requested': c = 'waitc'; body = `<span class="waitc">⏸ 사람 승인 대기</span> <span class="dim">hash ${String(e.artifactHash || '').slice(0, 10)}…</span>`; break;
-    case 'approval_rejected': c = 'badc'; body = '<span class="badc">✕ 승인 거절</span>'; break;
-    case 'submitted': c = 'okc'; body = `<span class="okc">✓ 제출 완료</span> <span class="dim">영수증 ${String(e.artifactHash || '').slice(0, 10)}….json</span>`; break;
-    case 'tool_error': c = 'badc'; body = `<span class="tool">${e.tool}</span> <span class="badc">${esc(e.reason)}</span>`; break;
-    default: body = '<span class="dim">' + esc(JSON.stringify(e).slice(0, 90)) + '</span>';
+function ingest(tp, kind, data, t) {
+  const at = t ?? performance.now();
+  if (kind === 'hook') {
+    const e = data;
+    if (e.event === 'plugin_loaded') return addStep(tp, { type: 'log', src: 'h', ev: e, t: at });
+    if (e.event === 'before') {
+      resolveChecks(tp, e);
+      const call = tp.pendingCall?.tool === e.tool ? tp.pendingCall : null;
+      tp.pendingCall = null;
+      const hin = { type: 'hook-in', ev: e, t: at, input: call?.input ?? null, hasCall: Boolean(call) };
+      addStep(tp, hin);
+      const rec = { type: 'chk-record', ev: e, t: at, result: 'ok', pending: true };
+      const lim = { type: 'chk-limit', ev: e, t: at, pending: true };
+      const pol = { type: 'chk-policy', ev: e, t: at, pending: true, input: call?.input ?? null };
+      hin.policy = pol;
+      addStep(tp, rec); addStep(tp, lim); addStep(tp, pol);
+      tp.open = { record: rec, limit: lim, policy: pol, tool: e.tool, wrote: false };
+      tp.cur = { tool: e.tool, exec: false };
+      return;
+    }
+    resolveChecks(tp, e);
+    if (e.event === 'denied') return addStep(tp, { type: 'deny', ev: e, t: at });
+    if (e.event === 'file_written') { if (tp.cur) tp.cur.exec = true; return addStep(tp, { type: 'exec', ev: e, t: at }); }
+    if (e.event === 'validation') { if (tp.cur) tp.cur.exec = true; return addStep(tp, { type: 'validate', ev: e, t: at }); }
+    if (e.event === 'approval_requested') { if (tp.cur) tp.cur.exec = true; return addStep(tp, { type: 'appr-req', ev: e, t: at }); }
+    if (e.event === 'approval_rejected') return addStep(tp, { type: 'appr-no', ev: e, t: at });
+    if (e.event === 'submitted') return addStep(tp, { type: 'submit', ev: e, t: at });
+    if (e.event === 'tool_error') return addStep(tp, { type: 'error', ev: e, t: at });
+    if (e.event === 'after') {
+      if (tp.cur && !tp.cur.exec) addStep(tp, { type: 'exec', ev: { event: 'exec', tool: e.tool }, t: at });
+      tp.cur = null;
+      return addStep(tp, { type: 'after', ev: e, t: at });
+    }
+    return addStep(tp, { type: 'log', src: 'h', ev: e, t: at });
   }
-  termLine('h', `<span class="${c} evn">${e.event}</span> ${body}`);
-}
-function hookApply(e) {
-  if (e.event !== 'before' && e.event !== 'denied') settleBefore();
-  switch (e.event) {
-    case 'before':
-      resetFlow(false);
-      cls('nAgent', 'ok'); msg('mAgent', '→ ' + e.tool);
-      cls('nBefore', 'active'); cls('cRecord', 'ok'); cls('cLimit', 'active'); cls('cPolicy', 'active');
-      if (e.tool !== 'quest_status') st.att++;
-      pendingBefore = true; break;
-    case 'denied': {
-      pendingBefore = false;
-      const lim = String(e.reason).startsWith('LIMIT');
-      cls('nBefore', 'bad'); cls(lim ? 'cLimit' : 'cPolicy', 'bad'); cls(lim ? 'cPolicy' : 'cLimit', lim ? 'skip' : 'ok');
-      msg('mBefore', '✕ ' + e.reason);
-      ['nExec', 'nAfter', 'nVal', 'nAppr', 'nSub'].forEach(n => cls(n, 'skip'));
-      msg('mExec', '실행되지 않았습니다');
-      $('verdict').textContent = 'Hook이 실행 전에 막았습니다. 도구는 실행되지 않았습니다.'; $('verdict').className = 'verdict no';
-      break; }
-    case 'file_written': cls('nExec', 'ok'); msg('mExec', '쓰기: ' + e.path); break;
-    case 'after':
-      cls('nExec', 'ok'); if (!$('mExec').textContent) msg('mExec', e.tool + ' 완료');
-      cls('nAfter', 'ok'); msg('mAfter', '기록 완료'); break;
-    case 'validation':
-      st.val++; st.last = e.ok ? '통과' : '실패 (' + (e.errors || []).join(',') + ')';
-      cls('nExec', 'ok'); cls('nVal', e.ok ? 'ok' : 'bad');
-      msg('mVal', e.ok ? '✓ 규칙이 요구한 검사를 모두 통과' : '✕ ' + (e.errors || []).join(', ') + ' 실패 · 기대 합계 ' + e.expected); break;
-    case 'approval_requested':
-      cls('nExec', 'active'); cls('nVal', 'ok'); cls('nAppr', 'wait'); msg('mAppr', '⏸ hash ' + String(e.artifactHash || '').slice(0, 12) + '… 확인 대기'); break;
-    case 'approval_rejected':
-      cls('nAppr', 'bad'); msg('mAppr', '✕ 거절됨'); cls('nSub', 'skip'); st.sub = '거절됨';
-      $('approve').classList.remove('on');
-      $('verdict').textContent = '사람이 거절해 제출하지 않았습니다.'; $('verdict').className = 'verdict hold'; break;
-    case 'submitted':
-      cls('nExec', 'ok'); cls('nVal', 'ok'); cls('nAppr', 'ok'); if (!$('mAppr').textContent.startsWith('✓')) msg('mAppr', applied.config.approval === 'allow' ? '묻지 않고 통과 (allow)' : '✓ 허용');
-      cls('nSub', 'ok'); msg('mSub', '✓ 영수증 생성'); st.sub = '완료';
-      $('approve').classList.remove('on');
-      $('verdict').textContent = st.last === '통과' && applied.config.checks.length < 4 ? '제출했습니다. 검증 규칙이 느슨하다면 틀린 결과도 통과할 수 있습니다.' : '검증과 승인 단계를 지나 제출했습니다.';
-      $('verdict').className = 'verdict good'; break;
-    case 'tool_error':
-      cls('nExec', 'bad'); msg('mExec', '✕ ' + e.reason); break;
-  }
-  paintState();
-}
-
-/* ---------- agent 이벤트 (OpenCode 쪽) ---------- */
-let pendingPermission = null;
-const seenText = new Map();
-function agentEvent(ev) {
-  switch (ev.type) {
-    case 'session.status':
-      if (ev.properties?.status?.type === 'busy') { cls('nAgent', 'active pulse'); msg('mAgent', '생각 중…'); }
-      break;
-    case 'session.idle':
-      $('nAgent').classList.remove('pulse', 'active');
-      if ($('mAgent').textContent === '생각 중…') msg('mAgent', '응답을 마쳤습니다');
-      termLine('a', '<span class="dim">세션 대기 (응답 끝)</span>'); setBusy(false); break;
-    case 'session.error': {
-      const err = ev.properties?.error; termLine('a', `<span class="badc">오류: ${esc(err?.data?.message || err?.name || JSON.stringify(err))}</span>`);
-      setBusy(false); break; }
-    case 'tool': {
+  if (kind === 'opencode') {
+    const ev = data;
+    if (ev.type === 'session.status') { if (ev.properties?.status?.type === 'busy') addStep(tp, { type: 'think', ev, t: at }); return; }
+    if (ev.type === 'session.idle') return addStep(tp, { type: 'idle', ev, t: at });
+    if (ev.type === 'session.error') return addStep(tp, { type: 'log', src: 'a', ev, t: at, bad: true });
+    if (ev.type === 'tool') {
       if (ev.status === 'running') {
-        $('nAgent').classList.remove('pulse');
-        if (!applied.config.record) { resetFlow(false); cls('nAgent', 'ok'); msg('mAgent', '→ ' + ev.tool); msg('mBefore', 'Record가 꺼져 있어 Hook 판단이 기록되지 않습니다'); }
-        termLine('a', `<span class="tool">→ ${ev.tool}</span> <span class="dim">${esc(JSON.stringify(ev.input || {}).slice(0, 80))}</span>`);
-      } else if (ev.status === 'completed') termLine('a', `<span class="okc">← ${ev.tool}</span> <span class="dim">${esc((ev.output || '').slice(0, 60))}</span>`);
-      else if (ev.status === 'error') termLine('a', `<span class="badc">← ${ev.tool} 오류</span> <span class="dim">${esc(String(ev.error || '').slice(0, 90))}</span>`);
-      break; }
-    case 'text':
-      seenText.set(ev.id, ev.text);
-      $('replyText').textContent = [...seenText.values()].join('\n\n'); $('reply').scrollTop = $('reply').scrollHeight; break;
-    case 'permission.asked': {
-      const p = ev.properties; pendingPermission = p.id;
-      cls('nAppr', 'wait'); msg('mAppr', '⏸ ' + p.permission + ' · hash ' + String(p.patterns?.[0] || '').slice(0, 12) + '…');
-      $('approve').classList.add('on');
-      termLine('a', `<span class="waitc">? 승인 요청 ${esc(p.permission)}</span> <span class="dim">${esc((p.metadata?.files || []).join(', '))}</span>`); break; }
-    case 'permission.replied':
-      pendingPermission = null; $('approve').classList.remove('on');
-      termLine('a', `<span class="${ev.properties.reply === 'reject' ? 'badc' : 'okc'}">승인 응답: ${ev.properties.reply}</span>`); break;
+        // OpenCode 이벤트와 Hook 기록은 서로 다른 길로 와서 순서가 뒤집힐 수 있습니다.
+        // Hook이 먼저 왔으면 그 Hook 앞에 호출 단계를 끼워 넣어 "호출 → Hook" 순서를 지킵니다.
+        for (let j = tp.steps.length - 1; j >= 0; j--) {
+          const s = tp.steps[j];
+          if (s.type === 'call') break;
+          if (s.type === 'hook-in' && s.ev.tool === ev.tool && !s.hasCall) {
+            s.hasCall = true; s.input = ev.input; if (s.policy) s.policy.input = ev.input;
+            tp.steps.splice(j, 0, { type: 'call', ev, t: s.t });
+            return j;
+          }
+        }
+        tp.pendingCall = { tool: ev.tool, input: ev.input };
+        return addStep(tp, { type: 'call', ev, t: at });
+      }
+      if (ev.status === 'completed' || ev.status === 'error') return addStep(tp, { type: 'log', src: 'a', ev, t: at });
+      return;
+    }
+    if (ev.type === 'text') return addStep(tp, { type: 'text', ev, t: at });
+    if (ev.type === 'permission.asked') return addStep(tp, { type: 'ask', ev, t: at });
+    if (ev.type === 'permission.replied') return addStep(tp, { type: 'log', src: 'a', ev, t: at });
+    return;
   }
+  if (kind === 'lab') return addStep(tp, { ...data, t: at });
 }
 
-/* ---------- 이벤트 큐: 빠르게 몰려와도 한 단계씩 보이게 ---------- */
-const queue = []; let draining = false;
-function enqueue(item) { queue.push(item); if (!draining) drain(); }
-function drain() {
-  const item = queue.shift();
-  if (!item) { draining = false; return; }
-  draining = true;
-  const visual = item.kind === 'hook' ? !['plugin_loaded'].includes(item.data.event) : ['tool', 'permission.asked'].includes(item.data.type);
-  if (item.kind === 'hook') { hookLine(item.data); hookApply(item.data); }
-  else agentEvent(item.data);
-  setTimeout(drain, visual ? +$('speed').value : 30);
+/* ---------- 접기(fold): 테이프 → 화면 상태 ---------- */
+function blankUnits() {
+  const u = {}; for (const k of ['uAgent', 'uBefore', 'uRecord', 'uLimit', 'uPolicy', 'uExec', 'uVal', 'uAppr', 'uAfter', 'uSub']) u[k] = '';
+  return u;
 }
+function fold(steps, upto) {
+  const S = { units: blankUnits(), msgs: {}, att: 0, val: 0, last: '-', sub: '아직', tool: '-', args: '-', verdict: null,
+    cfg: applied.config, permission: null, reply: [], record: true };
+  const reset = () => { S.units = blankUnits(); S.msgs = {}; S.verdict = null; };
+  for (let i = 0; i <= upto && i < steps.length; i++) {
+    const s = steps[i], e = s.ev || {};
+    switch (s.type) {
+      case 'session': S.att = 0; S.val = 0; S.last = '-'; S.sub = '아직'; reset(); S.permission = null; break;
+      case 'config': S.cfg = s.cfg; break;
+      case 'request': reset(); S.reply = []; S.units.uAgent = 'active'; S.msgs.mAgent = '요청 수신'; break;
+      case 'think': S.units.uAgent = 'active'; S.msgs.mAgent = '다음 행동을 생각하는 중…'; break;
+      case 'call': reset(); S.units.uAgent = 'ok'; S.msgs.mAgent = '→ ' + e.tool; S.tool = e.tool; S.args = JSON.stringify(e.input || {}); break;
+      case 'hook-in':
+        if (!steps[i - 1] || steps[i - 1].type !== 'call') { reset(); S.units.uAgent = 'ok'; S.msgs.mAgent = '→ ' + e.tool; S.tool = e.tool; }
+        S.units.uBefore = 'active'; S.msgs.mBefore = '판정 중…';
+        if (e.tool !== 'quest_status') S.att++;
+        break;
+      case 'chk-record': S.units.uRecord = 'ok'; break;
+      case 'chk-limit': S.units.uLimit = s.pending ? 'active' : s.result; break;
+      case 'chk-policy':
+        S.units.uPolicy = s.pending ? 'active' : s.result;
+        if (!s.pending && s.result === 'ok') { S.units.uBefore = 'ok'; S.msgs.mBefore = '통과 → 실행 허용'; }
+        break;
+      case 'deny':
+        S.units.uBefore = 'bad'; S.msgs.mBefore = '✕ ' + e.reason;
+        for (const k of ['uExec', 'uVal', 'uAppr', 'uAfter', 'uSub']) S.units[k] = 'skip';
+        S.msgs.mExec = '실행되지 않았습니다';
+        S.verdict = ['no', 'Hook이 실행 전에 막았습니다. 도구는 실행되지 않았습니다.'];
+        break;
+      case 'exec':
+        S.units.uExec = 'ok'; S.msgs.mExec = e.path ? '쓰기: ' + e.path : (e.tool || '') + ' 실행 완료'; break;
+      case 'validate':
+        S.units.uExec = 'ok'; S.msgs.mExec = 'quest_validate 실행'; S.val++;
+        S.last = e.ok ? '통과' : '실패: ' + (e.errors || []).join(',');
+        S.units.uVal = e.ok ? 'ok' : 'bad';
+        S.msgs.mVal = e.ok ? '✓ 규칙이 요구한 검사를 모두 통과 · hash ' + String(e.hash).slice(0, 8) : '✕ ' + (e.errors || []).join(', ') + ' 실패 · 기대 합계 ' + e.expected;
+        break;
+      case 'appr-req':
+        S.units.uExec = 'active'; S.msgs.mExec = 'quest_submit 실행 중 (승인 대기)';
+        S.units.uAppr = 'wait'; S.msgs.mAppr = 'canSubmit 통과 · hash ' + String(e.artifactHash || '').slice(0, 10) + '…'; break;
+      case 'ask': S.units.uAppr = 'wait'; S.msgs.mAppr = '⏸ 사람의 답을 기다립니다'; S.permission = e.properties?.id || 'pending'; break;
+      case 'appr-no':
+        S.units.uAppr = 'bad'; S.msgs.mAppr = '✕ 거절됨'; S.units.uSub = 'skip'; S.sub = '거절됨'; S.permission = null;
+        S.verdict = ['hold', '사람이 거절해 제출하지 않았습니다.']; break;
+      case 'submit':
+        S.units.uExec = 'ok'; S.units.uAppr = 'ok'; S.msgs.mAppr = S.cfg.approval === 'allow' ? '묻지 않고 통과 (allow)' : '✓ 허용';
+        S.units.uSub = 'ok'; S.msgs.mSub = '✓ 영수증 ' + String(e.artifactHash || '').slice(0, 10) + '….json'; S.sub = '완료'; S.permission = null;
+        S.verdict = ['good', S.cfg.checks.length < 4 ? '제출했습니다. 검증 규칙이 느슨하면 틀린 결과도 통과할 수 있습니다.' : '검증과 승인을 지나 제출했습니다.']; break;
+      case 'error': S.units.uExec = 'bad'; S.msgs.mExec = '✕ ' + e.reason; break;
+      case 'after': if (S.units.uExec !== 'bad') S.units.uExec = 'ok'; S.units.uAfter = 'ok'; S.msgs.mAfter = '결과 기록 완료'; break;
+      case 'text': S.reply.push([e.id, e.text]); break;
+      case 'idle': if (S.units.uAgent === 'active') { S.units.uAgent = ''; S.msgs.mAgent = '응답을 마쳤습니다'; } break;
+      case 'log': if (e.type === 'permission.replied') S.permission = null; break;
+    }
+  }
+  return S;
+}
+
+/* ---------- 단계 설명(인스펙터) ---------- */
+const FOCUS = { request: 'uAgent', think: 'uAgent', call: 'uAgent', 'hook-in': 'uBefore', 'chk-record': 'uRecord', 'chk-limit': 'uLimit',
+  'chk-policy': 'uPolicy', deny: 'uBefore', exec: 'uExec', validate: 'uVal', 'appr-req': 'uAppr', ask: 'uAppr', 'appr-no': 'uAppr',
+  submit: 'uSub', error: 'uExec', after: 'uAfter', idle: 'uAgent' };
+function describe(s, S) {
+  const e = s.ev || {};
+  const arg = s.input?.path ? ' (' + s.input.path + ')' : '';
+  switch (s.type) {
+    case 'request': return ['요청', '사용자가 요청을 보냈습니다', '“' + s.text + '”'];
+    case 'session': return ['세션', '새 세션을 시작합니다', '도구 시도 횟수와 검증 횟수를 0부터 다시 셉니다.'];
+    case 'config': return ['설정', '규칙을 적용했습니다', s.custom ? '직접 고친 rules.mjs가 적용되었습니다.' : '꾸미기에서 고른 설정으로 rules.mjs를 만들어 적용했습니다.'];
+    case 'think': return ['Agent', 'LLM이 다음 행동을 생각합니다', '대화와 지난 도구 결과를 보고 다음에 부를 도구를 고릅니다.'];
+    case 'call': return ['Agent', 'Agent가 ' + e.tool + '을 호출합니다', '입력: ' + JSON.stringify(e.input || {})];
+    case 'hook-in': return ['Hook', 'tool.execute.before가 호출을 가로챕니다', '도구가 실행되기 전에 Harness 규칙이 차례대로 판정합니다. 여기서 예외를 던지면 도구는 실행되지 않습니다.'];
+    case 'chk-record': return ['① Record', 'shouldRecord() → true', '이 판단을 .quest/events.jsonl에 기록합니다. 기록이 있어야 나중에 무슨 일이 있었는지 볼 수 있습니다.'];
+    case 'chk-limit': {
+      if (s.pending) return ['② Limit', '판정을 기다립니다', '다음 기록이 들어오면 결과가 정해집니다.'];
+      if (!S.cfg.limitOn) return ['② Limit', 'withinBudget() → true', 'Limit이 꺼져 있어 횟수와 상관없이 통과합니다.'];
+      if (e.tool === 'quest_status') return ['② Limit', '세지 않는 도구', 'quest_status는 시도 횟수에 넣지 않습니다.'];
+      return ['② Limit', 'withinBudget(' + S.att + ', ' + S.cfg.budget + ') → ' + (s.result === 'ok'), s.result === 'ok' ? '이번이 ' + S.att + '번째 시도이고 예산 ' + S.cfg.budget + '회 이하라서 통과합니다.' : S.att + '번째 시도라서 예산 ' + S.cfg.budget + '회를 넘었습니다. 여기서 막습니다.'];
+    }
+    case 'chk-policy':
+      if (s.pending) return ['③ Policy', '판정을 기다립니다', '다음 기록이 들어오면 결과가 정해집니다.'];
+      if (s.result === 'skip') return ['③ Policy', '판정하지 않음', 'Limit에서 이미 막혀 Policy까지 오지 않았습니다.'];
+      return ['③ Policy', 'allowTool · allowPath → ' + (s.result === 'ok'), s.result === 'ok' ? e.tool + arg + '은 허용 목록과 경로 규칙을 통과합니다.' : e.tool + arg + '은 허용 목록이나 경로 규칙에 맞지 않습니다. 여기서 막습니다.'];
+    case 'deny': return ['차단', 'Hook이 실행을 막았습니다: ' + e.reason, 'before Hook이 예외를 던졌습니다. 도구는 실행되지 않고, Agent는 이 오류를 결과로 받습니다.'];
+    case 'exec': return ['실행', e.path ? e.path + ' 파일을 썼습니다' : (e.tool || '도구') + '가 실행되었습니다', e.path ? '쓰기가 실제로 일어났습니다. 검증 상태는 초기화됩니다.' : 'Hook을 통과한 도구가 실제로 동작했습니다.'];
+    case 'validate': return ['Validation', e.ok ? '검증 통과' : '검증 실패: ' + (e.errors || []).join(', '),
+      '검사 결과 ' + Object.entries(e.checks || {}).map(([k, v]) => k + '=' + v).join(' · ') + '. acceptValidation()이 ' + (e.ok ? '통과로 봅니다.' : '실패로 봅니다. 남은 검증 ' + e.remaining + '회.')];
+    case 'appr-req': return ['Approval', 'canSubmit()을 통과했습니다', '검증한 파일과 지금 파일이 같은지 확인하고 OpenCode 승인 단계로 넘어갑니다.'];
+    case 'ask': return ['Approval', 'OpenCode가 사람에게 묻습니다', S.permission ? '실행이 멈춰 있습니다. 머신의 [한 번 허용] 또는 [거절]을 누르세요.' : '사람이 답을 보냈습니다.'];
+    case 'appr-no': return ['Approval', '거절되었습니다', '사람이 거절했으므로 영수증을 만들지 않습니다. 도구는 오류로 끝납니다.'];
+    case 'submit': return ['제출', '영수증을 만들었습니다', '검증 해시와 같은 파일만 한 번 제출됩니다.'];
+    case 'error': return ['오류', '도구가 오류로 끝났습니다', String(e.reason)];
+    case 'after': return ['Hook', 'tool.execute.after가 결과를 기록합니다', '실행 결과(출력 앞부분)를 기록에 남깁니다.'];
+    case 'idle': return ['Agent', 'Agent가 응답을 마쳤습니다', '세션이 다음 요청을 기다립니다.'];
+    case 'text': return ['Agent', 'Agent가 답변을 썼습니다', e.text];
+    default: return ['기록', s.ev?.event || s.ev?.type || s.type, ''];
+  }
+}
+const TONE = { deny: 'bad', 'appr-no': 'bad', error: 'bad', submit: 'ok', ask: 'wait', 'appr-req': 'wait' };
+function tone(s) {
+  if (TONE[s.type]) return TONE[s.type];
+  if (s.type === 'validate') return s.ev.ok ? 'ok' : 'bad';
+  if (s.type === 'chk-limit' || s.type === 'chk-policy') return s.pending ? '' : s.result === 'bad' ? 'bad' : s.result === 'ok' ? 'ok' : '';
+  if (s.type === 'chk-record') return 'ok';
+  return '';
+}
+
+/* ---------- 로그 줄 ---------- */
+function logHtml(s) {
+  const e = s.ev || {};
+  const h = (c, t) => `<span class="${c}">${t}</span>`;
+  switch (s.type) {
+    case 'request': return ['s', h('tool', '» ' + esc(s.text))];
+    case 'session': return ['s', h('dim', '── 새 세션 ──')];
+    case 'config': return ['s', h('dim', '── 규칙 적용 ──')];
+    case 'think': return ['a', h('dim', '생각 중…')];
+    case 'call': return ['a', h('tool', '→ ' + e.tool) + ' ' + h('dim', esc(JSON.stringify(e.input || {}).slice(0, 70)))];
+    case 'hook-in': return ['h', h('tool', 'before ' + e.tool)];
+    case 'chk-record': return ['h', '  ① record ' + h('okc', '✓')];
+    case 'chk-limit': return ['h', '  ② limit  ' + (s.pending ? h('dim', '…') : s.result === 'ok' ? h('okc', '✓') : h('badc', '✕'))];
+    case 'chk-policy': return ['h', '  ③ policy ' + (s.pending ? h('dim', '…') : s.result === 'ok' ? h('okc', '✓') : s.result === 'skip' ? h('dim', '-') : h('badc', '✕'))];
+    case 'deny': return ['h', h('badc', 'denied ' + esc(e.reason))];
+    case 'exec': return ['h', e.path ? h('okc', 'file_written ' + esc(e.path)) : h('dim', 'exec ' + (e.tool || ''))];
+    case 'validate': return ['h', e.ok ? h('okc', 'validation ✓') : h('badc', 'validation ✕ ' + (e.errors || []).join(','))];
+    case 'appr-req': return ['h', h('waitc', 'approval_requested')];
+    case 'ask': return ['a', h('waitc', '? 승인 요청 ' + esc(e.properties?.permission))];
+    case 'appr-no': return ['h', h('badc', 'approval_rejected')];
+    case 'submit': return ['h', h('okc', 'submitted')];
+    case 'error': return ['h', h('badc', 'tool_error ' + esc(e.reason))];
+    case 'after': return ['h', h('dim', 'after ' + e.tool)];
+    case 'idle': return ['a', h('dim', '응답 끝')];
+    case 'text': return ['a', h('dim', '답변: ' + esc(String(e.text).slice(0, 60)))];
+    case 'log':
+      if (e.type === 'tool') return ['a', e.status === 'error' ? h('badc', '← ' + e.tool + ' 오류 ' + esc(String(e.error || '').slice(0, 60))) : h('okc', '← ' + e.tool) + ' ' + h('dim', esc((e.output || '').slice(0, 50)))];
+      if (e.type === 'permission.replied') return ['a', h(e.properties.reply === 'reject' ? 'badc' : 'okc', '승인 응답: ' + e.properties.reply)];
+      if (e.event === 'plugin_loaded') return ['h', h('dim', 'plugin_loaded level ' + e.level)];
+      if (e.note) return ['s', h('dim', esc(e.note))];
+      return [s.src || 'a', h(s.bad ? 'badc' : 'dim', esc(JSON.stringify(e).slice(0, 90)))];
+  }
+  return ['s', ''];
+}
+
+/* =====================================================================
+   플레이어
+   ===================================================================== */
+const player = { cur: -1, playing: true, gap: 0.8, timer: null, follow: true };
+const isVisual = s => VISUAL.has(s.type);
+
+function render(animate) {
+  const steps = tape.steps, i = player.cur;
+  const S = fold(steps, i);
+  // 유닛
+  for (const [id, c] of Object.entries(S.units)) {
+    const el = $(id); el.classList.remove('active', 'ok', 'bad', 'wait', 'skip', 'focus');
+    if (c) el.classList.add(c);
+  }
+  $('uRecord').classList.toggle('off', !S.cfg.record);
+  $('uLimit').classList.toggle('off', !S.cfg.limitOn);
+  for (const m of ['mAgent', 'mBefore', 'mExec', 'mVal', 'mAppr', 'mAfter', 'mSub']) $(m).textContent = S.msgs[m] || '';
+  $('verdict').textContent = S.verdict ? S.verdict[1] : ''; $('verdict').className = 'verdict ' + (S.verdict ? S.verdict[0] : '');
+  $('approve').classList.toggle('on', Boolean(S.permission));
+  pendingPermission = S.permission;
+  $('replyText').textContent = S.reply.length ? S.reply.map(r => r[1]).join('\n\n') : (i < 0 ? '아직 요청을 보내지 않았습니다.' : '…');
+  // 레지스터
+  const prev = renderCache.regs || {};
+  const regs = { rTool: S.tool, rArg: S.args, rAtt: S.att + ' / ' + (S.cfg.limitOn ? S.cfg.budget : '∞'), rVal: S.val + ' / 3', rLast: S.last, rSub: S.sub };
+  for (const [id, v] of Object.entries(regs)) {
+    const el = $(id); el.querySelector('b').textContent = v;
+    el.classList.toggle('flash', animate && prev[id] !== undefined && prev[id] !== v);
+  }
+  $('rAtt').classList.toggle('bad', S.cfg.limitOn && S.att > S.cfg.budget);
+  $('rAtt').classList.toggle('warn', S.cfg.limitOn && S.att <= S.cfg.budget && S.att >= S.cfg.budget - 1);
+  $('rLast').classList.toggle('good', S.last === '통과'); $('rLast').classList.toggle('bad', S.last.startsWith('실패'));
+  $('rSub').classList.toggle('good', S.sub === '완료'); $('rSub').classList.toggle('bad', S.sub === '거절됨');
+  renderCache.regs = regs;
+  // 현재 단계 · 포커스 · 패킷 (로그 전용 단계 위에 있으면 직전 시각 단계를 보여 줍니다)
+  let vi = i; while (vi >= 0 && !isVisual(steps[vi])) vi--;
+  const s = steps[vi];
+  const ins = $('insp');
+  if (s) {
+    const [k, hd, p] = describe(s, S);
+    $('iK').textContent = 'STEP ' + (vi + 1) + ' / ' + steps.length + ' · ' + k;
+    $('iH').textContent = hd; $('iP').textContent = p;
+    $('iRaw').textContent = s.ev ? JSON.stringify(s.ev, null, 1).slice(0, 600) : '';
+    ins.className = 'insp ' + tone(s);
+    const f = FOCUS[s.type];
+    if (f) { $(f).classList.add('focus'); if (f.startsWith('uRecord') || f === 'uLimit' || f === 'uPolicy') $('uBefore').classList.add('focus'); }
+    movePacket(f, tone(s), S.tool, animate);
+  } else {
+    $('iK').textContent = 'STEP 0 / ' + steps.length; $('iH').textContent = steps.length ? '처음 위치입니다' : '테이프가 비어 있습니다';
+    $('iP').textContent = '요청을 보내면 OpenCode와 Hook이 만드는 사건이 이 테이프에 쌓이고, 아래 컨트롤로 한 단계씩 돌려 볼 수 있습니다.';
+    $('iRaw').textContent = ''; ins.className = 'insp'; movePacket(null);
+  }
+  renderLog(animate);
+  renderTimeline();
+}
+const renderCache = {};
+function movePacket(unitId, t, tool, animate) {
+  const pk = $('packet');
+  if (!unitId) { pk.classList.remove('on'); return; }
+  const machine = $('machine').getBoundingClientRect();
+  let el = $(unitId); if (['uRecord', 'uLimit', 'uPolicy'].includes(unitId)) el = $(unitId);
+  const r = el.getBoundingClientRect();
+  pk.classList.toggle('noanim', !animate);
+  pk.style.top = (r.top - machine.top + r.height / 2 - 11.5) + 'px';
+  pk.className = 'packet on ' + (t || '') + (animate ? '' : ' noanim');
+  $('packetLabel').textContent = tool && tool !== '-' ? tool : '';
+}
+function renderLog(animate) {
+  const term = $('term'), steps = tape.steps;
+  if (renderCache.logTape !== tape || renderCache.logLen > steps.length) { term.innerHTML = ''; renderCache.logLen = 0; renderCache.logTape = tape; }
+  for (let i = renderCache.logLen; i < steps.length; i++) {
+    const [src, html] = logHtml(steps[i]);
+    const d = document.createElement('div'); d.className = 'l'; d.dataset.src = src; d.dataset.i = i;
+    d.innerHTML = `<span class="n">${i + 1}</span><span class="src ${src}">${{ h: 'hook', a: 'agent', s: 'lab' }[src]}</span> ${html}`;
+    term.appendChild(d);
+  }
+  renderCache.logLen = steps.length;
+  const showFuture = $('fFuture').checked;
+  for (const d of term.children) {
+    const i = +d.dataset.i, src = d.dataset.src;
+    const hidden = (src === 'h' && !$('fHook').checked) || (src === 'a' && !$('fAgent').checked) || (i > player.cur && !showFuture);
+    d.style.display = hidden ? 'none' : '';
+    d.classList.toggle('cur', i === player.cur);
+    d.classList.toggle('future', i > player.cur);
+    // 플레이헤드 이후 단계의 판정 결과는 나중에 정해질 수 있으므로 다시 그립니다.
+    if (steps[i] && steps[i].type.startsWith('chk-')) { const [, html] = logHtml(steps[i]); d.lastChild && (d.innerHTML = `<span class="n">${i + 1}</span><span class="src ${src}">hook</span> ${html}`); }
+  }
+  const cur = term.querySelector('.l.cur');
+  if (cur) { const top = cur.offsetTop - term.offsetTop; if (top < term.scrollTop || top > term.scrollTop + term.clientHeight - 30) term.scrollTop = top - term.clientHeight / 2; }
+}
+$('term').onclick = e => { const l = e.target.closest('.l'); if (l) { pause(); seek(+l.dataset.i); } };
+['fHook', 'fAgent', 'fFuture'].forEach(id => $(id).onchange = () => render(false));
+
+function renderTimeline() {
+  const steps = tape.steps, n = steps.length, track = $('track');
+  if (renderCache.tlTape !== tape || renderCache.tlLen !== n) {
+    track.querySelectorAll('.tick').forEach(t => t.remove());
+    steps.forEach((s, i) => {
+      if (!isVisual(s)) return;
+      const t = document.createElement('div');
+      const tn = tone(s);
+      t.className = 'tick ' + (['request', 'session', 'config'].includes(s.type) ? 'm' : tn === 'bad' ? 'x' : tn === 'ok' && ['validate', 'submit'].includes(s.type) ? 'o' : tn === 'wait' ? 'w' : s.type === 'call' ? 'c' : '');
+      t.style.left = (n <= 1 ? 50 : (i / (n - 1)) * 100) + '%';
+      track.appendChild(t);
+    });
+    renderCache.tlTape = tape; renderCache.tlLen = n;
+  }
+  const pos = n <= 1 ? (player.cur >= 0 ? 100 : 0) : Math.max(0, player.cur) / (n - 1) * 100;
+  $('tlHead').style.left = pos + '%';
+  $('tlBuf').style.left = pos + '%'; $('tlBuf').style.width = (100 - pos) + '%';
+  $('tlStep').textContent = player.cur + 1; $('tlTotal').textContent = n;
+  const behind = visualAhead();
+  $('tlBehind').textContent = behind ? '실제 실행보다 ' + behind + '단계 뒤에서 보는 중' : (n ? '실시간 위치' : '');
+  $('tLive').classList.toggle('on', behind === 0 && tape === labTape && n > 0);
+}
+function visualAhead() { let c = 0; for (let i = player.cur + 1; i < tape.steps.length; i++) if (isVisual(tape.steps[i])) c++; return c; }
+$('track').onclick = e => {
+  const r = $('track').getBoundingClientRect(), n = tape.steps.length; if (!n) return;
+  pause(); seek(Math.round((e.clientX - r.left) / r.width * (n - 1)));
+};
+
+// 다음 시각 단계까지의 대기 시간: 실제 간격과 다이얼 간격 중 긴 쪽
+function canAdvance() {
+  const nx = tape.steps[player.cur + 1];
+  return nx && !nx.pending;
+}
+function stepForward(animate = true) {
+  if (!canAdvance()) return false;
+  player.cur++;
+  // 화면에 보이지 않는 단계(로그 전용)는 한꺼번에 넘깁니다.
+  while (!isVisual(tape.steps[player.cur]) && canAdvance()) player.cur++;
+  render(animate);
+  return true;
+}
+function stepBack() {
+  if (player.cur < 0) return;
+  player.cur--;
+  while (player.cur >= 0 && !isVisual(tape.steps[player.cur])) player.cur--;
+  render(true);
+}
+function seek(i) { player.cur = Math.max(-1, Math.min(tape.steps.length - 1, i)); render(false); }
+function schedule() {
+  clearTimeout(player.timer);
+  if (!player.playing) return;
+  if (!canAdvance()) { player.timer = setTimeout(schedule, 120); return; }   // 다음 사건을 기다림
+  const cur = tape.steps[player.cur], nx = tape.steps[player.cur + 1];
+  const realGap = cur ? Math.max(0, nx.t - cur.t) : 0;
+  const wait = player.cur < 0 ? 150 : Math.max(player.gap * 1000, Math.min(realGap, 6000));
+  player.timer = setTimeout(() => { stepForward(true); schedule(); }, wait);
+}
+function play() { player.playing = true; $('tPlay').textContent = '⏸'; dialMode(); schedule(); }
+function pause() { player.playing = false; $('tPlay').textContent = '▶'; clearTimeout(player.timer); dialMode(); }
+$('tPlay').onclick = () => player.playing ? pause() : play();
+$('tNext').onclick = () => { pause(); stepForward(); };
+$('tPrev').onclick = () => { pause(); stepBack(); };
+$('tFirst').onclick = () => { pause(); seek(-1); };
+$('tLive').onclick = () => { seek(tape.steps.length - 1); play(); };
+document.addEventListener('keydown', e => {
+  if (['TEXTAREA', 'INPUT', 'SELECT'].includes(document.activeElement.tagName)) return;
+  if (e.code === 'Space') { e.preventDefault(); $('tPlay').click(); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); $('tNext').click(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); $('tPrev').click(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); setGap(player.gap + 0.2); }
+  else if (e.key === 'ArrowDown') { e.preventDefault(); setGap(player.gap - 0.2); }
+  else if (e.key === 'Home') $('tFirst').click();
+  else if (e.key === 'End') $('tLive').click();
+});
+
+/* ---------- 타임 조그다이얼 ----------
+   재생 중: 돌리면 단계 사이 간격(0~5초)을 바꿉니다.
+   멈춤: 돌리면 한 칸(24°)마다 한 단계씩 앞뒤로 움직입니다(조그).          */
+let dialAngle = 0, jogAcc = 0;
+function setGap(v) { player.gap = Math.round(Math.max(0, Math.min(5, v)) * 10) / 10; $('dGap').textContent = player.gap.toFixed(1); }
+function dialMode() {
+  $('dMode').textContent = player.playing ? '간격 다이얼 (재생 중)' : '조그 다이얼 (멈춤)';
+  $('dHint').textContent = player.playing ? '실제 간격보다 짧으면 이 값만큼 기다립니다' : '한 칸 돌릴 때마다 한 단계씩 움직입니다';
+}
+function turn(delta) {
+  dialAngle += delta; $('notch').style.transform = `rotate(${dialAngle}deg)`;
+  if (player.playing) setGap(player.gap + delta / 120);
+  else {
+    jogAcc += delta;
+    while (jogAcc >= 24) { jogAcc -= 24; stepForward(true); }
+    while (jogAcc <= -24) { jogAcc += 24; stepBack(); }
+  }
+}
+(() => {
+  const dial = $('dial'); let last = null;
+  const ang = e => { const r = dial.getBoundingClientRect(); return Math.atan2(e.clientY - r.top - r.height / 2, e.clientX - r.left - r.width / 2) * 180 / Math.PI; };
+  dial.addEventListener('pointerdown', e => { dial.setPointerCapture(e.pointerId); last = ang(e); });
+  dial.addEventListener('pointermove', e => { if (last === null) return; const a = ang(e); let d = a - last; if (d > 180) d -= 360; if (d < -180) d += 360; last = a; turn(d); });
+  dial.addEventListener('pointerup', () => { last = null; });
+  dial.addEventListener('wheel', e => { e.preventDefault(); turn(e.deltaY > 0 ? -12 : 12); }, { passive: false });
+})();
+
+/* ---------- 사건을 테이프에 넣는 입구 ---------- */
+let pendingPermission = null;
+let heldAsk = null;
+function push(kind, data) {
+  // 재생 중에도 실험 테이프에는 계속 쌓입니다.
+  // 라이브에서는 OpenCode 승인 요청이 Hook 기록(파일)보다 먼저 도착할 수 있어,
+  // approval_requested 기록이 올 때까지(최대 1초) 승인 요청을 잠시 붙잡아 순서를 맞춥니다.
+  if (kind === 'opencode' && data.type === 'permission.asked' && !data._flushed && applied.config.record && !heldAsk) {
+    heldAsk = { data, timer: setTimeout(flushAsk, 1000) }; return;
+  }
+  const spliced = ingest(labTape, kind, data);
+  if (typeof spliced === 'number') {
+    renderCache.logTape = null; renderCache.tlTape = null;
+    if (tape === labTape) { if (spliced <= player.cur) player.cur++; } else if (spliced <= labCursor) labCursor++;
+  }
+  if (kind === 'hook' && data.event === 'approval_requested' && heldAsk) flushAsk();
+  if (tape === labTape) { if (player.cur < 0) render(false); else { renderLog(false); renderTimeline(); } }
+}
+function flushAsk() { if (!heldAsk) return; const h = heldAsk; heldAsk = null; clearTimeout(h.timer); push('opencode', { ...h.data, _flushed: true }); }
+const sys = text => { addStep(labTape, { type: 'log', src: 's', ev: { note: text } }); if (tape === labTape) { renderLog(false); renderTimeline(); } };
 
 /* ---------- 꾸미기 폼 ---------- */
 function renderForm() {
@@ -471,8 +825,7 @@ export function canSubmit(facts) {
 }
 function markDirty() { $('dirty').textContent = '바뀐 설정이 아직 적용되지 않았습니다'; }
 $('tab-cfg').addEventListener('change', e => {
-  if (e.target.id === 'applyReset') return;
-  if (e.target.id === 'code') return;
+  if (e.target.id === 'applyReset' || e.target.id === 'code') return;
   readForm(); customCode = null; $('code').value = rulesSource(config); markDirty();
 });
 $('code').addEventListener('input', () => { customCode = $('code').value; markDirty(); });
@@ -480,9 +833,9 @@ document.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
   config = structuredClone(PRESETS[b.dataset.preset]); customCode = null; renderForm(); markDirty();
 });
 
-/* ---------- 브라우저 모의 실행기 (미리보기) ---------- */
-// 실제 플러그인(quest/lib/runtime.mjs)과 같은 순서로 판단하고 같은 이벤트를 만듭니다.
-// Agent는 진짜 LLM이 아니라 요청 문장의 낱말로 고르는 고정 시나리오입니다.
+/* ---------- 브라우저 모의 실행기 (미리보기) ----------
+   실제 플러그인(quest/lib/runtime.mjs)과 같은 순서로 판단하고 같은 이벤트를 만듭니다.
+   Agent는 진짜 LLM이 아니라 요청 문장의 낱말로 고르는 고정 시나리오입니다.            */
 const sim = (() => {
   const ORDERS = '{"currency":"KRW","items":[{"id":"A","amount":10000},{"id":"B","amount":5000},{"id":"discount","amount":-2000}]}';
   const PROTECTED = '{"setting":"do-not-change"}';
@@ -490,21 +843,18 @@ const sim = (() => {
   function resetFiles() { files = { 'lab/input/orders.json': ORDERS, 'lab/protected/settings.json': PROTECTED }; newSession(); }
   function newSession() { state = { attempted: 0, validationAttempts: 0, validation: null, consumed: false }; }
   function compile(source) {
-    const body = source.replace(/export\s+function/g, 'function') +
-      '\nreturn {shouldRecord,allowPath,allowTool,withinBudget,acceptValidation,canSubmit};';
-    return new Function(body)();
+    return new Function(source.replace(/export\s+function/g, 'function') + '\nreturn {shouldRecord,allowPath,allowTool,withinBudget,acceptValidation,canSubmit};')();
   }
   function load() { rules = compile(applied.custom || rulesSource(applied.config)); }
-  const emit = (e, mandatory) => { if (mandatory || rules.shouldRecord()) enqueue({ kind: 'hook', data: { time: new Date().toISOString(), ...e } }); };
-  const agent = data => enqueue({ kind: 'opencode', data });
+  const emit = (e, mandatory) => { if (mandatory || rules.shouldRecord()) push('hook', { time: new Date().toISOString(), ...e }); };
+  const agent = data => push('opencode', data);
   const hashOf = s => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return ('00000000' + (h >>> 0).toString(16)).slice(-8).repeat(8); };
   function inspect() {
     let summary = null; try { summary = JSON.parse(files['lab/output/summary.json']); } catch {}
     const report = files['lab/output/report.md'] || '';
     const checks = {
       schemaOK: !!summary && summary.currency === 'KRW' && Number.isInteger(summary.itemCount) && Number.isInteger(summary.total),
-      sumOK: !!summary && summary.total === 13000,
-      reportOK: /13,?000/.test(report),
+      sumOK: !!summary && summary.total === 13000, reportOK: /13,?000/.test(report),
       originalsOK: files['lab/input/orders.json'] === ORDERS && files['lab/protected/settings.json'] === PROTECTED };
     return { checks, hash: hashOf((files['lab/output/summary.json'] || '') + '|' + report), expected: 13000,
       errors: Object.entries(checks).filter(([, v]) => !v).map(([k]) => k) };
@@ -512,9 +862,11 @@ const sim = (() => {
   const wait = ms => new Promise(r => setTimeout(r, ms));
   async function callTool(tool, input) {
     if (aborted) throw new Error('ABORT');
+    agent({ type: 'session.status', properties: { status: { type: 'busy' } } });
+    await wait(300 + Math.random() * 400);   // LLM이 생각하는 시간 흉내
     const callId = 'sim-' + Math.random().toString(36).slice(2, 7);
     agent({ type: 'tool', tool, status: 'running', input });
-    await wait(150);
+    await wait(20);
     emit({ event: 'before', callId, tool });
     try {
       if (tool !== 'quest_status') {
@@ -565,8 +917,7 @@ const sim = (() => {
         consumed: state.consumed, attemptsAllowed: state.validationAttempts <= 3 };
       if (!rules.canSubmit(facts)) throw new Error('SUBMIT: invalid or stale validation');
       emit({ event: 'approval_requested', artifactHash: before.hash });
-      const mode = applied.config.approval;
-      let reply = mode === 'allow' ? 'once' : mode === 'deny' ? 'reject' : null;
+      let reply = applied.config.approval === 'allow' ? 'once' : applied.config.approval === 'deny' ? 'reject' : null;
       if (!reply) {
         agent({ type: 'permission.asked', properties: { id: 'sim-perm', permission: 'quest_publish', patterns: [before.hash], metadata: { files: ['lab/output/summary.json', 'lab/output/report.md'] } } });
         reply = await new Promise(r => { approvalResolve = r; });
@@ -596,7 +947,6 @@ const sim = (() => {
       return say(`orders.json을 ${n}번 읽었습니다.`);
     }
     if (/status|상태/.test(t)) { const r = await callTool('quest_status', {}); return say('현재 상태: ' + JSON.stringify(r)); }
-    // 기본: 합계 계산 → 쓰기 → 검증 → (실패 시 수정) → 제출
     let r = await callTool('quest_read', { path: 'lab/input/orders.json' }); if (r.error) return say('입력 파일을 읽지 못했습니다: ' + r.error);
     r = await callTool('quest_write', { path: 'lab/output/summary.json', content: '{"currency":"KRW","itemCount":3,"total":15000}' }); if (r.error) return say('summary.json을 쓰지 못했습니다: ' + r.error);
     r = await callTool('quest_write', { path: 'lab/output/report.md', content: '# Report\nTotal: 13000 KRW' }); if (r.error) return say('report.md를 쓰지 못했습니다: ' + r.error);
@@ -614,8 +964,6 @@ const sim = (() => {
   async function run(text) {
     if (running) return;
     running = true; aborted = false; load();
-    agent({ type: 'session.status', properties: { status: { type: 'busy' } } });
-    await wait(500);
     try { await script(text); } catch (e) { if (e.message !== 'ABORT') say('오류: ' + e.message); }
     agent({ type: 'session.idle', properties: {} });
     running = false;
@@ -636,26 +984,28 @@ async function connectLive() {
   let info;
   try { info = await api('/api/info'); } catch { return false; }
   mode = 'live';
+  // 페이지를 새로 열면 새 세션에서 시작합니다(예산·검증 횟수 0부터).
+  try { await api('/api/session/new', {}); } catch {}
   config = { ...PRESETS.full, ...info.config }; delete config.custom;
   customCode = info.config.custom ? info.rules : null;
   applied = { config: structuredClone(config), custom: customCode };
   renderForm(); if (customCode) $('code').value = customCode;
   $('modelWrap').style.display = '';
-  $('modeNote').innerHTML = `실습 폴더 <code>${esc(info.workspace)}</code>에서 실제 OpenCode가 실행합니다.` + (info.demo ? ' 지금은 <b>데모 응답기</b>(고정 시나리오)로 연결되어 있습니다.' : '');
+  $('modeNote').innerHTML = `실습 폴더 <code>${esc(info.workspace)}</code>에서 <b>실제 OpenCode</b>가 실행합니다. 실행이 아무리 빨라도 사건은 테이프에 쌓이므로, 다이얼로 간격을 늘려 천천히 볼 수 있습니다.` + (info.demo ? ' 지금은 데모 응답기(고정 시나리오)로 연결되어 있습니다.' : '');
   $('applyNote').textContent = '적용하면 rules.mjs·예산·승인 설정을 실습 폴더에 쓰고 OpenCode를 다시 시작합니다(새 세션).';
   const es = new EventSource('/api/stream');
   es.onmessage = m => {
     const { kind, data } = JSON.parse(m.data);
-    if (kind === 'hook' || kind === 'opencode') enqueue({ kind, data });
+    if (kind === 'hook' || kind === 'opencode') push(kind, data);
     else if (kind === 'status') onStatus(data);
     else if (kind === 'oclog') { if (/error|fail/i.test(data)) sys('opencode: ' + data); }
-    else if (kind === 'session') sys('새 세션 ' + data.id);
+    else if (kind === 'session') push('lab', { type: 'session' });
   };
   es.onerror = () => setBadge('err', '서버 연결 끊김 · 재시도 중');
   return true;
 }
 async function onStatus(s) {
-  const map = { ready: ['live', '라이브 · OpenCode 연결됨'], starting: ['sim', 'OpenCode 시작 중…'], stopped: ['err', 'OpenCode 멈춤'], error: ['err', 'OpenCode 오류'] };
+  const map = { ready: ['live', '라이브 · 실제 OpenCode 연결됨'], starting: ['sim', 'OpenCode 시작 중…'], stopped: ['err', 'OpenCode 멈춤'], error: ['err', 'OpenCode 오류'] };
   const [k, t] = map[s.state] || ['sim', s.state];
   setBadge(k, t);
   if (s.detail) sys(s.detail);
@@ -669,28 +1019,26 @@ async function onStatus(s) {
 }
 
 /* ---------- 버튼 ---------- */
-function setBusy(b) { $('send').disabled = b || (mode === 'live' && $('badge').classList.contains('err')); }
 $('presetReq').innerHTML = REQUESTS.map(([l], i) => `<button data-i="${i}">${l}</button>`).join('');
 $('presetReq').onclick = e => { const i = e.target.dataset.i; if (i != null) $('prompt').value = REQUESTS[i][1]; };
 $('send').onclick = async () => {
   const text = $('prompt').value.trim(); if (!text) return;
-  if (mode === 'replay') leaveReplay();
-  resetFlow(false); seenText.clear(); $('replyText').textContent = '…';
-  termLine('s', `<span class="tool">» ${esc(text)}</span>`);
-  setBusy(true);
+  if (tape !== labTape) backToLab();
+  push('lab', { type: 'request', text });
+  if (!player.playing) play();
   if (mode === 'live') {
     try { await api('/api/prompt', { text, model: $('model').value }); }
-    catch (e) { sys('요청 실패: ' + e.message); setBusy(false); }
+    catch (e) { sys('요청 실패: ' + e.message); }
   } else sim.run(text);
 };
 $('newSession').onclick = async () => {
   if (mode === 'live') await api('/api/session/new', {}); else sim.newSession();
-  resetFlow(); sys('새 세션을 시작합니다. 예산과 검증 횟수를 처음부터 셉니다.');
+  push('lab', { type: 'session' });
 };
-$('abort').onclick = async () => { if (mode === 'live') { try { await api('/api/abort', {}); } catch {} } else sim.abort(); setBusy(false); sys('중단했습니다.'); };
+$('abort').onclick = async () => { if (mode === 'live') { try { await api('/api/abort', {}); } catch {} } else sim.abort(); sys('중단했습니다.'); };
 $('resetFiles').onclick = async () => {
   if (mode === 'live') await api('/api/reset', {}); else sim.resetFiles();
-  resetFlow(); sys('작업 파일(lab/output·submissions)을 비우고 새 세션을 시작했습니다.');
+  push('lab', { type: 'session' }); sys('작업 파일(lab/output·submissions)을 비웠습니다.');
 };
 $('apOnce').onclick = () => answer('once');
 $('apReject').onclick = () => answer('reject');
@@ -703,68 +1051,59 @@ $('apply').onclick = async () => {
   readForm();
   if (customCode) { try { sim.compile(customCode); } catch (e) { $('applyNote').textContent = '코드 오류: ' + e.message; return; } }
   applied = { config: structuredClone(config), custom: customCode };
-  $('dirty').textContent = ''; paintChipsOff();
+  $('dirty').textContent = '';
   if (mode === 'live') {
-    try { await api('/api/config', { config, source: customCode, resetOutputs: $('applyReset').checked }); sys('규칙을 적용했습니다. OpenCode를 다시 시작합니다.'); models = models; }
+    try { await api('/api/config', { config, source: customCode, resetOutputs: $('applyReset').checked }); }
     catch (e) { $('applyNote').textContent = '적용 실패: ' + e.message; return; }
-  } else {
-    sim.load(); if ($('applyReset').checked) sim.resetFiles(); else sim.newSession();
-    sys('규칙을 적용했습니다. 새 세션에서 반영됩니다.');
-  }
-  resetFlow();
+  } else { sim.load(); if ($('applyReset').checked) sim.resetFiles(); else sim.newSession(); }
+  push('lab', { type: 'config', cfg: structuredClone(config), custom: Boolean(customCode) });
+  push('lab', { type: 'session' });
 };
 
-/* ---------- 기록 재생 ---------- */
+/* ---------- 기록 재생: 다른 테이프를 올립니다 ---------- */
 const DATA = JSON.parse($('evidence').textContent);
 const ORDER = ['kxjDUQ', 'Qk6lI6', 'q8iVMA', 'O8AJhc', 'Fl7nNF'];
 const DESC = { kxjDUQ: '합계 오류를 검증이 잡고, 수정 후 제출 단계에서 사람이 거절합니다', Qk6lI6: '같은 흐름에서 사람이 한 번 허용해 제출까지 갑니다',
   q8iVMA: '허용 목록에 없는 quest_probe를 Policy가 막습니다', O8AJhc: '보호된 파일에 쓰려는 시도를 Policy가 막습니다', Fl7nNF: '같은 도구를 반복하다 9번째 시도에서 Limit에 걸립니다' };
-let sessions = {}, names = DATA.names, cur = null, idx = 0, rTimer = null, savedApplied = null;
+let sessions = {}, names = DATA.names, labCursor = -1, labApplied = null;
 function loadReplay(events) { sessions = {}; for (const e of events) { const k = (e.sessionId || '').slice(-6); if (k) (sessions[k] ||= []).push(e); } }
-loadReplay(DATA.events);
 function renderScen() {
   const rank = k => ORDER.includes(k) ? ORDER.indexOf(k) : 99;
-  const keys = Object.keys(sessions).sort((a, b) => rank(a) - rank(b));
   $('scen').innerHTML = '';
-  for (const k of keys) {
+  for (const k of Object.keys(sessions).sort((a, b) => rank(a) - rank(b))) {
     const b = document.createElement('button');
     b.innerHTML = esc(names[k] || '세션 ' + k) + '<small>' + esc(DESC[k] || sessions[k].length + '개 이벤트') + '</small>';
-    b.dataset.k = k; b.onclick = () => pick(k); $('scen').appendChild(b);
+    b.dataset.k = k; b.onclick = () => loadTape(k); $('scen').appendChild(b);
   }
-  cur = keys[0]; document.querySelectorAll('.scen button').forEach(b => b.classList.toggle('on', b.dataset.k === cur));
 }
-function pick(k) { cur = k; document.querySelectorAll('.scen button').forEach(b => b.classList.toggle('on', b.dataset.k === k)); rStop(); idx = 0; enterReplay(); }
-function enterReplay() {
-  if (mode !== 'replay') { savedApplied = { mode, applied }; mode = 'replay'; applied = { config: structuredClone(PRESETS.full), custom: null }; }
-  queue.length = 0; resetFlow(); paintChipsOff(); $('term').innerHTML = ''; sys('기록 재생: ' + (names[cur] || cur));
+function loadTape(k) {
+  document.querySelectorAll('.scen button').forEach(b => b.classList.toggle('on', b.dataset.k === k));
+  if (tape === labTape) { labCursor = player.cur; labApplied = applied; }
+  applied = { config: structuredClone(PRESETS.full), custom: null };
+  const tp = makeTape(k);
+  addStep(tp, { type: 'request', text: '(기록 재생) ' + (names[k] || k), t: Date.parse(sessions[k][0].time) });
+  for (const e of sessions[k]) ingest(tp, 'hook', e, Date.parse(e.time));
+  tape = tp; player.cur = -1; render(false); play();
 }
-function leaveReplay() { rStop(); if (savedApplied) { mode = savedApplied.mode; applied = savedApplied.applied; savedApplied = null; } resetFlow(); paintChipsOff(); }
-function rStep() {
-  const evs = sessions[cur]; if (idx >= evs.length) { rStop(); return; }
-  const e = evs[idx++]; hookLine(e); hookApply(e);
-  if (e.event === 'before') { /* 재생에는 agent 이벤트가 없으므로 Agent 칸만 표시합니다 */ }
-  if (idx >= evs.length) rStop();
+function backToLab() {
+  if (tape === labTape) return;
+  document.querySelectorAll('.scen button').forEach(b => b.classList.remove('on'));
+  tape = labTape; if (labApplied) applied = labApplied; player.cur = Math.min(labCursor, labTape.steps.length - 1); render(false);
 }
-function rStop() { clearInterval(rTimer); rTimer = null; $('rPlay').textContent = '▶ 재생'; }
-$('rPlay').onclick = () => {
-  if (rTimer) return rStop();
-  if (mode !== 'replay' || idx >= sessions[cur].length) { idx = 0; enterReplay(); }
-  rStep(); rTimer = setInterval(rStep, +$('speed').value + 250); $('rPlay').textContent = '⏸ 일시정지';
-};
-$('rStep').onclick = () => { rStop(); if (mode !== 'replay' || idx >= sessions[cur].length) { idx = 0; enterReplay(); } rStep(); };
+$('backToLab').onclick = backToLab;
 $('rFile').onchange = async ev => {
   const f = ev.target.files[0]; if (!f) return;
   const evs = (await f.text()).trim().split('\n').map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
-  names = {}; loadReplay(evs); renderScen(); idx = 0; enterReplay();
+  names = {}; loadReplay(evs); renderScen();
 };
 
 /* ---------- 시작 ---------- */
-renderForm(); renderScen(); resetFlow(); paintChipsOff(); sim.resetFiles();
+loadReplay(DATA.events); renderForm(); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); play();
+window.addEventListener('resize', () => render(false));
 connectLive().then(live => {
   if (!live) {
-    $('modeNote').innerHTML = '지금은 <b>미리보기</b>입니다. 판단 규칙은 실제 플러그인과 같은 순서로 브라우저에서 돌리고, Agent는 요청 문장의 낱말로 고르는 고정 시나리오입니다. 실제 OpenCode로 돌리려면 저장소 루트에서 <code>node lab/server.mjs</code>를 실행하세요.';
+    $('modeNote').innerHTML = '지금은 <b>미리보기</b>입니다. 판단 규칙은 실제 플러그인과 같은 순서로 브라우저에서 돌리고, Agent는 요청 문장의 낱말로 고르는 고정 시나리오입니다. <b>실제 OpenCode</b>로 돌리려면 저장소 루트에서 <code>node lab/server.mjs</code>를 실행하고 <code>http://127.0.0.1:4300/</code>을 여세요.';
     $('applyNote').textContent = '미리보기에서는 바로 적용되고, 새 세션에서 반영됩니다.';
-    sys('미리보기 모드입니다. 요청을 보내거나 Harness 꾸미기에서 규칙을 바꿔 보세요.');
   }
 });
 </script>

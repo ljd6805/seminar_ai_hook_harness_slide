@@ -119,6 +119,8 @@ function resetOutputs() {
   fs.rmSync(path.join(questDir, 'states'), { recursive: true, force: true });
 }
 
+const relayAgent = data => broadcast('opencode', data);
+
 // ---------- 브라우저 SSE ----------
 const clients = new Set();
 const history = [];
@@ -230,19 +232,19 @@ async function subscribeEvents() {
         if (event.type === 'message.updated') {
           if (p.info?.role === 'user') userMessages.add(p.info.id);
           // 오류가 있을 때만 전달합니다.
-          if (p.info?.error) broadcast('opencode', { type: 'session.error', properties: { error: p.info.error } });
+          if (p.info?.error) relayAgent({ type: 'session.error', properties: { error: p.info.error } });
           continue;
         }
         if (event.type === 'message.part.updated') {
           const part = p.part || {};
-          if (part.type === 'tool') broadcast('opencode', { type: 'tool', tool: part.tool, callID: part.callID,
+          if (part.type === 'tool') relayAgent({ type: 'tool', tool: part.tool, callID: part.callID,
             status: part.state?.status, input: part.state?.input, error: part.state?.error,
             output: typeof part.state?.output === 'string' ? part.state.output.slice(0, 400) : undefined });
           else if (part.type === 'text' && part.text && !part.synthetic && !userMessages.has(part.messageID))
-            broadcast('opencode', { type: 'text', id: part.id, messageID: part.messageID, text: part.text });
+            relayAgent({ type: 'text', id: part.id, messageID: part.messageID, text: part.text });
           continue;
         }
-        broadcast('opencode', event);
+        relayAgent(event);
       }
     }
   } catch (error) {
@@ -253,7 +255,8 @@ async function subscribeEvents() {
 // ---------- 플러그인 기록 tail ----------
 const eventsFile = path.join(questDir, 'events.jsonl');
 let offset = fs.existsSync(eventsFile) ? fs.statSync(eventsFile).size : 0;
-setInterval(() => {
+// Hook 기록은 OpenCode 이벤트보다 늦게 도착하면 화면 순서가 뒤집히므로 자주 읽습니다.
+function tail() {
   let size;
   try { size = fs.statSync(eventsFile).size; } catch { return; }
   if (size < offset) offset = 0;
@@ -269,7 +272,8 @@ setInterval(() => {
   for (const line of text.slice(0, last).split('\n')) {
     try { broadcast('hook', JSON.parse(line)); } catch {}
   }
-}, 150);
+}
+setInterval(tail, 30);
 
 // ---------- 세션·요청 ----------
 let session = null;
