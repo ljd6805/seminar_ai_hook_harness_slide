@@ -92,7 +92,8 @@ function prepareWorkspace() {
   const pluginDir = path.join(WORKSPACE, '.opencode');
   if (!fs.existsSync(path.join(pluginDir, 'node_modules', '@opencode-ai', 'plugin'))) {
     log('플러그인 의존성을 설치합니다 (처음 한 번)...');
-    const result = spawnSync('npm', ['install', '--prefix', pluginDir], { stdio: 'inherit', shell: isWindows });
+    // Windows는 shell로 npm.cmd를 부르므로 경로를 인자로 넘기면 공백에서 잘립니다. 폴더 안에서 실행합니다.
+    const result = spawnSync('npm', ['install'], { cwd: pluginDir, stdio: 'inherit', shell: isWindows });
     if (result.status !== 0) throw new Error('npm install 실패: ' + pluginDir);
   }
   if (!fs.existsSync(labConfigFile)) writeConfig(PRESETS.full, null);
@@ -171,7 +172,7 @@ async function startOpenCode() {
   const port = await freePort();
   ocUrl = 'http://127.0.0.1:' + port;
   const env = { ...process.env, OPENCODE_DISABLE_AUTOUPDATE: '1' };
-  oc = spawn(OPENCODE, ['serve', '--hostname', '127.0.0.1', '--port', String(port)],
+  oc = spawn(isWindows && /\s/.test(OPENCODE) ? `"${OPENCODE}"` : OPENCODE, ['serve', '--hostname', '127.0.0.1', '--port', String(port)],
     { cwd: WORKSPACE, env, stdio: ['ignore', 'pipe', 'pipe'], shell: isWindows });
   const child = oc;
   const relay = chunk => String(chunk).split('\n').filter(Boolean).forEach(text => broadcast('oclog', text));
