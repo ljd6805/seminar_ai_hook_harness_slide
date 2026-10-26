@@ -53,34 +53,54 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .scen button small{display:block;color:var(--faint);font-size:12px}
 .scen button.on{border-color:var(--mint);background:#13302c}
 
-/* ---------- 머신(흐름도) ---------- */
-.machine{position:relative;display:flex;flex-direction:column;align-items:center;padding:4px 0 8px 54px}
-.bus{position:absolute;left:22px;top:18px;bottom:22px;width:3px;border-radius:3px;background:linear-gradient(var(--line),var(--line))}
-.packet{position:absolute;left:12px;top:20px;width:23px;height:23px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 5px #b19bff33,0 0 22px #b19bffaa;transition:top .45s cubic-bezier(.5,0,.2,1),background .3s,box-shadow .3s;z-index:3;opacity:0}
+/* ---------- 머신(Agent 루프) ---------- */
+.loopwrap{position:relative;display:flex;justify-content:center}
+.machine{position:relative;width:720px;height:804px;flex:none}
+.machine svg.wire{position:absolute;inset:0;width:720px;height:804px;overflow:visible}
+.wire .ln{fill:none;stroke:var(--line);stroke-width:3;transition:stroke .25s,filter .25s}
+.wire .ln.thin{stroke-width:2}
+.wire .deny{stroke:#5b3a44;stroke-dasharray:7 6;stroke-width:2.5}
+.wire .hb{fill:none;stroke:#ff8a7a70;stroke-width:2;stroke-dasharray:9 7}
+.wire text{font:12px "Pretendard Variable","Apple SD Gothic Neo","Malgun Gothic",sans-serif;fill:var(--faint);transition:fill .25s}
+.wire text.hl{font-size:12.5px;font-weight:700;fill:#ff9d90;letter-spacing:.06em}
+.wire text.hs{fill:#c98a82}
+.wire .ln.lit{stroke:var(--violet);filter:drop-shadow(0 0 6px #b19bffaa)}
+.wire .ln.lit.ok{stroke:var(--mint);filter:drop-shadow(0 0 6px #61dec6aa)}
+.wire .ln.lit.bad{stroke:var(--coral);filter:drop-shadow(0 0 6px #ff8a7aaa)}
+.wire .ln.lit.wait{stroke:var(--amber);filter:drop-shadow(0 0 6px #ffcc7aaa)}
+.wire text.lit{fill:var(--text)}
+.wire .ln.lit:not(.head){stroke-dasharray:10 7;animation:flow .6s linear infinite}
+.wire .head{stroke-width:2}
+.wire #tDeny{font-size:11.5px;fill:#a9706c}
+.wire #tDeny.lit{fill:var(--coral)}
+@keyframes flow{to{stroke-dashoffset:-17}}
+.packet{position:absolute;left:0;top:0;width:23px;height:23px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 5px #b19bff33,0 0 22px #b19bffaa;transition:background .3s,box-shadow .3s;z-index:1;opacity:0;pointer-events:none}
 .packet.on{opacity:1}
 .packet.bad{background:var(--coral);box-shadow:0 0 0 5px #ff8a7a33,0 0 22px #ff8a7aaa}
 .packet.ok{background:var(--mint);box-shadow:0 0 0 5px #61dec633,0 0 22px #61dec6aa}
 .packet.wait{background:var(--amber);box-shadow:0 0 0 5px #ffcc7a33,0 0 22px #ffcc7aaa;animation:blink 1s infinite}
-.packet span{position:absolute;left:-4px;top:-19px;font:11px var(--mono);color:var(--sub);white-space:nowrap;background:#0b0f1acc;padding:0 5px;border-radius:4px}
-.packet.noanim{transition:none}
+.packet span{position:absolute;left:50%;transform:translateX(-50%);top:-20px;font:11px var(--mono);color:var(--sub);white-space:nowrap;background:#0b0f1add;padding:0 5px;border-radius:4px}
 @keyframes blink{50%{opacity:.45}}
-.unit{position:relative;width:min(100%,520px);border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;background:var(--card2);transition:border-color .25s,background .25s,box-shadow .25s,opacity .25s,transform .3s}
-.unit .t{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.packet.below span{top:26px}
+.unit{position:absolute;transform:translate(-50%,-50%);width:220px;border:1.5px solid var(--line);border-radius:12px;padding:8px 13px;background:var(--card2);z-index:2;transition:border-color .25s,background .25s,box-shadow .25s,opacity .25s,transform .3s}
+.unit.top{transform:translate(-50%,0)}
+.unit .t{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .unit .t em{font-style:normal;font:10.5px var(--mono);color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:0 5px}
-.unit .d{font-size:12px;color:var(--faint)}
-.unit .msg{font-size:12.5px;font-family:var(--mono);color:var(--sub);margin-top:2px;word-break:break-all;min-height:0}
-.unit.hook{border-style:dashed}
-.unit .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:7px}
-.chip{position:relative;border:1.5px solid var(--line);border-radius:9px;padding:5px 8px;text-align:center;font-size:13px;transition:all .25s;overflow:hidden}
-.chip small{display:block;font-size:11px;color:var(--faint)}
+.unit .d{font-size:12px;color:var(--faint);line-height:1.45}
+.unit .msg{font-size:12px;font-family:var(--mono);color:var(--sub);margin-top:2px;word-break:break-all;min-height:0}
+.unit.hook{border-style:dashed;border-color:#7a4a48}
+.unit .row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.chip{position:relative;border:1.5px solid var(--line);border-radius:9px;padding:4px 4px;text-align:center;font-size:12.5px;transition:all .25s;overflow:hidden;line-height:1.35}
+.chip small{display:block;font-size:10.5px;color:var(--faint)}
 .chip.off{opacity:.4;border-style:dotted}
-.link{width:3px;height:16px;background:var(--line)}
 .active{border-color:var(--violet)!important;background:#1d1a33!important}
 .ok{border-color:var(--mint)!important;background:#11302a!important}
 .bad{border-color:var(--coral)!important;background:#3a1d1d!important}
 .wait{border-color:var(--amber)!important;background:#3a2e17!important}
 .skip{opacity:.32}
-.focus{transform:scale(1.025);box-shadow:0 0 0 3px #b19bff55,0 0 28px #b19bff44!important;z-index:2}
+.focus{box-shadow:0 0 0 3px #b19bff55,0 0 28px #b19bff44!important;z-index:3}
+.unit.focus{transform:translate(-50%,-50%) scale(1.035)}
+.unit.top.focus{transform:translate(-50%,0) scale(1.035)}
 .focus.bad{box-shadow:0 0 0 3px #ff8a7a66,0 0 28px #ff8a7a44!important}
 .focus.ok{box-shadow:0 0 0 3px #61dec666,0 0 28px #61dec644!important}
 .focus.wait{box-shadow:0 0 0 3px #ffcc7a66,0 0 28px #ffcc7a44!important}
@@ -88,7 +108,14 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 @keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
 .approve{display:none;margin-top:8px;gap:8px}
 .approve.on{display:flex}
-.verdict{margin-top:10px;text-align:center;font-size:14.5px;min-height:22px}
+.approve .btn{padding:5px 10px;font-size:13px}
+.user{position:absolute;left:360px;top:24px;transform:translate(-50%,-50%);border:1.5px solid var(--line);border-radius:30px;padding:3px 16px;font-size:13.5px;font-weight:700;background:var(--card2);z-index:2;transition:all .25s}
+.user.focus{border-color:var(--violet)}
+.center{position:absolute;left:360px;transform:translateX(-50%);text-align:center;z-index:1}
+.center small{display:block;font:10.5px var(--mono);letter-spacing:.16em;color:var(--violet)}
+.center b{display:block;font-size:20px;line-height:1.3;margin:2px 0}
+.center span{display:block;font-size:12px;color:var(--faint);line-height:1.45}
+.verdict{position:absolute;left:360px;top:432px;transform:translateX(-50%);width:300px;text-align:center;font-size:13.5px;line-height:1.45;z-index:1}
 .verdict.good{color:var(--mint)}.verdict.no{color:var(--coral)}.verdict.hold{color:var(--amber)}
 
 /* ---------- 레지스터·인스펙터·로그 ---------- */
@@ -219,33 +246,54 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 
   <!-- 가운데: 머신 -->
   <section class="panel">
-    <h2>HARNESS 머신</h2>
+    <h2>HARNESS 머신 · Agent 루프</h2>
+    <div class="loopwrap" id="loopwrap">
     <div class="machine" id="machine">
-      <div class="bus"></div>
+      <svg class="wire" viewBox="0 0 720 804" aria-hidden="true">
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 9 5 1 9z" fill="context-stroke"/></marker></defs>
+        <rect class="hb" x="8" y="62" width="704" height="736" rx="22"/>
+        <text class="hl" x="26" y="784">HARNESS</text>
+        <text class="hs" x="104" y="784">OpenCode가 Agent 루프를 돌리고, 플러그인 Hook이 길목마다 끼어듭니다</text>
+        <path id="aIn" class="ln thin" d="M346 40 V98" marker-end="url(#ah)"/>
+        <path id="aOut" class="ln thin" d="M374 98 V40" marker-end="url(#ah)"/>
+        <text id="tIn" x="338" y="76" text-anchor="end">요청</text>
+        <text id="tOut" x="382" y="76">응답</text>
+        <path id="aCall" class="ln"/><path id="hCall" class="ln head" marker-end="url(#ah)"/>
+        <path id="aRun" class="ln"/><path id="hRun" class="ln head" marker-end="url(#ah)"/>
+        <path id="aRes" class="ln"/><path id="hRes" class="ln head" marker-end="url(#ah)"/>
+        <path id="aObs" class="ln"/><path id="hObs" class="ln head" marker-end="url(#ah)"/>
+        <path id="aDeny" class="ln deny"/><path id="hDeny" class="ln deny head" marker-end="url(#ah)"/>
+        <path id="pDenyT" fill="none"/>
+        <text id="tCall" x="556" y="194" text-anchor="middle">① 도구 호출</text>
+        <text id="tRun" x="556" y="500" text-anchor="middle">② 허용되면 실행</text>
+        <text id="tRes" x="164" y="500" text-anchor="middle">③ 결과</text>
+        <text id="tObs" x="164" y="194" text-anchor="middle">④ 관찰 → 다음 생각</text>
+        <text id="tDeny" dy="15"><textPath href="#pDenyT" startOffset="46%" text-anchor="middle">거부 → 오류를 결과로</textPath></text>
+        <path id="aBr" class="ln thin" d="M360 560 V604 M130 604 H590 M130 604 V630 M360 604 V630 M590 604 V630"/>
+        <text x="244" y="623" text-anchor="middle">validate · submit일 때</text>
+      </svg>
+      <div class="user" id="uUser">사용자</div>
       <div class="packet" id="packet"><span id="packetLabel"></span></div>
-      <div class="unit" id="uAgent"><div class="t">Agent <em>LLM</em></div><div class="d">요청을 읽고 quest_* 도구 중 하나를 고릅니다</div><div class="msg" id="mAgent"></div></div>
-      <div class="link"></div>
-      <div class="unit hook" id="uBefore"><div class="t">Hook · tool.execute.before <em>실행 전</em></div><div class="d">실행 전에 가로채서 규칙 함수로 차례대로 판정합니다</div>
+      <div class="center" style="top:258px;left:348px"><small>AGENT LOOP</small><b id="loopN">대기 중</b></div>
+      <div class="verdict" id="loopD" style="top:418px;color:var(--faint);font-size:12.5px"></div>
+      <div class="unit" id="uAgent" style="left:360px;top:140px;width:272px"><div class="t">Agent <em>LLM</em></div><div class="d">지난 결과를 보고 다음 도구를 고릅니다</div><div class="msg" id="mAgent"></div></div>
+      <div class="unit hook" id="uBefore" style="left:574px;top:340px;width:264px"><div class="t">before Hook <em>실행 전</em></div><div class="d">tool.execute.before가 호출을 가로채 판정합니다</div>
         <div class="row">
           <div class="chip" id="uRecord">① Record<small>shouldRecord</small></div>
           <div class="chip" id="uLimit">② Limit<small>withinBudget</small></div>
-          <div class="chip" id="uPolicy">③ Policy<small>allowTool · allowPath</small></div>
+          <div class="chip" id="uPolicy">③ Policy<small>tool·path</small></div>
         </div>
         <div class="msg" id="mBefore"></div>
       </div>
-      <div class="link"></div>
-      <div class="unit" id="uExec"><div class="t">도구 실행 <em>execute</em></div><div class="d">실제 파일을 읽고 씁니다</div><div class="msg" id="mExec"></div></div>
-      <div class="link"></div>
-      <div class="unit" id="uVal"><div class="t">Validation <em>acceptValidation</em></div><div class="d">스키마·합계·보고서·원본 보존을 검사합니다</div><div class="msg" id="mVal"></div></div>
-      <div class="link"></div>
-      <div class="unit" id="uAppr"><div class="t">Approval <em>canSubmit · ask</em></div><div class="d">제출 전에 OpenCode가 사람에게 묻습니다</div><div class="msg" id="mAppr"></div>
+      <div class="unit" id="uExec" style="left:360px;top:530px;width:220px"><div class="t">도구 실행 <em>execute</em></div><div class="d">Hook을 통과한 도구가 실제로 읽고 씁니다</div><div class="msg" id="mExec"></div></div>
+      <div class="unit hook" id="uAfter" style="left:156px;top:340px;width:196px"><div class="t">after Hook <em>실행 후</em></div><div class="d">tool.execute.after가 결과를 기록합니다</div><div class="msg" id="mAfter"></div></div>
+      <div class="unit top" id="uVal" style="left:128px;top:632px;width:208px"><div class="t">Validation</div><div class="d">acceptValidation · 스키마·합계·보고서·원본</div><div class="msg" id="mVal"></div></div>
+      <div class="unit top" id="uAppr" style="left:360px;top:632px;width:224px"><div class="t">Approval <em>ask</em></div><div class="d">canSubmit 뒤에 사람에게 묻습니다</div><div class="msg" id="mAppr"></div>
         <div class="approve" id="approve"><button class="btn pri" id="apOnce">한 번 허용</button><button class="btn warn" id="apReject">거절</button></div></div>
-      <div class="link"></div>
-      <div class="unit hook" id="uAfter"><div class="t">Hook · tool.execute.after <em>실행 후</em></div><div class="d">결과를 기록합니다</div><div class="msg" id="mAfter"></div></div>
-      <div class="link"></div>
-      <div class="unit" id="uSub"><div class="t">제출 <em>receipt</em></div><div class="d">로컬 영수증을 한 번만 만듭니다</div><div class="msg" id="mSub"></div></div>
+      <div class="unit top" id="uSub" style="left:592px;top:632px;width:208px"><div class="t">제출 <em>receipt</em></div><div class="d">로컬 영수증을 한 번만 만듭니다</div><div class="msg" id="mSub"></div></div>
+      <div class="verdict" id="verdict" style="top:440px"></div>
     </div>
-    <div class="verdict" id="verdict"></div>
+    </div>
   </section>
 
   <!-- 오른쪽: 레지스터·인스펙터·로그 -->
@@ -601,26 +649,113 @@ function render(animate) {
     ins.className = 'insp ' + tone(s);
     const f = FOCUS[s.type];
     if (f) { $(f).classList.add('focus'); if (f.startsWith('uRecord') || f === 'uLimit' || f === 'uPolicy') $('uBefore').classList.add('focus'); }
-    movePacket(f, tone(s), S.tool, animate);
+    renderLoop(steps, vi, s, animate, S.tool);
   } else {
     $('iK').textContent = 'STEP 0 / ' + steps.length; $('iH').textContent = steps.length ? '처음 위치입니다' : '테이프가 비어 있습니다';
     $('iP').textContent = '요청을 보내면 OpenCode와 Hook이 만드는 사건이 이 테이프에 쌓이고, 아래 컨트롤로 한 단계씩 돌려 볼 수 있습니다.';
-    $('iRaw').textContent = ''; ins.className = 'insp'; movePacket(null);
+    $('iRaw').textContent = ''; ins.className = 'insp'; renderLoop(steps, -1, null, false);
   }
   renderLog(animate);
   renderTimeline();
 }
 const renderCache = {};
-function movePacket(unitId, t, tool, animate) {
+/* ---------- 루프 기하 ----------
+   링 위 유닛은 극좌표(각도 a, 반지름 r), 링 밖 유닛은 x·y 좌표로 둡니다.
+   패킷은 링 위에서는 시계 방향 호를 따라, 거부되면 안쪽 점선 호를 따라 거꾸로 돌아갑니다. */
+const C = { x: 360, y: 340 }, R = 200;
+const DOCK = { uAgent: { a: -90, r: 150 }, uBefore: { a: -40, r: R }, uExec: { a: 52, r: R }, uAfter: { a: 150, r: R },
+  uVal: { x: 128, y: 604 }, uAppr: { x: 360, y: 604 }, uSub: { x: 592, y: 604 }, uUser: { x: 374, y: 58 }, uUserIn: { x: 346, y: 58 } };
+DOCK.uRecord = DOCK.uLimit = DOCK.uPolicy = DOCK.uBefore;
+const xy = p => p.a === undefined ? p : { x: C.x + p.r * Math.cos(p.a * Math.PI / 180), y: C.y + p.r * Math.sin(p.a * Math.PI / 180) };
+const denyR = k => R - 50 * k - 22 * Math.sin(Math.PI * k);
+function arcD(a0, a1, rf) {
+  // a0 → a1 사이를 잘게 나눈 경로(가운데 점에 화살표)
+  const n = 24, pts = [];
+  for (let i = 0; i <= n; i++) { const k = i / n; pts.push(xy({ a: a0 + (a1 - a0) * k, r: rf ? rf(k) : R })); }
+  return 'M' + pts.map(p => p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' L');
+}
+function drawWires() {
+  $('aCall').setAttribute('d', arcD(-90, 0)); $('aRun').setAttribute('d', arcD(0, 90));
+  $('aRes').setAttribute('d', arcD(90, 180)); $('aObs').setAttribute('d', arcD(180, 270));
+  $('aDeny').setAttribute('d', arcD(-40, -90, denyR));
+  $('pDenyT').setAttribute('d', arcD(-90, -40, k => denyR(1 - k)));
+  const head = (id, a0, a1, rf) => { const p = arcD(a0, a1, rf).split(' L'); $(id).setAttribute('d', 'M' + p[11].replace('M', '') + ' L' + p[13]); };
+  head('hCall', -90, 0); head('hRun', 0, 90); head('hRes', 90, 180); head('hObs', 180, 270); head('hDeny', -40, -90, denyR);
+}
+function fitMachine() {
+  const w = $('loopwrap').clientWidth, panel = $('loopwrap').parentElement;
+  const h = panel.clientHeight - 60;
+  $('machine').style.zoom = Math.max(0.55, Math.min(1, w / 720, h / 804));
+}
+const PK = { cur: null, raf: 0 };
+function placePk(p) { const c = xy(p); const pk = $('packet'); pk.style.left = (c.x - 11.5) + 'px'; pk.style.top = (c.y - 11.5) + 'px'; }
+function legs(from, to, back) {
+  // 한 번의 이동을 호·직선 구간으로 나눕니다.
+  const polar = p => p.a !== undefined;
+  const arc = (p, q, ccw, rf) => {
+    let d = ((q.a - p.a) % 360 + 360) % 360; if (ccw) d -= 360;
+    if (Math.abs(d) < 0.5) return null;
+    return { len: Math.abs(d) / 90 * 520, at: k => ({ a: p.a + d * k, r: rf ? rf(k) : p.r + (q.r - p.r) * k }) };
+  };
+  const line = (p, q) => { const a = xy(p), b = xy(q); return { len: 420, at: k => ({ x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k }) }; };
+  if ([from, to].some(p => p === DOCK.uUser || p === DOCK.uUserIn)) return [line(from, to)];
+  if (polar(from) && polar(to)) return back ? [arc(from, to, true, denyR)] : [arc(from, to)];
+  if (polar(from)) return [arc(from, DOCK.uExec), line(DOCK.uExec, to)];
+  if (polar(to)) return [line(from, DOCK.uExec), arc(DOCK.uExec, to)];
+  return [line(from, to)];
+}
+function movePacket(unitId, t, tool, animate, opt = {}) {
   const pk = $('packet');
-  if (!unitId) { pk.classList.remove('on'); return; }
-  const machine = $('machine').getBoundingClientRect();
-  let el = $(unitId); if (['uRecord', 'uLimit', 'uPolicy'].includes(unitId)) el = $(unitId);
-  const r = el.getBoundingClientRect();
-  pk.classList.toggle('noanim', !animate);
-  pk.style.top = (r.top - machine.top + r.height / 2 - 11.5) + 'px';
-  pk.className = 'packet on ' + (t || '') + (animate ? '' : ' noanim');
-  $('packetLabel').textContent = tool && tool !== '-' ? tool : '';
+  cancelAnimationFrame(PK.raf);
+  if (!unitId) { pk.classList.remove('on'); PK.cur = null; return; }
+  pk.className = 'packet on ' + (t || '') + (unitId === 'uAgent' || unitId === 'uUser' ? ' below' : '');
+  $('packetLabel').textContent = opt.label ?? (tool && tool !== '-' ? tool : '');
+  const to = DOCK[unitId];
+  const from = opt.from ? DOCK[opt.from] : PK.cur;
+  if (!animate || !from) { placePk(to); PK.cur = to; return; }
+  const ls = legs(from, to, opt.back).filter(Boolean);
+  if (!ls.length) { placePk(to); PK.cur = to; return; }
+  const total = Math.min(1100, ls.reduce((n, l) => n + l.len, 0)), t0 = performance.now();
+  const ease = k => k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+  const frame = now => {
+    let k = Math.min(1, (now - t0) / total), d = ease(k) * ls.reduce((n, l) => n + l.len, 0);
+    let p = to;
+    for (const l of ls) { if (d <= l.len) { p = l.at(d / l.len); break; } d -= l.len; }
+    placePk(p); PK.cur = k < 1 ? p : to;
+    if (k < 1) PK.raf = requestAnimationFrame(frame);
+  };
+  PK.raf = requestAnimationFrame(frame);
+}
+const ARC = { request: 'aIn', idle: 'aOut', call: 'aCall', 'hook-in': 'aCall', 'chk-record': 'aCall', 'chk-limit': 'aCall', 'chk-policy': 'aCall',
+  deny: 'aDeny', exec: 'aRun', error: 'aRun', validate: 'aBr', 'appr-req': 'aBr', ask: 'aBr', 'appr-no': 'aBr', submit: 'aBr', after: 'aRes', think: 'aObs' };
+const ARC_TEXT = { aIn: 'tIn', aOut: 'tOut', aCall: 'tCall', aRun: 'tRun', aRes: 'tRes', aObs: 'tObs', aDeny: 'tDeny', aBr: null };
+const ARC_HEAD = { aCall: 'hCall', aRun: 'hRun', aRes: 'hRes', aObs: 'hObs', aDeny: 'hDeny' };
+function renderLoop(steps, vi, s, animate, tool) {
+  // 이번 요청 안에서 몇 번째 도구 호출인지, 직전 시각 단계가 무엇인지 봅니다.
+  let n = 0, start = vi, prev = null, sawResult = false;
+  while (start >= 0 && steps[start].type !== 'request') start--;
+  for (let j = Math.max(0, start); j <= vi; j++) { if (steps[j].type === 'call') n++; }
+  for (let j = vi - 1; j >= Math.max(0, start); j--) if (isVisual(steps[j])) { prev = steps[j]; break; }
+  for (let j = Math.max(0, start); j < vi; j++) if (['after', 'deny', 'error'].includes(steps[j].type)) sawResult = true;
+  const parts = id => [id, ARC_HEAD[id]].filter(Boolean).map($);
+  for (const id of Object.keys(ARC_TEXT)) { parts(id).forEach(el => el.classList.remove('lit', 'ok', 'bad', 'wait')); if (ARC_TEXT[id]) $(ARC_TEXT[id]).classList.remove('lit'); }
+  $('uUser').classList.remove('focus');
+  if (!s) { $('loopN').textContent = '대기 중'; $('loopD').textContent = '요청을 보내면 Agent 루프가 돌기 시작합니다'; movePacket(null); return; }
+  let arc = ARC[s.type];
+  const backFromDeny = prev && prev.type === 'deny' && ['think', 'call', 'idle'].includes(s.type);
+  if (s.type === 'think' && !sawResult) arc = null;
+  if (backFromDeny && s.type !== 'idle') arc = 'aDeny';
+  if (arc) { const tn = tone(s); parts(arc).forEach(el => el.classList.add('lit', ...(tn ? [tn] : []))); if (ARC_TEXT[arc]) $(ARC_TEXT[arc]).classList.add('lit'); }
+  const done = s.type === 'idle';
+  $('loopD').style.visibility = $('verdict').textContent ? 'hidden' : '';
+  $('loopN').textContent = done ? '루프 종료' : n ? '도구 호출 ' + n + '번째' : '생각 중';
+  $('loopD').textContent = done ? '도구 호출 ' + n + '번 뒤에 응답했습니다' : s.type === 'deny' ? 'Hook이 막으면 실행 없이 Agent로 돌아갑니다' : '도구를 고르고, 결과를 보고, 다시 고릅니다';
+  let target = FOCUS[s.type], opt = {};
+  if (s.type === 'request') { opt.from = 'uUserIn'; opt.label = ''; }
+  if (s.type === 'idle') { target = 'uUser'; opt.label = ''; $('uUser').classList.add('focus'); }
+  if (backFromDeny) opt.back = true;
+  if (opt.label === undefined) opt.label = s.type === 'think' ? '' : s.type === 'deny' ? '✕ 오류' : (tool && tool !== '-' ? tool : '');
+  movePacket(target, tone(s), tool, animate, opt);
 }
 function renderLog(animate) {
   const term = $('term'), steps = tape.steps;
@@ -1098,8 +1233,8 @@ $('rFile').onchange = async ev => {
 };
 
 /* ---------- 시작 ---------- */
-loadReplay(DATA.events); renderForm(); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); play();
-window.addEventListener('resize', () => render(false));
+drawWires(); fitMachine(); loadReplay(DATA.events); renderForm(); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); play();
+window.addEventListener('resize', () => { fitMachine(); render(false); });
 connectLive().then(live => {
   if (!live) {
     $('modeNote').innerHTML = '지금은 <b>미리보기</b>입니다. 판단 규칙은 실제 플러그인과 같은 순서로 브라우저에서 돌리고, Agent는 요청 문장의 낱말로 고르는 고정 시나리오입니다. <b>실제 OpenCode</b>로 돌리려면 저장소 루트에서 <code>node lab/server.mjs</code>를 실행하고 <code>http://127.0.0.1:4300/</code>을 여세요.';
