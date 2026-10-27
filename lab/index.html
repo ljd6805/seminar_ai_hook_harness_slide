@@ -160,7 +160,16 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .unit .d{display:none}
 /* 다이어그램에는 이름과 지금 상태만 남기고, 풀이는 해설 칸이 맡습니다 */
 .unit .t em,.chip small,#gHs,#gBr,#loopD{display:none!important}
-.unit .msg{font-size:14px;font-family:var(--mono);color:var(--sub);margin-top:2px;word-break:break-all;min-height:0}
+.unit .msg{font-size:14px;font-family:var(--mono);color:var(--sub);margin-top:2px;word-break:break-all;min-height:0;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.unit .msg:empty{display:none}
+.unit .msg .res{color:var(--mint)}
+.trail{position:absolute;left:345px;top:330px;transform:translateX(-50%);width:170px;text-align:center;z-index:1;font:13px/1.55 var(--mono);color:var(--faint)}
+.trail small{display:block;font-size:11px;letter-spacing:.1em;color:var(--faint);opacity:.8;margin-bottom:2px}
+.trail div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trail .ok{color:var(--mint)}.trail .bad{color:var(--coral)}.trail .run{color:var(--violet)}
+.trail div.ok,.trail div.bad,.trail div.run{border:0!important;background:none!important}
+/* 로그·상태 칸이 열려 있으면 자세한 내용은 로그가 맡고, 다이어그램은 상태만 보여 줍니다 */
+body.dopen .unit .msg,body.dopen .trail{display:none!important}
 .unit.hook{border-style:dashed;border-color:#7a4a48}
 .unit .row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
 .chip{position:relative;border:1.5px solid var(--line);border-radius:9px;padding:5px 3px;text-align:center;font-size:13.5px;white-space:nowrap;transition:all .25s;overflow:hidden;line-height:1.35}
@@ -517,6 +526,7 @@ body.dopen .drawer{display:flex}
       <div class="packet" id="packet"><span id="packetLabel"></span></div>
       <div class="center" style="top:258px;left:326px"><small>AGENT LOOP</small><b id="loopN">대기 중</b></div>
       <div class="verdict" id="loopD" style="top:418px;color:var(--faint);font-size:14px"></div>
+      <div class="trail" id="trail"></div>
       <div class="unit" id="uAgent" style="left:360px;top:140px;width:272px"><div class="t">Agent <em>LLM</em></div><div class="d">지난 결과를 보고 다음 도구를 고릅니다</div><div class="msg" id="mAgent"></div></div>
       <div class="unit hook" id="uBefore" style="left:578px;top:340px;width:286px"><div class="t">before Hook <em>실행 전</em></div><div class="d">tool.execute.before가 호출을 가로채 판정합니다</div>
         <div class="row">
@@ -1036,24 +1046,66 @@ function ingest(tp, kind, data, t) {
 }
 
 /* ---------- 접기(fold): 테이프 → 화면 상태 ---------- */
+const clip = (t, n) => { t = String(t).replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
+function callText(tool, input) {
+  // 다이어그램에 보일 호출 한 줄: 도구 이름과 가장 중요한 입력 하나
+  const v = input || {}, key = ['path', 'file', 'filePath', 'command', 'pattern'].find(k => v[k] != null) || Object.keys(v)[0];
+  if (!key) return '→ ' + tool;
+  let val = String(typeof v[key] === 'string' ? v[key] : JSON.stringify(v[key])).replace(/\s+/g, ' ');
+  const room = Math.max(12, 28 - key.length - 2);
+  if (val.length > room && /path|file/i.test(key)) {
+    // 경로는 뒤쪽 폴더·파일 이름이 중요하니 앞을 폴더 단위로 줄입니다
+    const seg = val.split('/'); let tail = seg.pop();
+    while (seg.length && ('…/' + seg[seg.length - 1] + '/' + tail).length <= room) tail = seg.pop() + '/' + tail;
+    val = '…/' + tail;
+  }
+  if (val.length > room) val = val.slice(0, room - 1) + '…';  // 경로는 뒤쪽이 중요합니다
+  return '→ ' + tool + '\n' + key + ': ' + val;
+}
+function toolOutput(steps, i) {
+  // 같은 호출의 도구 결과(OpenCode 사건)를 찾습니다. 다음 호출이 시작되면 멈춥니다.
+  for (let j = i + 1; j < steps.length; j++) {
+    const s = steps[j];
+    if (s.type === 'hook-in' || s.type === 'call') return '';
+    if (s.type === 'log' && s.ev?.type === 'tool' && s.ev.status === 'completed') return s.ev.output || '';
+  }
+  return '';
+}
+function outSum(text) {
+  // 도구 결과(JSON 문자열)를 한눈에 읽히는 짧은 요약으로 바꿉니다.
+  let v; try { v = JSON.parse(text); } catch { return clip(text, 44); }
+  if (!v || typeof v !== 'object') return clip(String(v), 44);
+  const parts = [];
+  const add = (k, x) => {
+    if (typeof x === 'boolean') parts.push(k + (x ? ' ✓' : ' ✕'));
+    else if (typeof x === 'string') parts.push(x.length > 26 ? k + ' ' + x.length + '자' : k + ' ' + x);
+    else if (typeof x === 'number') parts.push(k + ' ' + x);
+    else if (Array.isArray(x)) parts.push(k + ' ' + x.length + '개');
+    else if (x && typeof x === 'object') for (const [k2, y] of Object.entries(x)) add(k2, y);
+  };
+  for (const [k, x] of Object.entries(v)) add(k, x);
+  return clip(parts.join(' · '), 44);
+}
+function markTrail(S, st, note) { const t = S.trail[S.trail.length - 1]; if (t && t.st === 'run') { t.st = st; t.note = note; } }
 function blankUnits() {
   const u = {}; for (const k of ['uAgent', 'uBefore', 'uRecord', 'uLimit', 'uPolicy', 'uExec', 'uVal', 'uAppr', 'uAfter', 'uSub']) u[k] = '';
   return u;
 }
 function fold(steps, upto) {
   const S = { units: blankUnits(), msgs: {}, att: 0, val: 0, last: '-', sub: '아직', tool: '-', args: '-', verdict: null,
-    cfg: appliedCfg(), permission: null, reply: [], record: true };
+    cfg: appliedCfg(), permission: null, reply: [], record: true, trail: [] };
   const reset = () => { S.units = blankUnits(); S.msgs = {}; S.verdict = null; };
   for (let i = 0; i <= upto && i < steps.length; i++) {
     const s = steps[i], e = s.ev || {};
     switch (s.type) {
-      case 'session': S.att = 0; S.val = 0; S.last = '-'; S.sub = '아직'; reset(); S.permission = null; break;
+      case 'session': S.trail = []; S.att = 0; S.val = 0; S.last = '-'; S.sub = '아직'; reset(); S.permission = null; break;
       case 'config': S.cfg = s.cfg; break;
-      case 'request': reset(); S.reply = []; S.units.uAgent = 'active'; S.msgs.mAgent = '요청 수신'; break;
-      case 'think': S.units.uAgent = 'active'; S.msgs.mAgent = '다음 행동을 생각하는 중…'; break;
-      case 'call': reset(); S.units.uAgent = 'ok'; S.msgs.mAgent = '→ ' + e.tool; S.tool = e.tool; S.args = JSON.stringify(e.input || {}); break;
+      case 'request': reset(); S.reply = []; S.trail = []; S.units.uAgent = 'active'; S.msgs.mAgent = '요청 수신'; break;
+      case 'think': S.units.uAgent = 'active'; S.msgs.mAgent = S.trail.length ? '결과를 보고 다음 행동을 고르는 중…' : '다음 행동을 생각하는 중…'; break;
+      case 'call': reset(); S.units.uAgent = 'ok'; S.msgs.mAgent = callText(e.tool, e.input); S.tool = e.tool; S.args = JSON.stringify(e.input || {}); break;
       case 'hook-in':
-        if (!steps[i - 1] || steps[i - 1].type !== 'call') { reset(); S.units.uAgent = 'ok'; S.msgs.mAgent = '→ ' + e.tool; S.tool = e.tool; }
+        if (!steps[i - 1] || steps[i - 1].type !== 'call') { reset(); S.units.uAgent = 'ok'; S.msgs.mAgent = callText(e.tool, s.input); S.tool = e.tool; }
+        S.trail.push({ tool: e.tool, st: 'run', note: '' });
         S.units.uBefore = 'active'; S.msgs.mBefore = '판정 중…';
         if (e.tool !== 'quest_status') S.att++;
         break;
@@ -1064,13 +1116,14 @@ function fold(steps, upto) {
         if (!s.pending && s.result === 'ok') { S.units.uBefore = 'ok'; S.msgs.mBefore = '통과 → 실행 허용'; }
         break;
       case 'deny':
-        S.units.uBefore = 'bad'; S.msgs.mBefore = '✕ ' + e.reason;
+        S.units.uBefore = 'bad'; S.msgs.mBefore = '✕ ' + e.reason; markTrail(S, 'bad', '막힘');
         for (const k of ['uExec', 'uVal', 'uAppr', 'uAfter', 'uSub']) S.units[k] = 'skip';
         S.msgs.mExec = '실행되지 않았습니다';
         S.verdict = ['no', 'Hook이 실행 전에 막았습니다. 도구는 실행되지 않았습니다.'];
         break;
-      case 'exec':
+      case 'exec': {
         S.units.uExec = 'ok'; S.msgs.mExec = e.path ? '쓰기: ' + e.path : (e.tool || '') + ' 실행 완료'; break;
+      }
       case 'validate':
         S.units.uExec = 'ok'; S.msgs.mExec = 'quest_validate 실행'; S.val++;
         S.last = e.ok ? '통과' : '실패: ' + (e.errors || []).join(',');
@@ -1088,8 +1141,10 @@ function fold(steps, upto) {
         S.units.uExec = 'ok'; S.units.uAppr = 'ok'; S.msgs.mAppr = S.cfg.approval === 'allow' ? '묻지 않고 통과 (allow)' : '✓ 허용';
         S.units.uSub = 'ok'; S.msgs.mSub = '✓ 영수증 ' + String(e.artifactHash || '').slice(0, 10) + '….json'; S.sub = '완료'; S.permission = null;
         S.verdict = ['good', !S.cfg.checksAll ? '제출했습니다. 검증 규칙이 느슨하면 틀린 결과도 통과할 수 있습니다.' : '검증과 승인을 지나 제출했습니다.']; break;
-      case 'error': S.units.uExec = 'bad'; S.msgs.mExec = '✕ ' + e.reason; break;
-      case 'after': if (S.units.uExec !== 'bad') S.units.uExec = 'ok'; S.units.uAfter = 'ok'; S.msgs.mAfter = '결과 기록 완료'; break;
+      case 'error': S.units.uExec = 'bad'; S.msgs.mExec = '✕ ' + e.reason; markTrail(S, 'bad', '오류'); break;
+      case 'after': if (S.units.uExec !== 'bad') S.units.uExec = 'ok'; S.units.uAfter = 'ok';
+        { const out = toolOutput(steps, i); S.msgs.mAfter = out ? '← Agent에게 돌려줌\n' + outSum(out) : '결과 기록 완료'; }
+        if (S.units.uExec !== 'bad') markTrail(S, 'ok', ''); break;
       case 'text': S.reply.push([e.id, e.text]); break;
       case 'idle': if (S.units.uAgent === 'active') { S.units.uAgent = ''; S.msgs.mAgent = '응답을 마쳤습니다'; } break;
       case 'log': if (e.type === 'permission.replied') S.permission = null; break;
@@ -1201,6 +1256,8 @@ function render(animate) {
   $('uLimit').classList.toggle('off', !S.cfg.limitOn);
   $('uPolicy').classList.toggle('off', !S.cfg.toolsOn && !S.cfg.pathOn);
   for (const m of ['mAgent', 'mBefore', 'mExec', 'mVal', 'mAppr', 'mAfter', 'mSub']) $(m).textContent = S.msgs[m] || '';
+  const tr = S.trail.slice(-4), mark = { run: '…', ok: '✓', bad: '✕' };
+  $('trail').innerHTML = tr.length ? '<small>최근 호출</small>' + tr.map(t => `<div class="${t.st}" title="${esc(t.tool)}">${mark[t.st]} ${esc(t.tool)}${t.note ? ' · ' + t.note : ''}</div>`).join('') : '';
   $('verdict').textContent = S.verdict ? S.verdict[1] : ''; $('verdict').className = 'verdict ' + (S.verdict ? S.verdict[0] : '');
   $('approve').classList.toggle('on', Boolean(S.permission));
   pendingPermission = S.permission;
