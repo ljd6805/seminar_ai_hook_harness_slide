@@ -291,14 +291,15 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:var(--hw) minmax(0,1
 .card-s,.hpanel,.composer,.view,.narr,.drawer{background:var(--card);border:1px solid var(--line);border-radius:14px;min-width:0;min-height:0}
 .hpanel{display:flex;flex-direction:column;overflow:hidden}
 .hbody{flex:1;min-height:0;overflow:auto;padding:14px;container-type:inline-size}
-.hcard{all:unset;box-sizing:border-box;grid-area:hcard;display:none;align-items:center;flex-wrap:wrap;gap:6px 8px;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 12px;min-width:0}
+.hcard{all:unset;box-sizing:border-box;grid-area:hcard;display:none;align-items:center;flex-wrap:nowrap;gap:8px;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 12px;min-width:0}
 .hcard:hover{border-color:#4a557a}
 .hcard b{font-size:14.5px;margin-right:2px}
 .hcard .hgo{margin-left:auto;color:var(--mint);font-size:12.5px;font-weight:700;border:1px solid #316459;border-radius:8px;padding:3px 10px;white-space:nowrap}
-.hsum{display:contents}
-.hsum i{font-style:normal;font:11.5px var(--mono);color:var(--sub);border:1px solid var(--line);border-radius:6px;padding:2px 7px;background:#0d1222;white-space:nowrap}
-.hsum i.off{color:var(--faint);border-style:dashed;opacity:.7}
-.hsum i.mode{font-family:inherit;color:var(--violet);border-color:#4b3f86}
+.hsum{flex:1;min-width:0;font-size:12.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hsum i{font-style:normal}
+.hsum i+i::before{content:' · ';color:var(--faint)}
+.hsum i.off{color:var(--faint);text-decoration:line-through}
+.hsum i.mode{color:var(--violet)}
 body.hclosed:not(.replay) .hcard{display:flex}
 body.hclosed:not(.replay) .hpanel{display:none}
 .fold{all:unset;cursor:pointer;margin-left:auto;font-size:12.5px;color:var(--sub);border:1px solid var(--line);border-radius:8px;padding:4px 10px;white-space:nowrap}
@@ -312,7 +313,18 @@ header .badge{margin-left:auto}
 
 .stage{min-width:0;min-height:0;container:stage/size}
 .sgrid{height:100%;display:grid;gap:10px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;grid-template-areas:"hcard" "composer" "view" "narr"}
-.composer{grid-area:composer;padding:12px 14px}
+.composer{grid-area:composer;padding:10px 12px;display:flex;flex-direction:column;gap:7px;overflow:auto}
+.composer>.stephead{margin:0}
+.composer #prompt{flex:1 1 auto;min-height:5.2em;font-size:14px;line-height:1.55;padding:8px 10px;resize:none}
+.composer .rb-tools{margin:0}
+.composer #send{all:unset;margin-left:auto;cursor:pointer;font-weight:700;font-size:14px;color:#0b0f1a;background:var(--mint);border-radius:9px;padding:7px 16px;white-space:nowrap}
+.composer #send:disabled{opacity:.45;cursor:not-allowed}
+.composer .rb-reply{margin:0;max-height:6.4em;background:#0d1222;border:1px solid var(--line);border-radius:9px;padding:6px 9px}
+.composer details.note{margin:0 0 0 6px}
+.composer details.note summary{list-style:none;margin:0;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:12px}
+.composer details.note summary::-webkit-details-marker{display:none}
+.composer details.note{position:relative}
+.composer details.note p{position:absolute;right:0;top:26px;width:min(380px,70vw);background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin:0;z-index:9}
 .view{grid-area:view;position:relative;display:flex;flex-direction:column;padding:6px 8px;overflow:hidden}
 .view>.stephead{position:absolute;top:10px;left:14px;right:14px;z-index:4;pointer-events:none;margin:0}
 .view>.stephead .fold{pointer-events:auto;background:var(--card)}
@@ -320,16 +332,14 @@ header .badge{margin-left:auto}
 .view>.stephead .seg.mini{pointer-events:auto;margin-left:auto;padding:2px}
 .view>.stephead .seg.mini button{padding:2px 9px;font-size:12px}
 .view>.stephead .seg.mini+.fold{margin-left:6px}
-.narr{grid-area:narr;padding:10px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
+.narr{grid-area:narr;padding:9px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center}
+.narr .insp .p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.nctl .sb{padding:6px 12px;font-size:13.5px}
 .loopwrap{position:relative;flex:1;min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden}
 body.replay .composer{display:none}
 .stephead .dirty{margin-left:auto}
 .rb-row{margin-top:2px}
 .rb-row #tReq{flex:1 1 auto;width:auto;min-width:120px}
-.rb-send #send{margin:0;width:auto;flex:none;padding:0 20px;white-space:nowrap}
-.composer textarea{min-height:0;font-size:13.5px;padding:7px 10px;resize:vertical}
-.rb-tools details{position:relative}
-.rb-tools details p{position:absolute;right:0;top:100%;width:min(420px,70vw);background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin:6px 0 0;z-index:9}
 .insp{border-left:3px solid var(--violet);padding:2px 0 2px 12px;min-width:0;background:transparent!important}
 #sInfo{display:none!important}
 .insp .h{font-size:16px}
@@ -340,12 +350,12 @@ body.replay .composer{display:none}
 /* 무대가 넓으면: 머신 왼쪽, 요청·해설 오른쪽 */
 /* 무대가 넓고 가로로 길 때만 요청·해설을 오른쪽에 둡니다. 세로 화면에서는 위아래로 쌓습니다. */
 @container stage (min-width:1000px) and (min-aspect-ratio:5/4){
-  .sgrid{grid-template-columns:minmax(0,1fr) clamp(320px,29cqi,420px);grid-template-rows:auto auto minmax(0,1fr);grid-template-areas:"view hcard" "view composer" "view narr"}
-  .narr{grid-template-columns:1fr;align-content:start;align-self:start}
+  .sgrid{grid-template-columns:minmax(0,1fr) clamp(330px,30cqi,440px);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"view hcard" "view composer" "view narr"}
+  .narr{grid-template-columns:1fr}
   .nctl{grid-template-columns:auto minmax(0,1fr) auto}
   .nctl .sbi{max-width:none}
-  .insp .h{font-size:17px}
-  .insp .p{font-size:14.5px}
+  .insp .h{font-size:16px}
+  .insp .p{font-size:14px}
 }
 
 .drawer{display:none;flex-direction:column;padding:12px 14px;overflow:auto}
@@ -456,24 +466,22 @@ body.dopen .drawer{display:flex}
       <span class="num">1</span><b>Harness</b><span class="hsum" id="hSum"></span><span class="hgo">편집 ▸</span>
     </button>
     <div class="composer" id="runbar">
-      <div class="stephead"><span class="num">2</span><b>요청 보내기</b><span class="dirty" id="dirty"></span></div>
+      <div class="stephead"><span class="num">2</span><b>요청 보내기</b><span class="dirty" id="dirty"></span>
+        <details class="note"><summary title="지금 무엇이 요청을 실행하는지">?</summary><p class="small" id="modeNote"></p></details></div>
       <div class="rb-row">
         <select id="tReq" title="예시 요청을 고르면 아래 칸에 채워집니다"></select>
         <span id="modelWrap" style="display:none"><select id="model" title="요청을 보낼 모델입니다. 기본값은 OpenCode 설정의 기본 모델이고, 로그인(SSO 포함)은 OpenCode가 그대로 씁니다."></select></span>
       </div>
       <input id="modelCustom" placeholder="공급자/모델 (예: myprovider/gpt-6-luna)" spellcheck="false" autocomplete="off" style="display:none">
-      <div class="rb-send">
-        <textarea id="prompt" rows="2">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
-        <button class="btn pri send" id="send" title="코드가 바뀌었으면 먼저 적용하고 보냅니다">보내기 ▶</button>
-      </div>
-      <p class="small" id="applyNote"></p>
-      <div class="rb-reply"><b>Agent 응답</b> <span id="replyText">아직 요청을 보내지 않았습니다.</span></div>
+      <textarea id="prompt" rows="4" placeholder="Agent에게 보낼 요청을 쓰세요. Ctrl+Enter로 보냅니다.">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
       <div class="rb-tools">
         <button id="newSession" title="시도 횟수와 검증 횟수를 0부터 다시 셉니다">새 세션</button>
         <button id="abort" title="돌고 있는 Agent를 멈춥니다">중단</button>
         <button id="resetFiles" title="지난 실험에서 만든 lab/output 파일을 지웁니다">파일 비우기</button>
-        <details class="note"><summary>무엇이 실행하나요?</summary><p class="small" id="modeNote"></p></details>
+        <button class="btn pri send" id="send" title="코드가 바뀌었으면 먼저 적용하고 보냅니다 (Ctrl+Enter)">보내기 ▶</button>
       </div>
+      <p class="small" id="applyNote"></p>
+      <div class="rb-reply"><b>Agent 응답</b> <span id="replyText">아직 요청을 보내지 않았습니다.</span></div>
     </div>
 
     <div class="view" id="view">
@@ -1693,6 +1701,7 @@ function renderHSum() {
       + item(c.approval === 'ask', 'Approval ' + c.approval)
     : '<i class="mode">고급 과정</i>' + item(true, '직접 쓴 harness.js') + item(config.approval === 'ask', 'Approval ' + config.approval)
       + ($('missionScore').textContent ? item(true, '미션 ' + $('missionScore').textContent) : '');
+  $('hOpen').title = 'Harness 편집 패널을 엽니다 · ' + $('hSum').textContent;
 }
 
 /* ---------- 브라우저 모의 실행기 (미리보기) ----------
@@ -1926,6 +1935,7 @@ $('modelCustom').addEventListener('change', syncModel);
 $('tReq').innerHTML = '<option value="">예시 요청 고르기…</option>' + REQUESTS.map(([l, , scene], i) => `<option value="${i}">${esc(l)} · ${esc(scene)}</option>`).join('');
 $('tReq').onchange = () => { if ($('tReq').value !== '') $('prompt').value = REQUESTS[+$('tReq').value][1]; };
 $('prompt').addEventListener('input', () => { $('tReq').value = ''; });
+$('prompt').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); if (!$('send').disabled) $('send').click(); } });
 // 보내기: 화면의 코드가 지금 돌고 있는 코드와 다르면 먼저 적용하고 보냅니다. 화면에 보이는 코드가 언제나 실행되는 코드입니다.
 let liveReady = false;
 $('send').onclick = async () => {
