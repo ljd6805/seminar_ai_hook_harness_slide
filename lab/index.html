@@ -10,7 +10,7 @@ html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 "Pretendard Variable","Apple SD Gothic Neo","Malgun Gothic",sans-serif;word-break:keep-all;display:flex;flex-direction:column}
 a{color:var(--mint);text-underline-offset:4px}
 code{font-family:var(--mono);font-size:.92em}
-header{display:flex;align-items:center;gap:16px;padding:10px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:#0d1220}
+header{display:flex;align-items:center;gap:16px;padding:6px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:#0d1220}
 header .home{border:1px solid var(--line);border-radius:8px;padding:4px 11px;text-decoration:none;font-size:13px}
 header h1{font-size:18px;margin:0}
 header .sub{font-size:12px;color:var(--faint)}
@@ -126,14 +126,14 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .scen button.on{border-color:var(--mint);background:#13302c}
 
 /* ---------- 머신(Agent 루프) ---------- */
-.machine{position:relative;width:720px;height:804px;flex:none}
-.machine svg.wire{position:absolute;inset:0;width:720px;height:804px;overflow:visible}
+.machine{position:relative;width:1000px;height:650px;flex:none}
+.machine svg.wire{position:absolute;inset:0;width:1000px;height:650px;overflow:visible}
 .wire .ln{fill:none;stroke:var(--line);stroke-width:3;transition:stroke .25s,filter .25s}
 .wire .ln.thin{stroke-width:2}
 .wire .deny{stroke:#5b3a44;stroke-dasharray:7 6;stroke-width:2.5}
 .wire .hb{fill:none;stroke:#ff8a7a70;stroke-width:2;stroke-dasharray:9 7}
-.wire text{font:12px "Pretendard Variable","Apple SD Gothic Neo","Malgun Gothic",sans-serif;fill:var(--faint);transition:fill .25s}
-.wire text.hl{font-size:12.5px;font-weight:700;fill:#ff9d90;letter-spacing:.06em}
+.wire text{font:14.5px "Pretendard Variable","Apple SD Gothic Neo","Malgun Gothic",sans-serif;fill:var(--faint);transition:fill .25s}
+.wire text.hl{font-size:14px;font-weight:700;fill:#ff9d90;letter-spacing:.06em}
 .wire text.hs{fill:#c98a82}
 .wire .ln.lit{stroke:var(--violet);filter:drop-shadow(0 0 6px #b19bffaa)}
 .wire .ln.lit.ok{stroke:var(--mint);filter:drop-shadow(0 0 6px #61dec6aa)}
@@ -142,7 +142,7 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .wire text.lit{fill:var(--text)}
 .wire .ln.lit:not(.head){stroke-dasharray:10 7;animation:flow .6s linear infinite}
 .wire .head{stroke-width:2}
-.wire #tDeny{font-size:11.5px;fill:#a9706c}
+.wire #tDeny{font-size:13.5px;fill:#a9706c}
 .wire #tDeny.lit{fill:var(--coral)}
 @keyframes flow{to{stroke-dashoffset:-17}}
 .packet{position:absolute;left:0;top:0;width:23px;height:23px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 5px #b19bff33,0 0 22px #b19bffaa;transition:background .3s,box-shadow .3s;z-index:1;opacity:0;pointer-events:none}
@@ -150,19 +150,19 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .packet.bad{background:var(--coral);box-shadow:0 0 0 5px #ff8a7a33,0 0 22px #ff8a7aaa}
 .packet.ok{background:var(--mint);box-shadow:0 0 0 5px #61dec633,0 0 22px #61dec6aa}
 .packet.wait{background:var(--amber);box-shadow:0 0 0 5px #ffcc7a33,0 0 22px #ffcc7aaa;animation:blink 1s infinite}
-.packet span{position:absolute;left:50%;transform:translateX(-50%);top:-20px;font:11px var(--mono);color:var(--sub);white-space:nowrap;background:#0b0f1add;padding:0 5px;border-radius:4px}
+.packet span{position:absolute;left:50%;transform:translateX(-50%);top:-22px;font:13px var(--mono);color:var(--sub);white-space:nowrap;background:#0b0f1add;padding:0 5px;border-radius:4px}
 @keyframes blink{50%{opacity:.45}}
 .packet.below span{top:26px}
 .unit{position:absolute;transform:translate(-50%,-50%);width:220px;border:1.5px solid var(--line);border-radius:12px;padding:8px 13px;background:var(--card2);z-index:2;transition:border-color .25s,background .25s,box-shadow .25s,opacity .25s,transform .3s}
 .unit.top{transform:translate(-50%,0)}
-.unit .t{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.unit .t em{font-style:normal;font:10.5px var(--mono);color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:0 5px}
-.unit .d{font-size:12px;color:var(--faint);line-height:1.45}
-.unit .msg{font-size:12px;font-family:var(--mono);color:var(--sub);margin-top:2px;word-break:break-all;min-height:0}
+.unit .t{font-weight:700;font-size:17px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.unit .t em{font-style:normal;font:12px var(--mono);color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:0 5px}
+.unit .d{display:none}
+.unit .msg{font-size:14px;font-family:var(--mono);color:var(--sub);margin-top:2px;word-break:break-all;min-height:0}
 .unit.hook{border-style:dashed;border-color:#7a4a48}
 .unit .row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
-.chip{position:relative;border:1.5px solid var(--line);border-radius:9px;padding:4px 4px;text-align:center;font-size:12.5px;transition:all .25s;overflow:hidden;line-height:1.35}
-.chip small{display:block;font-size:10.5px;color:var(--faint)}
+.chip{position:relative;border:1.5px solid var(--line);border-radius:9px;padding:5px 3px;text-align:center;font-size:13.5px;white-space:nowrap;transition:all .25s;overflow:hidden;line-height:1.35}
+.chip small{display:block;font-size:12px;color:var(--faint)}
 .chip.off{opacity:.4;border-style:dotted}
 .active{border-color:var(--violet)!important;background:#1d1a33!important}
 .ok{border-color:var(--mint)!important;background:#11302a!important}
@@ -180,13 +180,13 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .approve{display:none;margin-top:8px;gap:8px}
 .approve.on{display:flex}
 .approve .btn{padding:5px 10px;font-size:13px}
-.user{position:absolute;left:360px;top:24px;transform:translate(-50%,-50%);border:1.5px solid var(--line);border-radius:30px;padding:3px 16px;font-size:13.5px;font-weight:700;background:var(--card2);z-index:2;transition:all .25s}
+.user{position:absolute;left:360px;top:24px;transform:translate(-50%,-50%);border:1.5px solid var(--line);border-radius:30px;padding:3px 18px;font-size:16px;font-weight:700;background:var(--card2);z-index:2;transition:all .25s}
 .user.focus{border-color:var(--violet)}
 .center{position:absolute;left:360px;transform:translateX(-50%);text-align:center;z-index:1}
-.center small{display:block;font:10.5px var(--mono);letter-spacing:.16em;color:var(--violet)}
-.center b{display:block;font-size:20px;line-height:1.3;margin:2px 0}
+.center small{display:block;font:12px var(--mono);letter-spacing:.16em;color:var(--violet)}
+.center b{display:block;font-size:23px;line-height:1.3;margin:2px 0}
 .center span{display:block;font-size:12px;color:var(--faint);line-height:1.45}
-.verdict{position:absolute;left:360px;top:432px;transform:translateX(-50%);width:300px;text-align:center;font-size:13.5px;line-height:1.45;z-index:1}
+.verdict{position:absolute;left:360px;top:432px;transform:translateX(-50%);width:320px;text-align:center;font-size:15.5px;line-height:1.45;z-index:1}
 .verdict.good{color:var(--mint)}.verdict.no{color:var(--coral)}.verdict.hold{color:var(--amber)}
 .gbtn{background:#1b2240;color:var(--violet);border:1px solid #4b3f86;border-radius:30px;padding:3px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
 .gbtn:hover{background:#262055}
@@ -249,18 +249,18 @@ details.note summary{font-size:12.5px;color:var(--faint)}
 .term-ctl label{display:flex;gap:4px;align-items:center}
 
 /* ---------- 트랜스포트(에뮬레이터 컨트롤) ---------- */
-.transport{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center;padding:10px 20px 12px;border-top:1px solid var(--line);background:#0d1220}
+.transport{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center;padding:6px 16px 7px;border-top:1px solid var(--line);background:#0d1220}
 .tbtns{display:flex;gap:6px}
-.tb{width:40px;height:38px;border-radius:9px;border:1px solid var(--line);background:#182039;color:var(--text);font-size:15px;cursor:pointer;display:grid;place-items:center}
+.tb{width:38px;height:34px;border-radius:9px;border:1px solid var(--line);background:#182039;color:var(--text);font-size:15px;cursor:pointer;display:grid;place-items:center}
 .tb:hover{border-color:var(--violet)}
 .tb.play{width:52px;border-color:var(--mint);color:var(--mint);font-size:17px}
 .tb.live{width:auto;padding:0 12px;font:600 12px var(--mono);letter-spacing:.06em}
 .tb.live.on{color:var(--coral);border-color:#7a3d3d}
 .tb.live.on::before{content:"●";margin-right:5px;animation:blink 1.2s infinite}
 .tl{min-width:0}
-.tl-top{display:flex;justify-content:space-between;font:11.5px var(--mono);color:var(--faint);margin-bottom:5px;gap:10px}
+.tl-top{display:flex;justify-content:space-between;font:11.5px var(--mono);color:var(--faint);margin-bottom:3px;gap:10px}
 .tl-top b{color:var(--text);font-weight:500}
-.track{position:relative;height:30px;background:#0a0e1a;border:1px solid var(--line);border-radius:8px;cursor:pointer;overflow:hidden}
+.track{position:relative;height:24px;background:#0a0e1a;border:1px solid var(--line);border-radius:8px;cursor:pointer;overflow:hidden}
 .track .buf{position:absolute;top:0;bottom:0;background:#b19bff14}
 .track .tick{position:absolute;top:7px;bottom:7px;width:3px;border-radius:2px;background:#3d4766;transform:translateX(-1px)}
 .track .tick.c{background:var(--violet)}.track .tick.x{background:var(--coral)}.track .tick.o{background:var(--mint)}.track .tick.w{background:var(--amber)}.track .tick.m{background:#5b6585;top:3px;bottom:3px;width:2px}
@@ -274,29 +274,31 @@ details.note summary{font-size:12.5px;color:var(--faint)}
 .dialinfo{font:12px/1.5 var(--mono);color:var(--faint);min-width:150px}
 .dialinfo b{color:var(--text);font-size:15px;font-weight:600}
 .dialinfo .mode{color:var(--mint)}
+.dial{zoom:.68}
+#dHint{display:none}
 .keys{font-size:11px;color:#59627e}
 /* ---------- 배치 v2: 실행 보기가 주인공 ----------
    ① Harness 패널은 펼치면 편집, 접으면 한 줄 요약. ②요청과 ③실행은 가운데 무대.
    로그·상태는 필요할 때만 여는 서랍입니다. 무대가 넓으면 요청·해설을 머신 오른쪽에 둡니다. */
-body{--hw:clamp(560px,44vw,860px);--dw:0px}
-body.hclosed{--hw:190px}
+body{--hw:clamp(560px,38vw,760px);--dw:0px}
+body.hclosed{--hw:0px}
 body.replay{--hw:340px}
 body.dopen{--dw:clamp(320px,23vw,400px)}
-main{flex:1;min-height:0;display:grid;grid-template-columns:var(--hw) minmax(0,1fr) var(--dw);gap:14px;padding:12px 16px}
+main{flex:1;min-height:0;display:grid;grid-template-columns:var(--hw) minmax(0,1fr) var(--dw);gap:0;padding:10px 16px}
+.hpanel{grid-column:1;margin-right:14px}.stage{grid-column:2}.drawer{grid-column:3;margin-left:14px}
 .card-s,.hpanel,.composer,.view,.narr,.drawer{background:var(--card);border:1px solid var(--line);border-radius:14px;min-width:0;min-height:0}
 .hpanel{display:flex;flex-direction:column;overflow:hidden}
 .hbody{flex:1;min-height:0;overflow:auto;padding:14px;container-type:inline-size}
-.hrail{all:unset;box-sizing:border-box;display:none;cursor:pointer;flex-direction:column;gap:10px;padding:16px 14px;height:100%}
-.hrail:hover{background:#192038}
-.hrail b{font-size:15px}
-.hrail .hgo{color:var(--mint);font-size:13px;font-weight:700;border:1px solid #316459;border-radius:8px;padding:5px 10px;align-self:flex-start}
-.hsum{display:flex;flex-direction:column;gap:6px}
-.hsum i{font-style:normal;font:12px var(--mono);color:var(--sub);border:1px solid var(--line);border-radius:7px;padding:4px 8px;background:#0d1222}
+.hcard{all:unset;box-sizing:border-box;grid-area:hcard;display:none;align-items:center;flex-wrap:wrap;gap:6px 8px;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 12px;min-width:0}
+.hcard:hover{border-color:#4a557a}
+.hcard b{font-size:14.5px;margin-right:2px}
+.hcard .hgo{margin-left:auto;color:var(--mint);font-size:12.5px;font-weight:700;border:1px solid #316459;border-radius:8px;padding:3px 10px;white-space:nowrap}
+.hsum{display:contents}
+.hsum i{font-style:normal;font:11.5px var(--mono);color:var(--sub);border:1px solid var(--line);border-radius:6px;padding:2px 7px;background:#0d1222;white-space:nowrap}
 .hsum i.off{color:var(--faint);border-style:dashed;opacity:.7}
 .hsum i.mode{font-family:inherit;color:var(--violet);border-color:#4b3f86}
-body.hclosed:not(.replay) .hrail{display:flex}
-body.hclosed:not(.replay) .hbody{display:none}
-.hrail .rt{display:flex;align-items:center;gap:8px}
+body.hclosed:not(.replay) .hcard{display:flex}
+body.hclosed:not(.replay) .hpanel{display:none}
 .fold{all:unset;cursor:pointer;margin-left:auto;font-size:12.5px;color:var(--sub);border:1px solid var(--line);border-radius:8px;padding:4px 10px;white-space:nowrap}
 .fold:hover{color:var(--text);border-color:#4a557a}
 .fold.on{color:var(--mint);border-color:#316459}
@@ -307,13 +309,15 @@ header .badge{margin-left:auto}
 .tab{display:none}.tab.on{display:block}
 
 .stage{min-width:0;min-height:0;container:stage/inline-size}
-.sgrid{height:100%;display:grid;gap:12px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"composer" "view" "narr"}
+.sgrid{height:100%;display:grid;gap:10px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;grid-template-areas:"hcard" "composer" "view" "narr"}
 .composer{grid-area:composer;padding:12px 14px}
-.view{grid-area:view;display:flex;flex-direction:column;padding:12px 14px 8px;overflow:hidden}
+.view{grid-area:view;position:relative;display:flex;flex-direction:column;padding:6px 8px;overflow:hidden}
+.view>.stephead{position:absolute;top:10px;left:14px;right:14px;z-index:4;pointer-events:none;margin:0}
+.view>.stephead .fold{pointer-events:auto;background:var(--card)}
+.view>.stephead .sub{display:none}
 .narr{grid-area:narr;padding:10px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
 .loopwrap{position:relative;flex:1;min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden}
 body.replay .composer{display:none}
-body.replay .sgrid{grid-template-areas:"view" "view" "narr"}
 .stephead .dirty{margin-left:auto}
 .rb-row{margin-top:2px}
 .rb-row #tReq{flex:1 1 auto;width:auto;min-width:120px}
@@ -330,8 +334,7 @@ body.replay .sgrid{grid-template-areas:"view" "view" "narr"}
 
 /* 무대가 넓으면: 머신 왼쪽, 요청·해설 오른쪽 */
 @container stage (min-width:1000px){
-  .sgrid{grid-template-columns:minmax(0,1fr) clamp(330px,30cqi,430px);grid-template-rows:auto minmax(0,1fr);grid-template-areas:"view composer" "view narr"}
-  body.replay .sgrid{grid-template-areas:"view narr" "view narr"}
+  .sgrid{grid-template-columns:minmax(0,1fr) clamp(320px,29cqi,420px);grid-template-rows:auto auto minmax(0,1fr);grid-template-areas:"view hcard" "view composer" "view narr"}
   .narr{grid-template-columns:1fr;align-content:start;align-self:start}
   .nctl{grid-template-columns:auto minmax(0,1fr) auto}
   .nctl .sbi{max-width:none}
@@ -348,12 +351,12 @@ body.dopen .drawer{display:flex}
 
 /* 좁은 화면: 펼친 Harness 패널과 서랍은 무대 위에 겹쳐 뜹니다 */
 @media(max-width:1700px){
-  body{--hw:190px}
+  body{--hw:0px}
   body.replay{--hw:300px}
   body.dopen{--dw:0px}
-  body:not(.replay) .hrail{display:flex}
-  body:not(.hclosed):not(.replay) .hbody{position:fixed;left:16px;top:58px;bottom:96px;width:max(min(560px,calc(100vw - 32px)),min(900px,calc(100vw - 480px)));z-index:20;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 60px #000c}
-  body.dopen .drawer{position:fixed;right:16px;top:58px;bottom:96px;width:min(420px,calc(100vw - 32px));z-index:20;box-shadow:0 20px 60px #000c}
+  body:not(.replay) .hcard{display:flex}
+  body:not(.hclosed):not(.replay) .hpanel{position:fixed;left:16px;top:52px;bottom:76px;width:max(min(560px,calc(100vw - 32px)),min(900px,calc(100vw - 470px)));z-index:20;margin:0;box-shadow:0 20px 60px #000c}
+  body.dopen .drawer{position:fixed;right:16px;top:52px;bottom:76px;width:min(420px,calc(100vw - 32px));z-index:20;box-shadow:0 20px 60px #000c}
 }
 @media(max-width:900px){main{grid-template-columns:1fr}.hpanel{display:none}.build{grid-template-columns:1fr}.transport{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -373,9 +376,6 @@ body.dopen .drawer{display:flex}
 <main>
   <!-- ① Harness: 펼치면 편집, 접으면 요약 -->
   <aside class="hpanel" id="hpanel">
-    <button class="hrail" id="hOpen" title="Harness 편집 패널 펼치기">
-      <span class="rt"><span class="num">1</span><b>Harness</b></span><span class="hgo">편집 ▸</span><span class="hsum" id="hSum"></span>
-    </button>
     <div class="hbody">
       <div class="tab on" id="tab-cfg">
         <div class="stephead"><span class="num">1</span><b>Harness 만들기</b>
@@ -446,6 +446,9 @@ body.dopen .drawer{display:flex}
 
   <!-- ②·③ 요청과 실행 -->
   <section class="stage" id="stage"><div class="sgrid">
+    <button class="hcard" id="hOpen" title="Harness 편집 패널을 엽니다">
+      <span class="num">1</span><b>Harness</b><span class="hsum" id="hSum"></span><span class="hgo">편집 ▸</span>
+    </button>
     <div class="composer" id="runbar">
       <div class="stephead"><span class="num">2</span><b>요청 보내기</b><span class="dirty" id="dirty"></span></div>
       <div class="rb-row">
@@ -472,11 +475,11 @@ body.dopen .drawer{display:flex}
         <button class="fold" id="logBtn" title="상태 칸과 사건 로그를 엽니다">로그·상태 ▸</button></div>
     <div class="loopwrap" id="loopwrap">
     <div class="machine" id="machine">
-      <svg class="wire" viewBox="0 0 720 804" aria-hidden="true">
+      <svg class="wire" viewBox="0 0 1000 650" aria-hidden="true">
         <defs><marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 9 5 1 9z" fill="context-stroke"/></marker></defs>
-        <rect class="hb" x="8" y="62" width="704" height="736" rx="22"/>
-        <text class="hl" x="26" y="784">HARNESS</text>
-        <text class="hs" x="104" y="784">OpenCode가 Agent 루프를 돌리고, 플러그인 Hook이 길목마다 끼어듭니다</text>
+        <rect class="hb" x="8" y="62" width="984" height="580" rx="22"/>
+        <text class="hl" x="26" y="626">HARNESS</text>
+        <text class="hs" x="112" y="626">OpenCode가 Agent 루프를 돌리고, 플러그인 Hook이 길목마다 끼어듭니다</text>
         <path id="aIn" class="ln thin" d="M346 40 V98" marker-end="url(#ah)"/>
         <path id="aOut" class="ln thin" d="M374 98 V40" marker-end="url(#ah)"/>
         <text id="tIn" x="338" y="76" text-anchor="end">요청</text>
@@ -492,15 +495,15 @@ body.dopen .drawer{display:flex}
         <text id="tRes" x="164" y="500" text-anchor="middle">③ 결과</text>
         <text id="tObs" x="164" y="194" text-anchor="middle">④ 관찰 → 다음 생각</text>
         <text id="tDeny" dy="15"><textPath href="#pDenyT" startOffset="46%" text-anchor="middle">거부 → 오류를 결과로</textPath></text>
-        <path id="aBr" class="ln thin" d="M360 560 V604 M130 604 H590 M130 604 V630 M360 604 V630 M590 604 V630"/>
-        <text x="244" y="623" text-anchor="middle">validate · submit일 때</text>
+        <path id="aBr" class="ln thin" d="M472 530 H726 M726 200 V480 M726 200 H748 M726 340 H748 M726 480 H748"/>
+        <text x="726" y="168" text-anchor="middle">validate · submit일 때</text>
       </svg>
       <div class="user" id="uUser">사용자</div>
       <div class="packet" id="packet"><span id="packetLabel"></span></div>
-      <div class="center" style="top:258px;left:348px"><small>AGENT LOOP</small><b id="loopN">대기 중</b></div>
-      <div class="verdict" id="loopD" style="top:418px;color:var(--faint);font-size:12.5px"></div>
+      <div class="center" style="top:258px;left:326px"><small>AGENT LOOP</small><b id="loopN">대기 중</b></div>
+      <div class="verdict" id="loopD" style="top:418px;color:var(--faint);font-size:14px"></div>
       <div class="unit" id="uAgent" style="left:360px;top:140px;width:272px"><div class="t">Agent <em>LLM</em></div><div class="d">지난 결과를 보고 다음 도구를 고릅니다</div><div class="msg" id="mAgent"></div></div>
-      <div class="unit hook" id="uBefore" style="left:574px;top:340px;width:264px"><div class="t">before Hook <em>실행 전</em></div><div class="d">tool.execute.before가 호출을 가로채 판정합니다</div>
+      <div class="unit hook" id="uBefore" style="left:578px;top:340px;width:286px"><div class="t">before Hook <em>실행 전</em></div><div class="d">tool.execute.before가 호출을 가로채 판정합니다</div>
         <div class="row">
           <div class="chip" id="uRecord">① Record<small>record()</small></div>
           <div class="chip" id="uLimit">② Limit<small>attempted</small></div>
@@ -510,10 +513,10 @@ body.dopen .drawer{display:flex}
       </div>
       <div class="unit" id="uExec" style="left:360px;top:530px;width:220px"><div class="t">도구 실행 <em>execute</em></div><div class="d">Hook을 통과한 도구가 실제로 읽고 씁니다</div><div class="msg" id="mExec"></div></div>
       <div class="unit hook" id="uAfter" style="left:156px;top:340px;width:196px"><div class="t">after Hook <em>실행 후</em></div><div class="d">tool.execute.after가 결과를 기록합니다</div><div class="msg" id="mAfter"></div></div>
-      <div class="unit top" id="uVal" style="left:128px;top:632px;width:208px"><div class="t">Validation</div><div class="d">acceptValidation · 스키마·합계·보고서·원본</div><div class="msg" id="mVal"></div></div>
-      <div class="unit top" id="uAppr" style="left:360px;top:632px;width:224px"><div class="t">Approval <em>ask</em></div><div class="d">canSubmit 뒤에 사람에게 묻습니다</div><div class="msg" id="mAppr"></div>
+      <div class="unit col" id="uVal" style="left:862px;top:200px;width:224px"><div class="t">Validation</div><div class="d">acceptValidation · 스키마·합계·보고서·원본</div><div class="msg" id="mVal"></div></div>
+      <div class="unit col" id="uAppr" style="left:862px;top:340px;width:224px"><div class="t">Approval <em>ask</em></div><div class="d">canSubmit 뒤에 사람에게 묻습니다</div><div class="msg" id="mAppr"></div>
         <div class="approve" id="approve"><button class="btn pri" id="apOnce">한 번 허용</button><button class="btn warn" id="apReject">거절</button></div></div>
-      <div class="unit top" id="uSub" style="left:592px;top:632px;width:208px"><div class="t">제출 <em>receipt</em></div><div class="d">로컬 영수증을 한 번만 만듭니다</div><div class="msg" id="mSub"></div></div>
+      <div class="unit col" id="uSub" style="left:862px;top:480px;width:224px"><div class="t">제출 <em>receipt</em></div><div class="d">로컬 영수증을 한 번만 만듭니다</div><div class="msg" id="mSub"></div></div>
       <div class="verdict" id="verdict" style="top:440px"></div>
     </div>
     </div>
@@ -1226,7 +1229,7 @@ const renderCache = {};
    패킷은 링 위에서는 시계 방향 호를 따라, 거부되면 안쪽 점선 호를 따라 거꾸로 돌아갑니다. */
 const C = { x: 360, y: 340 }, R = 200;
 const DOCK = { uAgent: { a: -90, r: 150 }, uBefore: { a: -40, r: R }, uExec: { a: 52, r: R }, uAfter: { a: 150, r: R },
-  uVal: { x: 128, y: 604 }, uAppr: { x: 360, y: 604 }, uSub: { x: 592, y: 604 }, uUser: { x: 374, y: 58 }, uUserIn: { x: 346, y: 58 } };
+  uVal: { x: 760, y: 200 }, uAppr: { x: 760, y: 340 }, uSub: { x: 760, y: 480 }, uUser: { x: 374, y: 58 }, uUserIn: { x: 346, y: 58 } };
 DOCK.uRecord = DOCK.uLimit = DOCK.uPolicy = DOCK.uBefore;
 const xy = p => p.a === undefined ? p : { x: C.x + p.r * Math.cos(p.a * Math.PI / 180), y: C.y + p.r * Math.sin(p.a * Math.PI / 180) };
 const denyR = k => R - 50 * k - 22 * Math.sin(Math.PI * k);
@@ -1245,9 +1248,9 @@ function drawWires() {
   head('hCall', -90, 0); head('hRun', 0, 90); head('hRes', 90, 180); head('hObs', 180, 270); head('hDeny', -40, -90, denyR);
 }
 function fitMachine() {
-  // 머신은 720×804 좌표로 그려 두고, 무대에 꽉 차도록 배율만 바꿉니다.
+  // 머신은 1000×650 가로형 좌표로 그려 두고, 무대에 꽉 차도록 배율만 바꿉니다.
   const wrap = $('loopwrap');
-  $('machine').style.zoom = Math.max(0.3, Math.min(1.45, (wrap.clientWidth - 8) / 720, (wrap.clientHeight - 8) / 804));
+  $('machine').style.zoom = Math.max(0.45, Math.min(1.6, (wrap.clientWidth - 8) / 1000, (wrap.clientHeight - 8) / 650));
 }
 const PK = { cur: null, raf: 0 };
 function placePk(p) { const c = xy(p); const pk = $('packet'); pk.style.left = (c.x - 11.5) + 'px'; pk.style.top = (c.y - 11.5) + 'px'; }
