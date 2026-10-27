@@ -158,6 +158,8 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .unit .t{font-weight:700;font-size:17px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .unit .t em{font-style:normal;font:12px var(--mono);color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:0 5px}
 .unit .d{display:none}
+/* 다이어그램에는 이름과 지금 상태만 남기고, 풀이는 해설 칸이 맡습니다 */
+.unit .t em,.chip small,#gHs,#gBr,#loopD{display:none!important}
 .unit .msg{font-size:14px;font-family:var(--mono);color:var(--sub);margin-top:2px;word-break:break-all;min-height:0}
 .unit.hook{border-style:dashed;border-color:#7a4a48}
 .unit .row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
@@ -308,13 +310,16 @@ header .seg{margin-left:10px}
 header .badge{margin-left:auto}
 .tab{display:none}.tab.on{display:block}
 
-.stage{min-width:0;min-height:0;container:stage/inline-size}
+.stage{min-width:0;min-height:0;container:stage/size}
 .sgrid{height:100%;display:grid;gap:10px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;grid-template-areas:"hcard" "composer" "view" "narr"}
 .composer{grid-area:composer;padding:12px 14px}
 .view{grid-area:view;position:relative;display:flex;flex-direction:column;padding:6px 8px;overflow:hidden}
 .view>.stephead{position:absolute;top:10px;left:14px;right:14px;z-index:4;pointer-events:none;margin:0}
 .view>.stephead .fold{pointer-events:auto;background:var(--card)}
 .view>.stephead .sub{display:none}
+.view>.stephead .seg.mini{pointer-events:auto;margin-left:auto;padding:2px}
+.view>.stephead .seg.mini button{padding:2px 9px;font-size:12px}
+.view>.stephead .seg.mini+.fold{margin-left:6px}
 .narr{grid-area:narr;padding:10px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
 .loopwrap{position:relative;flex:1;min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden}
 body.replay .composer{display:none}
@@ -333,7 +338,8 @@ body.replay .composer{display:none}
 .nctl .sbi{max-width:200px}
 
 /* 무대가 넓으면: 머신 왼쪽, 요청·해설 오른쪽 */
-@container stage (min-width:1000px){
+/* 무대가 넓고 가로로 길 때만 요청·해설을 오른쪽에 둡니다. 세로 화면에서는 위아래로 쌓습니다. */
+@container stage (min-width:1000px) and (min-aspect-ratio:5/4){
   .sgrid{grid-template-columns:minmax(0,1fr) clamp(320px,29cqi,420px);grid-template-rows:auto auto minmax(0,1fr);grid-template-areas:"view hcard" "view composer" "view narr"}
   .narr{grid-template-columns:1fr;align-content:start;align-self:start}
   .nctl{grid-template-columns:auto minmax(0,1fr) auto}
@@ -472,14 +478,15 @@ body.dopen .drawer{display:flex}
 
     <div class="view" id="view">
       <div class="stephead"><span class="num">3</span><b>실행 보기</b><span class="sub">패킷 한 바퀴가 도구 호출 한 번입니다</span>
+        <span class="seg mini" id="shapeSeg" title="다이어그램 모양. 자동은 화면에 더 크게 들어가는 쪽을 고릅니다"><button data-shape="auto" class="on">자동</button><button data-shape="wide">가로</button><button data-shape="tall">세로</button></span>
         <button class="fold" id="logBtn" title="상태 칸과 사건 로그를 엽니다">로그·상태 ▸</button></div>
     <div class="loopwrap" id="loopwrap">
     <div class="machine" id="machine">
       <svg class="wire" viewBox="0 0 1000 650" aria-hidden="true">
         <defs><marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 9 5 1 9z" fill="context-stroke"/></marker></defs>
-        <rect class="hb" x="8" y="62" width="984" height="580" rx="22"/>
-        <text class="hl" x="26" y="626">HARNESS</text>
-        <text class="hs" x="112" y="626">OpenCode가 Agent 루프를 돌리고, 플러그인 Hook이 길목마다 끼어듭니다</text>
+        <rect class="hb" id="gHb" x="8" y="62" width="984" height="580" rx="22"/>
+        <text class="hl" id="gHl" x="26" y="626">HARNESS</text>
+        <text class="hs" id="gHs" x="112" y="626">OpenCode가 Agent 루프를 돌리고, 플러그인 Hook이 길목마다 끼어듭니다</text>
         <path id="aIn" class="ln thin" d="M346 40 V98" marker-end="url(#ah)"/>
         <path id="aOut" class="ln thin" d="M374 98 V40" marker-end="url(#ah)"/>
         <text id="tIn" x="338" y="76" text-anchor="end">요청</text>
@@ -490,13 +497,13 @@ body.dopen .drawer{display:flex}
         <path id="aObs" class="ln"/><path id="hObs" class="ln head" marker-end="url(#ah)"/>
         <path id="aDeny" class="ln deny"/><path id="hDeny" class="ln deny head" marker-end="url(#ah)"/>
         <path id="pDenyT" fill="none"/>
-        <text id="tCall" x="556" y="194" text-anchor="middle">① 도구 호출</text>
-        <text id="tRun" x="556" y="500" text-anchor="middle">② 허용되면 실행</text>
+        <text id="tCall" x="618" y="204" text-anchor="middle">① 호출</text>
+        <text id="tRun" x="556" y="500" text-anchor="middle">② 실행</text>
         <text id="tRes" x="164" y="500" text-anchor="middle">③ 결과</text>
-        <text id="tObs" x="164" y="194" text-anchor="middle">④ 관찰 → 다음 생각</text>
-        <text id="tDeny" dy="15"><textPath href="#pDenyT" startOffset="46%" text-anchor="middle">거부 → 오류를 결과로</textPath></text>
+        <text id="tObs" x="164" y="194" text-anchor="middle">④ 다음 생각</text>
+        <text id="tDeny" dy="15"><textPath href="#pDenyT" startOffset="46%" text-anchor="middle">막힘 → 되돌림</textPath></text>
         <path id="aBr" class="ln thin" d="M472 530 H726 M726 200 V480 M726 200 H748 M726 340 H748 M726 480 H748"/>
-        <text x="726" y="168" text-anchor="middle">validate · submit일 때</text>
+        <text id="gBr" x="726" y="168" text-anchor="middle">validate · submit일 때</text>
       </svg>
       <div class="user" id="uUser">사용자</div>
       <div class="packet" id="packet"><span id="packetLabel"></span></div>
@@ -930,11 +937,50 @@ function drawWires() {
   const head = (id, a0, a1, rf) => { const p = arcD(a0, a1, rf).split(' L'); $(id).setAttribute('d', 'M' + p[11].replace('M', '') + ' L' + p[13]); };
   head('hCall', -90, 0); head('hRun', 0, 90); head('hRes', 90, 180); head('hObs', 180, 270); head('hDeny', -40, -90, denyR);
 }
-function fitMachine() {
-  // 머신은 1000×650 가로형 좌표로 그려 두고, 무대에 꽉 차도록 배율만 바꿉니다.
-  const wrap = $('loopwrap');
-  $('machine').style.zoom = Math.max(0.45, Math.min(1.6, (wrap.clientWidth - 8) / 1000, (wrap.clientHeight - 8) / 650));
+/* 다이어그램 모양 두 가지. 루프(링)는 같고, Validation·Approval·제출 줄의 자리만 다릅니다.
+   wide = 루프 오른쪽 세로 열(1000×604), tall = 루프 아래 가로 줄(720×770).
+   자동은 지금 무대 크기에 더 크게 들어가는 쪽을 고릅니다. */
+const SHAPES = {
+  wide: { w: 1000, h: 604, hb: [984, 534], foot: 586, br: 'M472 530 H726 M726 200 V480 M726 200 H748 M726 340 H748 M726 480 H748', brText: [726, 168],
+    units: { uVal: [862, 200], uAppr: [862, 340], uSub: [862, 480] }, top: false, width: 224, before: [578, 286],
+    dock: { uVal: { x: 760, y: 200 }, uAppr: { x: 760, y: 340 }, uSub: { x: 760, y: 480 } } },
+  tall: { w: 720, h: 770, hb: [704, 700], foot: 752, br: 'M360 562 V604 M128 604 H592 M128 604 V630 M360 604 V630 M592 604 V630', brText: [244, 623],
+    units: { uVal: [128, 632], uAppr: [360, 632], uSub: [592, 632] }, top: true, width: 214, before: [566, 268],
+    dock: { uVal: { x: 128, y: 604 }, uAppr: { x: 360, y: 604 }, uSub: { x: 592, y: 604 } } },
+};
+let shapePref = recall('lab.shape') || 'auto', shapeNow = null;
+function applyShape(name) {
+  const g = SHAPES[name]; shapeNow = name;
+  const m = $('machine'), svg = m.querySelector('svg.wire');
+  m.style.width = g.w + 'px'; m.style.height = g.h + 'px'; svg.style.width = g.w + 'px'; svg.style.height = g.h + 'px';
+  svg.setAttribute('viewBox', `0 0 ${g.w} ${g.h}`);
+  $('gHb').setAttribute('width', g.hb[0]); $('gHb').setAttribute('height', g.hb[1]);
+  $('gHl').setAttribute('y', g.foot); $('gHs').setAttribute('y', g.foot);
+  $('aBr').setAttribute('d', g.br); $('gBr').setAttribute('x', g.brText[0]); $('gBr').setAttribute('y', g.brText[1]);
+  for (const [id, [x, y]] of Object.entries(g.units)) {
+    const u = $(id); u.style.left = x + 'px'; u.style.top = y + 'px'; u.style.width = g.width + 'px'; u.classList.toggle('top', g.top);
+  }
+  $('uBefore').style.left = g.before[0] + 'px'; $('uBefore').style.width = g.before[1] + 'px';
+  Object.assign(DOCK, g.dock);
+  m.dataset.shape = name;
 }
+function fitMachine() {
+  // 머신은 고정 좌표로 그려 두고, 무대에 꽉 차도록 배율만 바꿉니다.
+  const wrap = $('loopwrap'), W = wrap.clientWidth - 8, H = wrap.clientHeight - 8;
+  const z = g => Math.min(1.6, W / g.w, H / g.h);
+  const pick = shapePref !== 'auto' ? shapePref : z(SHAPES.tall) > z(SHAPES.wide) * 1.04 ? 'tall' : 'wide';
+  const changed = pick !== shapeNow;
+  if (changed) applyShape(pick);
+  $('machine').style.zoom = Math.max(0.4, z(SHAPES[pick]));
+  if (changed && labReady) render(false);
+}
+let labReady = false;
+document.querySelectorAll('#shapeSeg button').forEach(b => b.onclick = () => {
+  shapePref = b.dataset.shape; try { localStorage.setItem('lab.shape', shapePref); } catch {}
+  document.querySelectorAll('#shapeSeg button').forEach(x => x.classList.toggle('on', x === b));
+  fitMachine();
+});
+document.querySelectorAll('#shapeSeg button').forEach(x => x.classList.toggle('on', x.dataset.shape === shapePref));
 const PK = { cur: null, raf: 0 };
 function placePk(p) { const c = xy(p); const pk = $('packet'); pk.style.left = (c.x - 11.5) + 'px'; pk.style.top = (c.y - 11.5) + 'px'; }
 function legs(from, to, back) {
@@ -1753,7 +1799,7 @@ document.addEventListener('keydown', e => {
 if (recall('lab.hOpen') === '0') document.body.classList.add('hclosed');
 if (recall('lab.drawer') === '1') setDrawer(true);
 new ResizeObserver(() => fitMachine()).observe($('loopwrap'));
-drawWires(); fitMachine(); loadReplay(DATA.events); renderForm(); renderBasicCode(false); setCourse('basic'); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); autoPlay();
+drawWires(); fitMachine(); labReady = true; loadReplay(DATA.events); renderForm(); renderBasicCode(false); setCourse('basic'); renderScen(); setGap(0.8); dialMode(); sim.resetFiles(); render(false); autoPlay();
 let guideSeen = false; try { guideSeen = localStorage.getItem('lab.guideSeen') === '1'; } catch {}
 if (!guideSeen) setTimeout(() => guideOpen(0), 600);
 window.addEventListener('resize', () => render(false));
