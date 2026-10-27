@@ -118,6 +118,8 @@ textarea.code.edit{min-height:max(260px,calc(100vh - 560px));font:11.5px/1.62 va
 .rb-tools details{margin-left:auto;font-size:12px}
 #applyNote{margin:5px 0 0}
 #applyNote:empty{display:none}
+#waitNote{margin:0;font-size:12.5px;color:var(--amber)}
+#waitNote:empty{display:none}
 
 details summary{cursor:pointer;color:var(--sub);font-size:13px;margin:8px 0}
 .scen{display:flex;flex-direction:column;gap:7px}
@@ -324,11 +326,12 @@ header .badge{margin-left:auto}
 .sgrid{height:100%;display:grid;gap:10px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;grid-template-areas:"hcard" "composer" "view" "narr"}
 .composer{grid-area:composer;padding:10px 12px;display:flex;flex-direction:column;gap:7px;overflow:auto}
 .composer>.stephead{margin:0}
-.composer #prompt{flex:1 1 auto;min-height:5.2em;font-size:14px;line-height:1.55;padding:8px 10px;resize:none}
+.composer #prompt{flex:1 1 0;min-height:4.4em;font-size:14px;line-height:1.55;padding:8px 10px;resize:none}
 .composer .rb-tools{margin:0}
 .composer #send{all:unset;margin-left:auto;cursor:pointer;font-weight:700;font-size:14px;color:#0b0f1a;background:var(--mint);border-radius:9px;padding:7px 16px;white-space:nowrap}
 .composer #send:disabled{opacity:.45;cursor:not-allowed}
-.composer .rb-reply{margin:0;max-height:6.4em;background:#0d1222;border:1px solid var(--line);border-radius:9px;padding:6px 9px}
+.composer .rb-reply{margin:0;flex:1 1 0;min-height:4.4em;max-height:none;font-size:13.5px;overflow:auto;background:#0d1222;border:1px solid var(--line);border-radius:9px;padding:6px 9px}
+.composer .rb-reply b{display:block;font-size:12px;margin-bottom:2px}
 .composer details.note{margin:0 0 0 6px}
 .composer details.note summary{list-style:none;margin:0;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:12px}
 .composer details.note summary::-webkit-details-marker{display:none}
@@ -495,7 +498,7 @@ body.dopen .drawer{display:flex}
         <span id="modelWrap" style="display:none"><select id="model" title="요청을 보낼 모델입니다. 기본값은 OpenCode 설정의 기본 모델이고, 로그인(SSO 포함)은 OpenCode가 그대로 씁니다."></select></span>
       </div>
       <input id="modelCustom" placeholder="공급자/모델 (예: myprovider/gpt-6-luna)" spellcheck="false" autocomplete="off" style="display:none">
-      <textarea id="prompt" rows="4" placeholder="Agent에게 보낼 요청을 쓰세요. Ctrl+Enter로 보냅니다.">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
+      <textarea id="prompt" rows="2" placeholder="Agent에게 보낼 요청을 쓰세요. Ctrl+Enter로 보냅니다.">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</textarea>
       <div class="rb-tools">
         <button id="newSession" title="시도 횟수와 검증 횟수를 0부터 다시 셉니다">새 세션</button>
         <button id="abort" title="돌고 있는 Agent를 멈춥니다">중단</button>
@@ -504,6 +507,7 @@ body.dopen .drawer{display:flex}
       </div>
       <button class="apjump" id="apJump">⏸ Agent가 사람의 승인을 기다립니다 · 승인 단계로 가기</button>
       <p class="small" id="applyNote"></p>
+      <p id="waitNote"></p>
       <div class="rb-reply"><b>Agent 응답</b> <span id="replyText">아직 요청을 보내지 않았습니다.</span></div>
     </div>
 
@@ -1629,8 +1633,20 @@ function push(kind, data) {
   if (kind === 'opencode' && data.type === 'permission.asked') pendingAskId = data.properties?.id || 'pending';
   if (kind === 'opencode' && data.type === 'permission.replied') pendingAskId = null;
   if (kind === 'opencode' && data.type === 'session.idle') { setBusy(false); pendingAskId = null; }
+  if (waitPhase?.first && kind === 'opencode' && (data.type === 'tool' || data.type === 'text' || data.type === 'session.idle' || data.type === 'session.error')) endWait();
   if (tape === labTape) { if (player.cur < 0) render(false); else { renderLog(false); renderTimeline(); } }
 }
+/* 기다리는 동안 무엇을 기다리는지와 걸린 시간을 보여 줍니다. 끝나면 로그에 시간을 남겨 어디서 느린지 알 수 있게 합니다. */
+let waitPhase = null;
+function startWait(label) { endWait(); waitPhase = { label, t0: performance.now() }; tickWait(); }
+function endWait(logIt = true) {
+  if (!waitPhase) return;
+  const sec = ((performance.now() - waitPhase.t0) / 1000).toFixed(1);
+  if (logIt) sys(waitPhase.label + ' · ' + sec + '초');
+  waitPhase = null; $('waitNote').textContent = '';
+}
+function tickWait() { if (waitPhase) $('waitNote').textContent = '⏳ ' + waitPhase.label + ' · ' + Math.floor((performance.now() - waitPhase.t0) / 1000) + '초'; }
+setInterval(tickWait, 500);
 let agentBusy = false;
 function setBusy(b) {
   // Agent가 도는 동안에는 새 요청·새 세션·파일 비우기를 막아, 두 실행이 한 테이프에 섞이지 않게 합니다.
@@ -2059,8 +2075,9 @@ $('send').onclick = async () => {
     if (needsApply()) {
       if (!(await applyHarness())) return;
       if (mode === 'live') {
-        $('applyNote').textContent = 'OpenCode를 이 코드로 다시 시작하는 중입니다…';
-        if (!(await waitReady())) { $('applyNote').textContent = 'OpenCode가 다시 뜨지 않았습니다. 터미널 로그를 확인하세요.'; return; }
+        startWait('새 Harness로 OpenCode를 다시 시작하는 중');
+        const ok = await waitReady(); endWait(ok);
+        if (!ok) { $('applyNote').textContent = 'OpenCode가 다시 뜨지 않았습니다. 터미널 로그를 확인하세요.'; return; }
       }
     }
     $('applyNote').textContent = '';
@@ -2074,8 +2091,9 @@ async function sendRequest(text) {
   setBusy(true);
   if (!player.playing) autoPlay();
   if (mode === 'live') {
+    startWait('모델의 첫 응답을 기다리는 중'); waitPhase.first = true;
     try { await api('/api/prompt', { text, model: chosenModel() }); }
-    catch (e) { sys('요청 실패: ' + e.message); setBusy(false); }
+    catch (e) { endWait(false); sys('요청 실패: ' + e.message); setBusy(false); }
   } else sim.run(text);
 }
 $('newSession').onclick = async () => {
