@@ -1,0 +1,708 @@
+    <!-- 1 · 표지 -->
+    <section class="section-opener" data-hero data-sec="실험실 학습 가이드">
+      <div class="autoshow fade-up"><span class="chip">Hook &amp; Harness 세미나 · 실습 길잡이</span></div>
+      <h1 class="autoshow fade-up" style="font-size:4.4rem">Hook·Harness 실험실<br><span class="grad">학습 가이드</span></h1>
+      <p class="autoshow fade-up" style="font-size:1.45rem; margin-top:1.1rem">요청을 하나 보내고, Agent가 부른 도구를 <span class="accent">Hook</span>이 어떻게 판정하는지 한 단계씩 따라가 봅니다.</p>
+      <div class="meta autoshow fade-up">
+        <span><b>대상</b> 실험실을 처음 여는 사람</span><span><b>준비</b> 브라우저 하나면 시작할 수 있습니다</span><span><b>ver</b> 0.1</span>
+      </div>
+      <p class="mode-links autoshow fade-up"><a href="../lab/index.html">실험실 열기</a> &nbsp;·&nbsp; <a href="../docs/index.html">문서 허브</a></p>
+    </section>
+
+    <!-- 2 · 오늘의 길 -->
+    <section data-sec="시작">
+      <div><span class="chip">시작</span></div>
+      <h2>학습 순서</h2>
+      <p class="lg-sub">실험실에서 무엇을 어떤 순서로 해 보면 좋을까요?</p>
+      <div class="lg-steps c5 sim" style="margin-top:1.2rem">
+        <div class="lg-step autoshow fade-up"><div class="hd"><span class="lg-n">1</span><b>준비</b></div><p>실험실을 여는 세 가지 방법과 라이브 모드 실행 명령을 익힙니다.</p><span class="foot">10분</span></div>
+        <div class="lg-step autoshow fade-up"><div class="hd"><span class="lg-n">2</span><b>화면 읽기</b></div><p>Harness·요청·실행 보기 세 칸과, 패킷이 도는 다이어그램을 읽는 법을 봅니다.</p><span class="foot">10분</span></div>
+        <div class="lg-step autoshow fade-up"><div class="hd"><span class="lg-n">3</span><b>첫 실행</b></div><p>합계 계산 요청을 보내고, 검증 실패와 사람 승인까지 한 단계씩 넘겨 봅니다.</p><span class="foot">15분</span></div>
+        <div class="lg-step autoshow fade-up"><div class="hd"><span class="lg-n">4</span><b>실험 다섯 가지</b></div><p>기본 과정에서 설정을 하나씩 바꾸고, 어느 칸에서 막히는지 확인합니다.</p><span class="foot">25분</span></div>
+        <div class="lg-step autoshow fade-up"><div class="hd"><span class="lg-n">5</span><b>고급 미션</b></div><p>빈 뼈대에서 <code>harness.js</code>를 직접 쓰고 미션 8개를 통과시킵니다.</p><span class="foot">40분 이상</span></div>
+      </div>
+      <p class="note autoshow fade-up" style="margin-top:1.4rem">처음에는 실제 모델 없이 <b>미리보기</b>로 화면에 익숙해지고, 그다음 라이브 모드에서 실제 OpenCode로 같은 실험을 반복하는 순서를 권합니다.</p>
+    </section>
+
+    <!-- 3 · 실험실이란 -->
+    <section data-sec="시작">
+      <div><span class="chip">시작</span></div>
+      <h2>Hook·Harness 실험실</h2>
+      <p class="lg-sub">이 실험실은 무엇을 눈으로 보여 주는 도구일까요?</p>
+      <div class="sim" style="margin-top:1.3rem">
+        <div class="lg-flow">
+          <div class="lg-fn user" style="--i:0"><b>사용자 요청</b><small>"합계를 계산해서 제출해 줘"</small></div>
+          <div class="lg-fa" style="--i:1">→</div>
+          <div class="lg-fn agent" style="--i:1"><b>Agent</b><small>LLM이 부를 도구를 고릅니다</small></div>
+          <div class="lg-fa" style="--i:2">→</div>
+          <div class="lg-fn hook" style="--i:2"><b>before Hook</b><small>Record · Limit · Policy로 판정</small></div>
+          <div class="lg-fa" style="--i:3">→</div>
+          <div class="lg-fn run" style="--i:3"><b>도구 실행</b><small>파일을 실제로 읽고 씁니다</small></div>
+          <div class="lg-fa" style="--i:4">→</div>
+          <div class="lg-fn hook" style="--i:4"><b>after Hook</b><small>결과를 기록합니다</small></div>
+          <div class="lg-fa" style="--i:5">↺</div>
+          <div class="lg-fn agent" style="--i:5"><b>다시 Agent</b><small>결과를 보고 다음 도구를 고릅니다</small></div>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-top:1.6rem">
+        <div class="panel autoshow fade-up"><b class="accent">실제로 돌아갑니다</b><p class="small dim" style="margin-top:0.5rem">라이브 모드에서는 OpenCode 1.19.4가 실제 모델로 도구를 부르고, Harness 플러그인의 Hook이 그 호출을 판정합니다.</p></div>
+        <div class="panel autoshow fade-up"><b class="accent2">천천히 볼 수 있습니다</b><p class="small dim" style="margin-top:0.5rem">일어난 사건은 모두 테이프에 쌓입니다. 실행이 순식간에 끝나도 한 단계씩 앞뒤로 넘겨 볼 수 있습니다.</p></div>
+        <div class="panel autoshow fade-up"><b class="accent4">직접 바꿔 봅니다</b><p class="small dim" style="margin-top:0.5rem">화면에서 만든 <code class="lg-code">harness.js</code>가 곧 실행되는 Harness입니다. 규칙을 바꾸면 막히는 지점도 바뀝니다.</p></div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:0.6rem"><button class="pill" onclick="simReplay(this)" style="cursor:pointer">↻ 다시 재생</button></div>
+    </section>
+
+    <!-- 4 · 세 가지 모드 -->
+    <section data-sec="1부 · 준비">
+      <div><span class="chip">1부 · 준비</span></div>
+      <h2>세 가지 모드</h2>
+      <p class="lg-sub">실험실은 어떻게 열고, 그때 무엇이 요청을 실행할까요?</p>
+      <div class="lg-steps c3" style="margin-top:1.1rem">
+        <div class="lg-step autoshow fade-up"><div class="hd"><span class="pill amber">미리보기</span></div>
+          <p><b>여는 법</b>: <code>lab/index.html</code>을 브라우저로 열거나, GitHub Pages 주소로 접속합니다.</p>
+          <p><b>실행하는 것</b>: 브라우저 안의 모의 실행기입니다. 적용한 <code>harness.js</code>는 그대로 실행하지만, Agent는 요청 낱말로 고르는 고정 시나리오입니다.</p>
+          <span class="foot">설치가 필요 없습니다. 화면을 익힐 때 씁니다.</span></div>
+        <div class="lg-step mint autoshow fade-up"><div class="hd"><span class="pill green">라이브</span></div>
+          <p><b>여는 법</b>: 저장소 루트에서 <code>node lab/server.mjs</code>를 실행하고 <code>http://127.0.0.1:4300/</code>을 엽니다.</p>
+          <p><b>실행하는 것</b>: 실제 OpenCode와, OpenCode에 연결해 둔 모델입니다.</p>
+          <span class="foot">진짜 Agent가 어떻게 움직이는지 볼 때 씁니다.</span></div>
+        <div class="lg-step autoshow fade-up"><div class="hd"><span class="pill">기록 재생</span></div>
+          <p><b>여는 법</b>: 어느 모드에서나 위쪽 <b>기록 재생</b> 탭을 누릅니다.</p>
+          <p><b>실행하는 것</b>: 아무것도 실행하지 않습니다. 실제 OpenCode에서 남긴 기록이나 직접 고른 <code>events.jsonl</code>을 테이프에 올려 다시 봅니다.</p>
+          <span class="foot">모델 없이 진짜 실행 흐름을 볼 때 씁니다.</span></div>
+      </div>
+      <p class="note autoshow fade-up" style="margin-top:1.1rem">지금 어느 모드인지는 화면 오른쪽 위 배지가 알려 줍니다. 미리보기에서는 <b>"미리보기 · 브라우저 모의 실행"</b>이라고 나옵니다.</p>
+    </section>
+
+    <!-- 5 · 준비물 -->
+    <section data-sec="1부 · 준비">
+      <div><span class="chip">1부 · 준비</span></div>
+      <h2>준비물</h2>
+      <p class="lg-sub">라이브 모드를 돌리려면 무엇이 있어야 할까요?</p>
+      <div class="grid-2" style="margin-top:1.0rem">
+        <div class="panel autoshow fade-left">
+          <b>꼭 필요한 것</b>
+          <ul class="ol" style="margin-top:0.8rem">
+            <li class="show"><span class="ix">Node.js</span><span class="lb">22 이상 (24도 됩니다)</span></li>
+            <li class="show"><span class="ix">OpenCode</span><span class="lb"><code class="lg-code">opencode</code> 실행 파일 · 수업 기준 1.19.4</span></li>
+            <li class="show"><span class="ix">모델</span><span class="lb">OpenCode에 로그인과 모델 연결을 마친 상태</span></li>
+            <li class="show"><span class="ix">저장소</span><span class="lb"><code class="lg-code">seminar_ai_hook_harness_slide</code>를 받아 둔 폴더</span></li>
+          </ul>
+        </div>
+        <div class="panel autoshow fade-right">
+          <b class="accent2">신경 쓰지 않아도 되는 것</b>
+          <ul class="ol" style="margin-top:0.8rem">
+            <li class="show"><span class="ix">npm 설치</span><span class="lb">필요 없습니다. 플러그인이 쓰는 패키지 사본이 저장소에 들어 있습니다.</span></li>
+            <li class="show"><span class="ix">사내망</span><span class="lb">npm 미러에 패키지가 없거나 인터넷이 막혀 있어도 실험실은 돕니다.</span></li>
+            <li class="show"><span class="ix">폴더 이름</span><span class="lb">공백이나 한글이 들어간 경로(예: <code class="lg-code">D:\종덕 업무\…</code>)도 괜찮습니다.</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="note autoshow fade-up" style="margin-top:1.0rem">처음 실행하면 실험실이 <code class="lg-code">workshops/lab/</code>에 실습 폴더를 만들고, 그 폴더에서 <code class="lg-code">opencode serve</code>를 띄웁니다.</p>
+    </section>
+
+    <!-- 6 · 실행하기 -->
+    <section data-sec="1부 · 준비">
+      <div><span class="chip">1부 · 준비</span></div>
+      <h2>라이브 모드 실행</h2>
+      <p class="lg-sub">실제 OpenCode로 돌리려면 어디에서 무엇을 실행할까요? <span class="pill" style="margin-left:0.5rem">Windows PowerShell 예시</span></p>
+      <div class="grid-2" style="grid-template-columns:1.15fr 0.85fr; margin-top:0.6rem; align-items:start">
+        <div class="term shell sim lg-term">
+          <div class="term-bar"><span class="term-title">PowerShell</span></div>
+          <div class="term-body">
+            <div class="lg-line" style="--i:0"><span class="lg-dim"># 1. 평소 방법대로 OpenCode 로그인(SSO)을 먼저 마칩니다</span></div>
+            <div class="lg-line" style="--i:1"><span class="lg-dim"># 2. 같은 터미널에서 저장소 루트로 이동합니다</span></div>
+            <div class="lg-line" style="--i:2"><span class="lg-warn">PS&gt;</span> <span class="lg-cmd">cd "D:\종덕 업무\seminar_ai_hook_harness_slide"</span></div>
+            <div class="lg-line" style="--i:3"><span class="lg-warn">PS&gt;</span> <span class="lg-cmd">node lab/server.mjs</span></div>
+            <div class="lg-line" style="--i:4"><span class="lg-vio">[lab]</span> 실습 폴더를 만듭니다: …\workshops\lab</div>
+            <div class="lg-line" style="--i:5"><span class="lg-vio">[lab]</span> 실험실: <span class="lg-ok">http://127.0.0.1:4300/</span></div>
+            <div class="lg-line" style="--i:6"><span class="lg-vio">[lab]</span> 실습 폴더: …\workshops\lab</div>
+            <div class="lg-line" style="--i:7"><span class="lg-dim"># 3. 브라우저에서 위 주소를 엽니다. 배지가 라이브로 바뀝니다</span></div>
+          </div>
+        </div>
+        <div class="autoshow fade-right">
+          <div class="panel">
+            <b>왜 같은 터미널일까요?</b>
+            <p class="small dim" style="margin-top:0.5rem">실험실은 로그인을 직접 하지 않습니다. <code class="lg-code">opencode serve</code>를 같은 사용자, 같은 환경 변수로 띄우므로 OpenCode에 저장된 로그인 정보를 그대로 씁니다. <code class="lg-code">serve</code> 안에서는 브라우저 로그인 창이 뜰 수 없습니다.</p>
+          </div>
+          <table class="lg-keys" style="margin-top:0.8rem">
+            <tr><td><code class="lg-code">--opencode "경로"</code></td><td><small>opencode가 PATH에 없거나 사내 전용 실행 파일일 때</small></td></tr>
+            <tr><td><code class="lg-code">--opencode-config "파일"</code></td><td><small>다른 폴더의 opencode.json에 정의한 모델을 쓸 때</small></td></tr>
+            <tr><td><code class="lg-code">--demo</code></td><td><small>모델 대신 고정 응답기로 흐름만 볼 때</small></td></tr>
+            <tr><td><code class="lg-code">--port 4300</code></td><td><small>화면 포트를 바꿀 때</small></td></tr>
+          </table>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:0.4rem"><button class="pill" onclick="simReplay(this)" style="cursor:pointer">↻ 다시 재생</button></div>
+    </section>
+
+    <!-- 7 · 모델 고르기 -->
+    <section data-sec="1부 · 준비">
+      <div><span class="chip">1부 · 준비</span></div>
+      <h2>모델 선택</h2>
+      <p class="lg-sub">요청은 어느 모델로 가고, 원하는 모델이 목록에 없으면 어떻게 할까요?</p>
+      <div class="lg-flow sim" style="margin-top:1.2rem; gap:0.7rem">
+        <div class="lg-fn agent" style="--i:0"><b>기본값 그대로</b><small>"OpenCode 기본 모델 사용"이면 모델을 지정하지 않고 보냅니다. OpenCode 설정의 기본 모델이 받습니다.</small></div>
+        <div class="lg-fa" style="--i:1">→</div>
+        <div class="lg-fn user" style="--i:1"><b>목록에 없으면</b><small>평소 쓰던 폴더에서 <code class="lg-code">opencode models</code>로 정확한 이름을 확인합니다.</small></div>
+        <div class="lg-fa" style="--i:2">→</div>
+        <div class="lg-fn run" style="--i:2"><b>설정 파일 연결</b><small>그 모델이 프로젝트 opencode.json에 있다면 <code class="lg-code">--opencode-config</code>로 함께 읽습니다.</small></div>
+        <div class="lg-fa" style="--i:3">→</div>
+        <div class="lg-fn hook" style="--i:3"><b>직접 입력</b><small>목록 맨 아래 "직접 입력…"에 <code class="lg-code">공급자/gpt-6-luna</code>처럼 적습니다.</small></div>
+      </div>
+      <div class="grid-2" style="margin-top:1.5rem">
+        <div class="panel autoshow fade-up"><b>목록이 비어 보이는 이유</b><p class="small dim" style="margin-top:0.5rem">실험실은 OpenCode를 <code class="lg-code">workshops/lab</code>에서 띄웁니다. OpenCode는 전역 설정과 실행한 폴더의 opencode.json만 읽기 때문에, 다른 프로젝트에만 정의한 모델은 보이지 않습니다.</p></div>
+        <div class="panel autoshow fade-up"><b>고른 값은 기억됩니다</b><p class="small dim" style="margin-top:0.5rem">모델 선택은 브라우저에 저장되므로 다음에 열 때 다시 고르지 않아도 됩니다. 라이브 모드에서만 모델 상자가 보입니다.</p></div>
+      </div>
+    </section>
+
+    <!-- 8 · 2부 간지 -->
+    <section class="section-opener" data-hero data-sec="2부 · 화면 읽기">
+      <div class="autoshow fade-up"><span class="chip">2부</span></div>
+      <h1 class="autoshow fade-up">화면 읽기</h1>
+      <p class="autoshow fade-up" style="font-size:1.45rem">① Harness를 만들고, ② 요청을 보내고, ③ 실행을 봅니다. 화면은 이 세 칸이 전부입니다.</p>
+    </section>
+
+    <!-- 9 · 화면 구성 -->
+    <section data-sec="2부 · 화면 읽기">
+      <div><span class="chip">2부 · 화면 읽기</span></div>
+      <h2>화면 구성</h2>
+      <p class="lg-sub">처음 열면 어디부터 보면 될까요?</p>
+      <div class="lg-shotrow sim">
+        <div class="lg-shot">
+          <img src="lab-guide/img/a-open.webp" alt="실험실 첫 화면. 왼쪽 Harness 만들기, 오른쪽 위 요청 보내기, 오른쪽 가운데 실행 보기">
+          <div class="lg-co" style="--i:0; left:0.8%; top:5.2%; width:37.4%; height:89%"><span class="lg-n">1</span></div>
+          <div class="lg-co" style="--i:1; left:38.9%; top:6%; width:60.3%; height:22%"><span class="lg-n">2</span></div>
+          <div class="lg-co" style="--i:2; left:38.9%; top:28.9%; width:60.3%; height:57.2%"><span class="lg-n">3</span></div>
+          <div class="lg-co a" style="--i:3; left:38.9%; top:87.1%; width:60.3%; height:7.4%"><span class="lg-n">4</span></div>
+          <div class="lg-co v" style="--i:4; left:0.2%; top:95.2%; width:99.6%; height:4.6%"><span class="lg-n">5</span></div>
+          <div class="lg-co a" style="--i:5; left:83.6%; top:0.6%; width:15.9%; height:2.9%"><span class="lg-n">6</span></div>
+        </div>
+        <ol class="lg-legend">
+          <li style="--i:0"><span class="lg-n">1</span><div><b>Harness 만들기</b><small>기본 과정은 상자를 고르고, 고급 과정은 코드를 직접 씁니다. ◂ 접기로 접을 수 있습니다.</small></div></li>
+          <li style="--i:1"><span class="lg-n">2</span><div><b>요청 보내기</b><small>예시를 고르거나 직접 써서 보내기를 누릅니다.</small></div></li>
+          <li style="--i:2"><span class="lg-n">3</span><div><b>실행 보기</b><small>Agent 루프와 Hook이 움직이는 다이어그램입니다.</small></div></li>
+          <li style="--i:3"><span class="lg-n a">4</span><div><b>해설</b><small>지금 단계에서 일어난 일을 한 문장으로 풀어 줍니다.</small></div></li>
+          <li style="--i:4"><span class="lg-n v">5</span><div><b>재생 컨트롤</b><small>재생·정지, 처음·LIVE, 타임라인, 조그 다이얼이 있습니다.</small></div></li>
+          <li style="--i:5"><span class="lg-n a">6</span><div><b>모드 배지와 ? 가이드</b><small>가이드는 화면을 차례로 비추며 설명합니다.</small></div></li>
+        </ol>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:0.4rem"><button class="pill" onclick="simReplay(this)" style="cursor:pointer">↻ 다시 재생</button></div>
+    </section>
+
+    <!-- 10 · ? 가이드 -->
+    <section data-sec="2부 · 화면 읽기">
+      <div><span class="chip">2부 · 화면 읽기</span></div>
+      <h2>? 가이드</h2>
+      <p class="lg-sub">화면 설명을 다시 보고 싶으면 어떻게 할까요?</p>
+      <div class="lg-shotrow sim">
+        <div class="lg-shot">
+          <img src="lab-guide/img/i-guide.webp" alt="가이드가 실행 보기 영역을 비추며 Agent 루프를 설명하는 화면">
+          <div class="lg-co v" style="--i:0; left:17.6%; top:29.8%; width:22%; height:28%"><span class="lg-n">1</span></div>
+          <div class="lg-co" style="--i:1; left:40.1%; top:29.3%; width:57.9%; height:56.4%"><span class="lg-n">2</span></div>
+          <div class="lg-co a" style="--i:2; left:32.3%; top:53.4%; width:6.4%; height:4.2%"><span class="lg-n">3</span></div>
+        </div>
+        <ol class="lg-legend">
+          <li style="--i:0"><span class="lg-n v">1</span><div><b>설명 카드</b><small>화면을 처음 열면 한 번 저절로 뜹니다. 이후에는 오른쪽 위 <b>? 가이드</b>로 엽니다.</small></div></li>
+          <li style="--i:1"><span class="lg-n">2</span><div><b>지금 설명하는 영역</b><small>Harness → 요청 → 실행 → 해설 → 로그·상태 → 재생 컨트롤 순서로 비춥니다.</small></div></li>
+          <li style="--i:2"><span class="lg-n a">3</span><div><b>넘기기</b><small><span class="lg-kbd">←</span> <span class="lg-kbd">→</span> <span class="lg-kbd">Enter</span>로 넘기고 <span class="lg-kbd">Esc</span>로 닫습니다. 마지막 장에 해 볼 실험 다섯 가지가 있습니다.</small></div></li>
+        </ol>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:0.4rem"><button class="pill" onclick="simReplay(this)" style="cursor:pointer">↻ 다시 재생</button></div>
+    </section>
+
+    <!-- 11 · 실행 보기 다이어그램 -->
+    <section data-sec="2부 · 화면 읽기">
+      <div><span class="chip">2부 · 화면 읽기</span></div>
+      <h2>실행 보기</h2>
+      <p class="lg-sub">다이어그램의 각 칸은 무엇을 뜻할까요?</p>
+      <div class="lg-shotrow sim">
+        <div class="lg-shot">
+          <img src="lab-guide/img/c-limit.webp" alt="실행 보기. Agent가 quest_read를 호출하고 before Hook의 Limit 칩이 켜진 장면">
+          <div class="lg-co v" style="--i:0; left:17.8%; top:25%; width:20.3%; height:11.3%"><span class="lg-n">1</span></div>
+          <div class="lg-co c" style="--i:1; left:32.8%; top:47%; width:22.4%; height:14%"><span class="lg-n">2</span></div>
+          <div class="lg-co" style="--i:2; left:19.7%; top:73.5%; width:16.4%; height:5.8%"><span class="lg-n">3</span></div>
+          <div class="lg-co c" style="--i:3; left:5.6%; top:51.2%; width:14.7%; height:5.8%"><span class="lg-n">4</span></div>
+          <div class="lg-co a" style="--i:4; left:56.5%; top:34.7%; width:16.7%; height:38.8%"><span class="lg-n">5</span></div>
+          <div class="lg-co c" style="--i:5; left:2%; top:21.2%; width:72.6%; height:63.5%"><span class="lg-n">6</span></div>
+        </div>
+        <ol class="lg-legend">
+          <li style="--i:0"><span class="lg-n v">1</span><div><b>Agent</b><small>부를 도구와 입력이 나옵니다. 여기서는 <code>quest_read</code>로 주문 파일을 읽습니다.</small></div></li>
+          <li style="--i:1"><span class="lg-n c">2</span><div><b>before Hook</b><small>실행 직전에 Record → Limit → Policy 순서로 판정합니다. 지금은 ② Limit이 켜졌습니다.</small></div></li>
+          <li style="--i:2"><span class="lg-n">3</span><div><b>도구 실행</b><small>Hook을 통과한 도구만 실제로 읽고 씁니다.</small></div></li>
+          <li style="--i:3"><span class="lg-n c">4</span><div><b>after Hook</b><small>실행 결과를 기록하고 Agent에게 돌려줍니다.</small></div></li>
+          <li style="--i:4"><span class="lg-n a">5</span><div><b>Validation · Approval · 제출</b><small>검증과 제출 도구를 부를 때만 거치는 오른쪽 줄입니다.</small></div></li>
+          <li style="--i:5"><span class="lg-n c">6</span><div><b>HARNESS 경계</b><small>바깥 점선입니다. 이 안의 모든 판단을 <code>harness.js</code>가 정합니다.</small></div></li>
+        </ol>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:0.4rem"><button class="pill" onclick="simReplay(this)" style="cursor:pointer">↻ 다시 재생</button></div>
+    </section>
+
+    <!-- 12 · 한 바퀴 = 도구 호출 한 번 -->
+    <section data-sec="2부 · 화면 읽기">
+      <div><span class="chip">2부 · 화면 읽기</span></div>
+      <h2>패킷 한 바퀴</h2>
+      <p class="lg-sub">패킷이 원을 한 바퀴 돌면 무슨 일이 한 번 일어난 걸까요?</p>
+      <div class="sim">
+        <div class="lg-lane">
+          <span class="lbl accent2">통과할 때</span>
+          <div class="lg-flow">
+            <div class="lg-fn agent" style="--i:0"><b>Agent</b><small>도구를 고릅니다</small></div>
+            <div class="lg-fa" style="--i:1">→</div>
+            <div class="lg-fn hook" style="--i:1"><b>① 호출 → before</b><small>세 칩 모두 통과</small></div>
+            <div class="lg-fa" style="--i:2">→</div>
+            <div class="lg-fn run" style="--i:2"><b>② 실행</b><small>실제로 읽고 씁니다</small></div>
+            <div class="lg-fa" style="--i:3">→</div>
+            <div class="lg-fn hook" style="--i:3"><b>③ 결과 → after</b><small>결과를 기록합니다</small></div>
+            <div class="lg-fa" style="--i:4">→</div>
+            <div class="lg-fn agent" style="--i:4"><b>④ 다음 생각</b><small>결과를 보고 다음 도구를 고릅니다</small></div>
+          </div>
+        </div>
+        <div class="lg-lane">
+          <span class="lbl accent3">막힐 때</span>
+          <div class="lg-flow">
+            <div class="lg-fn agent" style="--i:6"><b>Agent</b><small>도구를 고릅니다</small></div>
+            <div class="lg-fa" style="--i:7">→</div>
+            <div class="lg-fn hook" style="--i:7"><b>① 호출 → before</b><small>칩 하나가 <span class="accent3">throw</span>합니다</small></div>
+            <div class="lg-fa" style="--i:8">→</div>
+            <div class="lg-fn skip" style="--i:8"><b>실행 건너뜀</b><small>도구는 아무것도 하지 않습니다</small></div>
+            <div class="lg-fa" style="--i:9">→</div>
+            <div class="lg-fn hook" style="--i:9"><b>막힘 → 되돌림</b><small>안쪽 점선으로 돌아갑니다</small></div>
+            <div class="lg-fa" style="--i:10">→</div>
+            <div class="lg-fn agent" style="--i:10"><b>Agent</b><small>오류를 결과로 받고 다시 생각합니다</small></div>
+          </div>
+        </div>
+      </div>
+      <p class="note autoshow fade-up" style="margin-top:1.3rem">한 바퀴가 <b>도구 호출 한 번</b>입니다. 원 가운데의 "도구 호출 N번째"가 이번 요청에서 몇 번째 호출인지 알려 주고, Agent가 더 부를 도구가 없으면 루프를 빠져나와 응답합니다.</p>
+      <div style="display:flex; justify-content:flex-end; margin-top:0.3rem"><button class="pill" onclick="simReplay(this)" style="cursor:pointer">↻ 다시 재생</button></div>
+    </section>
+
+    <!-- 13 · before Hook 세 단계 -->
+    <section data-sec="2부 · 화면 읽기">
+      <div><span class="chip">2부 · 화면 읽기</span></div>
+      <h2>Record · Limit · Policy</h2>
+      <p class="lg-sub">before Hook 안의 칩 세 개는 각각 무엇을 검사할까요?</p>
+      <div class="lg-steps c3" style="margin-top:1.1rem">
+        <div class="lg-step mint autoshow fade-up"><div class="hd"><span class="lg-n">1</span><b>Record</b></div>
+          <p>본 것과 판단을 <code>.quest/events.jsonl</code>에 남깁니다. 막지 않고 기록만 합니다.</p>
+          <p class="small dim">해설 예: <code>record({ event: 'before' })</code></p>
+          <span class="foot">기록이 없으면 무슨 판단이 있었는지 나중에 알 수 없습니다.</span></div>
+        <div class="lg-step amber autoshow fade-up"><div class="hd"><span class="lg-n a">2</span><b>Limit</b></div>
+          <p>세션마다 도구 시도를 셉니다. 정한 횟수를 넘으면 <code>LIMIT</code>으로 막습니다. <code>quest_status</code>는 세지 않습니다.</p>
+          <p class="small dim">해설 예: <code>state.attempted 1 ≤ 8 → 통과</code></p>
+          <span class="foot">같은 도구를 끝없이 부르는 일을 멈춥니다.</span></div>
+        <div class="lg-step coral autoshow fade-up"><div class="hd"><span class="lg-n c">3</span><b>Policy</b></div>
+          <p>허용한 도구인지, 허용한 경로인지 봅니다. 아니면 <code>POLICY</code>로 막습니다.</p>
+          <p class="small dim">해설 예: <code>allowedTools · 허용 경로 → 막음</code></p>
+          <span class="foot">해서는 안 되는 행동을 실행 전에 거릅니다.</span></div>
+      </div>
+      <p class="note autoshow fade-up" style="margin-top:1.1rem">세 칩은 위에서부터 차례로 검사합니다. 하나라도 <b>throw</b>하면 그 자리에서 멈추고 도구는 실행되지 않습니다.</p>
+    </section>
+
+    <!-- 14 · 단계 넘기기 -->
+    <section data-sec="2부 · 화면 읽기">
+      <div><span class="chip">2부 · 화면 읽기</span></div>
+      <h2>단계 넘기기</h2>
+      <p class="lg-sub">빠르게 끝난 실행을 어떻게 천천히 따라갈까요?</p>
+      <div class="grid-2" style="grid-template-columns:1.1fr 0.9fr; margin-top:0.8rem; align-items:start">
+        <table class="lg-keys autoshow fade-left">
+          <tr><td><span class="lg-kbd">←</span> <span class="lg-kbd">→</span> 또는 ◀ 이전 · 다음 ▶</td><td>한 단계 뒤·앞으로 갑니다</td></tr>
+          <tr><td><span class="lg-kbd">Shift</span> + <span class="lg-kbd">←</span> <span class="lg-kbd">→</span></td><td>이전·다음 <b>도구 호출의 시작</b>으로 건너뜁니다</td></tr>
+          <tr><td><span class="lg-kbd">Space</span></td><td>재생하거나 멈춥니다</td></tr>
+          <tr><td><span class="lg-kbd">Home</span> · <span class="lg-kbd">End</span></td><td>처음으로 · 실시간 위치(LIVE)로 갑니다</td></tr>
+          <tr><td>타임라인 · 로그 줄 클릭</td><td>그 단계로 바로 이동합니다</td></tr>
+          <tr><td>조그 다이얼</td><td>재생 중에는 단계 간격(0~5초)을, 멈췄을 때는 한 칸에 한 단계씩 움직입니다</td></tr>
+          <tr><td><span class="lg-kbd">Esc</span></td><td>좁은 화면에서 겹쳐 뜬 편집 칸이나 서랍을 닫습니다</td></tr>
+        </table>
+        <div class="autoshow fade-right">
+          <div class="panel" style="border-color:rgba(255,212,107,0.6)">
+            <b class="accent4">"한 단계씩 보기"를 켜 두세요</b>
+            <p class="small dim" style="margin-top:0.5rem">해설 칸 가운데의 체크입니다. 켜 두면 요청을 보내도 저절로 재생하지 않고, <b>다음 ▶</b>을 누를 때만 진행합니다. 처음 학습할 때 가장 편한 방법입니다.</p>
+          </div>
+          <div class="panel" style="margin-top:0.8rem">
+            <b>실행과 화면은 따로 갑니다</b>
+            <p class="small dim" style="margin-top:0.5rem">실제 실행은 계속 진행되고, 화면은 테이프의 플레이헤드까지만 그립니다. 타임라인 위의 "실제 실행보다 N단계 뒤에서 보는 중"이 그 차이를 알려 줍니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15 · 로그·상태 서랍 -->
+    <section data-sec="2부 · 화면 읽기">
+      <div><span class="chip">2부 · 화면 읽기</span></div>
+      <h2>로그·상태 서랍</h2>
+      <p class="lg-sub">숫자와 원본 기록까지 보고 싶으면 어디를 열까요?</p>
+      <div class="lg-shotrow sim">
+        <div class="lg-shot">
+          <img src="lab-guide/img/e-drawer.webp" alt="로그·상태 서랍을 연 화면. 오른쪽에 상태 칸과 사건 로그가 있고 Validation이 실패로 표시됨">
+          <div class="lg-co a" style="--i:0; left:49.5%; top:6%; width:4.8%; height:2.6%"><span class="lg-n">1</span></div>
+          <div class="lg-co" style="--i:1; left:79.7%; top:12%; width:18.8%; height:12.4%"><span class="lg-n">2</span></div>
+          <div class="lg-co v" style="--i:2; left:79.7%; top:59.8%; width:18.8%; height:2%"><span class="lg-n">3</span></div>
+          <div class="lg-co c" style="--i:3; left:3.4%; top:77.3%; width:16.2%; height:6%"><span class="lg-n">4</span></div>
+        </div>
+        <ol class="lg-legend">
+          <li style="--i:0"><span class="lg-n a">1</span><div><b>로그·상태 ▸</b><small>실행 보기 오른쪽 위 버튼으로 서랍을 엽니다.</small></div></li>
+          <li style="--i:1"><span class="lg-n">2</span><div><b>상태 칸</b><small>도구·인자·시도/예산·검증 횟수·마지막 검사·제출 여부입니다. 여기서는 시도 4/8, 검증 1/3, 마지막 검사 실패(sumOK)입니다.</small></div></li>
+          <li style="--i:2"><span class="lg-n v">3</span><div><b>사건 로그</b><small>지금 단계의 줄이 강조됩니다. 줄을 누르면 그 단계로 이동하고, hook·agent 체크로 걸러 볼 수 있습니다.</small></div></li>
+          <li style="--i:3"><span class="lg-n c">4</span><div><b>서랍을 열면 다이어그램은 간단해집니다</b><small>상세 내용은 로그가 맡고, 다이어그램은 각 칸의 상태만 보여 줍니다.</small></div></li>
+        </ol>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:0.4rem"><button class="pill" onclick="simReplay(this)" style="cursor:pointer">↻ 다시 재생</button></div>
+    </section>
+
+    <!-- 16 · 3부 간지 -->
+    <section class="section-opener" data-hero data-sec="3부 · 첫 실행">
+      <div class="autoshow fade-up"><span class="chip">3부</span></div>
+      <h1 class="autoshow fade-up">첫 실행</h1>
+      <p class="autoshow fade-up" style="font-size:1.45rem">기본 과정의 <b>완성 Harness</b> 상태에서 예시 <b>합계 계산 후 제출</b>을 보내 봅니다.</p>
+    </section>
+
+    <!-- 17 · 정상 흐름 따라가기 -->
+    <section data-sec="3부 · 첫 실행" data-layer="DEMO">
+      <div><span class="chip">정상 흐름</span> <span class="pill">미리보기에서 실제로 나온 해설</span></div>
+      <h2>합계 계산 후 제출</h2>
+      <p class="lg-sub">요청 하나가 도구 호출 몇 번으로 이어질까요?</p>
+      <div class="grid-2" style="grid-template-columns:1.2fr 0.8fr; align-items:start">
+        <div class="term shell sim lg-term">
+          <div class="term-bar"><span class="term-title">해설 칸을 Shift + → 로 넘긴 순서</span></div>
+          <div class="term-body" style="font-size:0.9rem; line-height:1.75">
+            <div class="lg-line" style="--i:0"><span class="lg-warn">요청</span>  orders.json의 합계를 계산해서 만들고, 검증한 뒤 제출해 줘</div>
+            <div class="lg-line" style="--i:1"><span class="lg-dim">#1</span> <span class="lg-vio">quest_read</span>      lab/input/orders.json        <span class="lg-ok">✓ 통과 · 실행</span></div>
+            <div class="lg-line" style="--i:2"><span class="lg-dim">#2</span> <span class="lg-vio">quest_write</span>     lab/output/summary.json      <span class="lg-ok">✓ 통과 · 실행</span></div>
+            <div class="lg-line" style="--i:3"><span class="lg-dim">#3</span> <span class="lg-vio">quest_write</span>     lab/output/report.md         <span class="lg-ok">✓ 통과 · 실행</span></div>
+            <div class="lg-line" style="--i:4"><span class="lg-dim">#4</span> <span class="lg-vio">quest_validate</span>  <span class="lg-bad">✕ 검증 실패: sumOK</span>  <span class="lg-dim">← 합계가 틀림</span></div>
+            <div class="lg-line" style="--i:5"><span class="lg-dim">#5</span> <span class="lg-vio">quest_write</span>     lab/output/summary.json      <span class="lg-ok">✓ 고쳐 씀</span></div>
+            <div class="lg-line" style="--i:6"><span class="lg-dim">#6</span> <span class="lg-vio">quest_validate</span>  <span class="lg-ok">✓ 검증 통과</span></div>
+            <div class="lg-line" style="--i:7"><span class="lg-dim">#7</span> <span class="lg-vio">quest_submit</span>    <span class="lg-ok">canSubmit() 통과</span></div>
+            <div class="lg-line" style="--i:8"><span class="lg-warn">⏸ Approval</span>  OpenCode가 사람에게 묻습니다</div>
+            <div class="lg-line" style="--i:9"><span class="lg-warn">사람</span>  [한 번 허용]  →  <span class="lg-ok">제출 · 로컬 영수증 생성</span></div>
+          </div>
+        </div>
+        <div class="autoshow fade-right">
+          <div class="panel">
+            <b>따라 하기</b>
+            <ol style="margin:0.6rem 0 0 1.2rem; padding:0">
+              <li style="font-size:1.0rem; line-height:1.6">① Harness에서 <b>완성 Harness</b>를 고릅니다.</li>
+              <li style="font-size:1.0rem; line-height:1.6">"한 단계씩 보기"를 켭니다.</li>
+              <li style="font-size:1.0rem; line-height:1.6">예시 <b>합계 계산 후 제출</b>을 고르고 <b>보내기 ▶</b>를 누릅니다.</li>
+              <li style="font-size:1.0rem; line-height:1.6"><span class="lg-kbd">Shift</span>+<span class="lg-kbd">→</span>로 호출마다 넘기며 해설을 읽습니다.</li>
+            </ol>
+          </div>
+          <div class="panel" style="margin-top:0.8rem; border-color:rgba(43,234,208,0.5)">
+            <b class="accent2">눈여겨볼 곳은 #4입니다</b>
+            <p class="small dim" style="margin-top:0.4rem">Agent는 "다 만들었다"고 생각했지만 Validation이 합계 오류를 잡았습니다. Agent는 이 실패를 결과로 받고 파일을 고쳐 다시 검증합니다.</p>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:0.3rem"><button class="pill" onclick="simReplay(this)" style="cursor:pointer">↻ 다시 재생</button></div>
+    </section>
+
+    <!-- 18 · 승인 -->
+    <section data-sec="3부 · 첫 실행">
+      <div><span class="chip">3부 · 첫 실행</span></div>
+      <h2>Approval</h2>
+      <p class="lg-sub">Agent가 제출하려 할 때, 사람은 어디에서 결정할까요?</p>
+      <div class="lg-shotrow sim">
+        <div class="lg-shot">
+          <img src="lab-guide/img/f2-approval.webp" alt="Approval 칸이 앰버색으로 켜지고 한 번 허용과 거절 버튼이 나타난 화면">
+          <div class="lg-co v" style="--i:0; left:17.8%; top:25%; width:20.3%; height:11.3%"><span class="lg-n">1</span></div>
+          <div class="lg-co a" style="--i:1; left:56%; top:47%; width:17.7%; height:14.4%"><span class="lg-n">2</span></div>
+          <div class="lg-co" style="--i:2; left:57.2%; top:55.6%; width:11.3%; height:4.4%"><span class="lg-n">3</span></div>
+          <div class="lg-co v" style="--i:3; left:19.7%; top:70.8%; width:16.4%; height:11.4%"><span class="lg-n">4</span></div>
+        </div>
+        <ol class="lg-legend">
+          <li style="--i:0"><span class="lg-n v">1</span><div><b>quest_submit 호출</b><small>Agent가 검증을 마친 파일의 해시를 들고 제출을 요청합니다.</small></div></li>
+          <li style="--i:1"><span class="lg-n a">2</span><div><b>Approval 칸</b><small><code>canSubmit()</code>을 통과하면 OpenCode가 사람에게 묻습니다. 실행이 여기서 멈춥니다.</small></div></li>
+          <li style="--i:2"><span class="lg-n">3</span><div><b>[한 번 허용] · [거절]</b><small>"항상 허용"은 일부러 두지 않았습니다. 승인은 한 번에 한 건씩만 합니다.</small></div></li>
+          <li style="--i:3"><span class="lg-n v">4</span><div><b>도구 실행은 승인 대기</b><small>허용하면 로컬 영수증을 한 번만 만들고, 거절하면 오류로 끝납니다.</small></div></li>
+        </ol>
+      </div>
+      <p class="note autoshow fade-up" style="margin-top:0.5rem">화면이 실제 실행보다 뒤처져 있을 때 승인 요청이 오면, 요청 칸 아래에 <b>"승인 단계로 가기"</b> 버튼이 뜹니다. 누르면 그 장면으로 바로 건너뜁니다.</p>
+    </section>
+
+    <!-- 19 · 실행 관리 -->
+    <section data-sec="3부 · 첫 실행">
+      <div><span class="chip">3부 · 첫 실행</span></div>
+      <h2>새 세션 · 중단 · 파일 비우기</h2>
+      <p class="lg-sub">같은 실험을 깨끗한 상태에서 다시 하려면 무엇을 누를까요?</p>
+      <div class="lg-steps c3" style="margin-top:1.1rem">
+        <div class="lg-step autoshow fade-up"><div class="hd"><b>새 세션</b></div><p>시도 횟수(예산)와 검증 횟수를 0부터 다시 셉니다. Limit 실험을 반복할 때 먼저 누릅니다.</p></div>
+        <div class="lg-step coral autoshow fade-up"><div class="hd"><b>중단</b></div><p>돌고 있는 Agent를 멈춥니다. Agent가 도는 동안에는 보내기·새 세션·파일 비우기가 잠기고 중단만 누를 수 있습니다.</p></div>
+        <div class="lg-step autoshow fade-up"><div class="hd"><b>파일 비우기</b></div><p>지난 실험에서 만든 <code>lab/output</code> 파일을 지웁니다. 이전 결과가 다음 실험에 섞이지 않게 합니다.</p></div>
+      </div>
+      <div class="panel autoshow fade-up" style="margin-top:1.1rem; border-color:rgba(255,212,107,0.6)">
+        <b class="accent4">보내기를 누르면 코드가 먼저 적용됩니다</b>
+        <p class="small dim" style="margin-top:0.4rem">Harness 코드를 바꾸면 요청 칸 위에 <b>"코드가 바뀜 · 보낼 때 적용"</b>이 보입니다. 보내기를 누르면 그 코드를 먼저 적용하고 요청을 보냅니다. 라이브 모드에서는 <code class="lg-code">harness.js</code>를 실습 폴더에 쓰고 OpenCode를 다시 띄우므로 새 세션이 시작됩니다. 문법 오류가 있으면 적용하지도 보내지도 않습니다.</p>
+      </div>
+    </section>
+
+    <!-- 20 · 4부 간지 -->
+    <section class="section-opener" data-hero data-sec="4부 · 실험 다섯 가지">
+      <div class="autoshow fade-up"><span class="chip">4부</span></div>
+      <h1 class="autoshow fade-up">실험 다섯 가지</h1>
+      <p class="autoshow fade-up" style="font-size:1.45rem">기본 과정에서 설정을 하나만 바꾸고, 같은 요청이 어디에서 달라지는지 비교합니다.</p>
+      <div class="lg-road autoshow fade-up" style="justify-content:flex-start; margin-top:1.2rem">
+        <span class="pill pink">① Policy · 경로</span><span class="pill pink">② Policy · 도구</span><span class="pill amber">③ Limit</span><span class="pill">④ 맨몸 Agent</span><span class="pill green">⑤ Record 끄기</span>
+      </div>
+    </section>
+
+    <!-- 21 · 실험 1·2 Policy -->
+    <section data-sec="4부 · 실험">
+      <div class="hh-track"><span class="hh-cell now"><span class="n">1</span>경로</span><span class="hh-cell now"><span class="n">2</span>도구</span><span class="hh-cell"><span class="n">3</span>Limit</span><span class="hh-cell"><span class="n">4</span>맨몸</span><span class="hh-cell"><span class="n">5</span>Record</span></div>
+      <h2 style="margin-top:0.6rem">실험 1·2 · Policy</h2>
+      <p class="lg-sub">허용하지 않은 경로와 도구는 어디에서 막힐까요?</p>
+      <div class="lg-shotrow wide sim" style="grid-template-columns:52rem 1fr">
+        <div class="lg-shot">
+          <img src="lab-guide/img/h2-deny.webp" alt="보호 파일 쓰기 시도를 before Hook의 Policy가 막은 화면">
+          <div class="lg-co c" style="--i:0; left:32.8%; top:47%; width:22.4%; height:14%"><span class="lg-n">1</span></div>
+          <div class="lg-co c" style="--i:1; left:27.6%; top:35.5%; width:13.4%; height:5.5%"><span class="lg-n">2</span></div>
+          <div class="lg-co a" style="--i:2; left:19.6%; top:71.8%; width:16.7%; height:9%"><span class="lg-n">3</span></div>
+        </div>
+        <div>
+          <div class="lg-step coral autoshow fade-right" style="padding:0.85rem 1rem">
+            <div class="hd"><span class="lg-n c">1</span><b>보호 파일 수정</b></div>
+            <dl class="lg-exp">
+              <dt>설정</dt><dd><b>완성 Harness</b> 그대로 둡니다</dd>
+              <dt>요청</dt><dd class="ask">lab/protected/settings.json의 setting 값을 changed로 바꿔 줘.</dd>
+              <dt>볼 곳</dt><dd>③ Policy 칩이 빨갛게 켜지고 <code>POLICY: path denied</code>가 나옵니다. 패킷은 막힘 → 되돌림 점선으로 갑니다.</dd>
+            </dl>
+          </div>
+          <div class="lg-step coral autoshow fade-right" style="padding:0.85rem 1rem; margin-top:0.7rem">
+            <div class="hd"><span class="lg-n c">2</span><b>금지 도구 시도</b></div>
+            <dl class="lg-exp">
+              <dt>요청</dt><dd class="ask">quest_probe 도구를 한 번 실행해 봐.</dd>
+              <dt>볼 곳</dt><dd>허용 도구 목록에 <code>probe</code>가 없어서 같은 ③ Policy가 <code>POLICY: tool denied</code>로 막습니다.</dd>
+            </dl>
+          </div>
+          <p class="note autoshow fade-up" style="margin-top:0.7rem">비교: <b>맨몸 Agent</b>로 바꾸고 같은 요청을 보내면, 보호 파일 쓰기가 그대로 실행됩니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 22 · 실험 3 Limit -->
+    <section data-sec="4부 · 실험">
+      <div class="hh-track"><span class="hh-cell done"><span class="n"></span>경로</span><span class="hh-cell done"><span class="n"></span>도구</span><span class="hh-cell now"><span class="n">3</span>Limit</span><span class="hh-cell"><span class="n">4</span>맨몸</span><span class="hh-cell"><span class="n">5</span>Record</span></div>
+      <h2 style="margin-top:0.6rem">실험 3 · Limit</h2>
+      <p class="lg-sub">시도 횟수를 줄이면 몇 번째 호출에서 막힐까요?</p>
+      <div class="grid-2 sim" style="gap:1.1rem; margin-top:0.3rem">
+        <div>
+          <div class="pill amber" style="margin-bottom:0.4rem">① Limit을 3회로 바꾸면 코드가 바로 바뀝니다</div>
+          <div class="lg-shot">
+            <img src="lab-guide/img/j-basic-limit3.webp" alt="기본 과정에서 Limit을 3으로 바꾸자 코드의 바뀐 줄이 초록으로 강조된 화면">
+            <div class="lg-co a" style="--i:0; left:1.5%; top:26.3%; width:11.6%; height:7.4%"><span class="lg-n">1</span></div>
+            <div class="lg-co" style="--i:1; left:13.5%; top:32.8%; width:24%; height:11.4%"><span class="lg-n">2</span></div>
+            <div class="lg-co v" style="--i:2; left:88.9%; top:6.8%; width:8%; height:2.2%"><span class="lg-n">3</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="pill pink" style="margin-bottom:0.4rem">② 합계 요청을 보내면 네 번째 시도에서 막힙니다</div>
+          <div class="lg-shot">
+            <img src="lab-guide/img/k-limit-deny.webp" alt="before Hook의 Limit 칩이 빨갛게 켜지고 해설에 state.attempted 4 > 3 막음이 나온 화면">
+            <div class="lg-co c" style="--i:3; left:40.6%; top:52.4%; width:6.9%; height:4.6%"><span class="lg-n">4</span></div>
+            <div class="lg-co a" style="--i:4; left:76.3%; top:83.2%; width:22.8%; height:6.4%"><span class="lg-n">5</span></div>
+          </div>
+        </div>
+      </div>
+      <ol class="lg-legend sim" style="flex-direction:row; margin-top:0.8rem; gap:0.6rem">
+        <li style="--i:0; flex:1"><span class="lg-n a">1</span><div><b>Limit 3회</b><small>세션마다 3회까지 받습니다.</small></div></li>
+        <li style="--i:1; flex:1"><span class="lg-n">2</span><div><b>새로 생긴 줄</b><small>초록은 새 줄, 빨간 선은 빠진 자리입니다.</small></div></li>
+        <li style="--i:2; flex:1"><span class="lg-n v">3</span><div><b>보낼 때 적용</b><small>아직 적용 전이라는 표시입니다.</small></div></li>
+        <li style="--i:3; flex:1"><span class="lg-n c">4</span><div><b>② Limit 막음</b><small><code>state.attempted &gt; 3</code>이 참이 됩니다.</small></div></li>
+        <li style="--i:4; flex:1"><span class="lg-n a">5</span><div><b>해설</b><small>"4 &gt; 3 → 막음"으로 이유를 보여 줍니다.</small></div></li>
+      </ol>
+      <p class="note autoshow fade-up" style="margin-top:0.6rem">다시 할 때는 <b>새 세션</b>부터 누릅니다. 예시 <b>예산 초과</b>(같은 파일을 10번 읽기)를 보내면 기본값 8회에서도 아홉 번째 시도가 막힙니다.</p>
+    </section>
+
+    <!-- 23 · 실험 4 맨몸 Agent -->
+    <section data-sec="4부 · 실험">
+      <div class="hh-track"><span class="hh-cell done"><span class="n"></span>경로</span><span class="hh-cell done"><span class="n"></span>도구</span><span class="hh-cell done"><span class="n"></span>Limit</span><span class="hh-cell now"><span class="n">4</span>맨몸</span><span class="hh-cell"><span class="n">5</span>Record</span></div>
+      <h2 style="margin-top:0.6rem">실험 4 · 맨몸 Agent</h2>
+      <p class="lg-sub">검증이 스키마만 보면 틀린 합계는 어떻게 될까요?</p>
+      <div class="lg-shotrow sim" style="grid-template-columns:52rem 1fr">
+        <div class="lg-shot">
+          <img src="lab-guide/img/m2-naked-done.webp" alt="맨몸 Agent에서 틀린 합계 15000원이 제출까지 통과한 화면">
+          <div class="lg-co" style="--i:0; left:76.4%; top:5.2%; width:22.8%; height:4%"><span class="lg-n">1</span></div>
+          <div class="lg-co" style="--i:1; left:56.5%; top:49.8%; width:16.7%; height:8.6%"><span class="lg-n">2</span></div>
+          <div class="lg-co c" style="--i:2; left:76.4%; top:51.4%; width:22.8%; height:7.6%"><span class="lg-n">3</span></div>
+        </div>
+        <ol class="lg-legend">
+          <li style="--i:0"><span class="lg-n">1</span><div><b>설정</b><small>빠른 설정에서 <b>맨몸 Agent</b>를 고릅니다. Policy·Limit이 꺼지고, 검증은 스키마만 봅니다. Approval은 묻지 않고 허용합니다.</small></div></li>
+          <li style="--i:1"><span class="lg-n">2</span><div><b>사람에게 묻지 않음</b><small>Approval 칸에 "묻지 않고 통과 (allow)"가 나옵니다.</small></div></li>
+          <li style="--i:2"><span class="lg-n c">3</span><div><b>틀린 값이 완료로 처리됨</b><small>Agent 응답: "합계 15,000원으로 제출을 마쳤습니다." 실제 합계는 13,000원입니다.</small></div></li>
+        </ol>
+      </div>
+      <p class="note autoshow fade-up" style="margin-top:0.5rem">첫 실행의 #4에서 합계 오류를 잡은 것은 <b>Validation의 합계 검사(sumOK)</b>였습니다. 그 검사가 빠지면 Agent의 "완료"를 믿을 근거도 사라집니다.</p>
+    </section>
+
+    <!-- 24 · 실험 5 Record 끄기 -->
+    <section data-sec="4부 · 실험">
+      <div class="hh-track"><span class="hh-cell done"><span class="n"></span>경로</span><span class="hh-cell done"><span class="n"></span>도구</span><span class="hh-cell done"><span class="n"></span>Limit</span><span class="hh-cell done"><span class="n"></span>맨몸</span><span class="hh-cell now"><span class="n">5</span>Record</span></div>
+      <h2 style="margin-top:0.6rem">실험 5 · Record 끄기</h2>
+      <p class="lg-sub">기록하지 않으면 화면에서 무엇이 사라질까요?</p>
+      <div class="grid-2" style="margin-top:0.8rem; align-items:stretch">
+        <div class="lg-step mint autoshow fade-left">
+          <dl class="lg-exp">
+            <dt>설정</dt><dd>완성 Harness에서 <b>Record</b>의 "켜기"만 끕니다. 코드의 <code>record()</code>가 빈 함수로 바뀝니다.</dd>
+            <dt>요청</dt><dd class="ask">lab/input/orders.json의 합계를 계산해서 summary.json과 report.md를 만들고, 검증한 뒤 제출해 줘.</dd>
+            <dt>볼 곳</dt><dd>Agent 쪽 사건은 그대로 쌓이지만, Hook 칸은 움직이지 않습니다.</dd>
+            <dt>확인</dt><dd>로그·상태 서랍에서 <b>agent</b> 줄만 남고 <b>hook</b> 줄이 비어 있는지 봅니다.</dd>
+          </dl>
+        </div>
+        <div class="term shell sim lg-term autoshow fade-right">
+          <div class="term-bar"><span class="term-title">로그·상태 서랍 (앞부분을 줄여서 옮김)</span></div>
+          <div class="term-body" style="font-size:0.88rem">
+            <div class="lg-line" style="--i:0"><span class="lg-ok"># Record 켬</span></div>
+            <div class="lg-line" style="--i:1">agent  → quest_read {"path":"lab/input/orders.json"}</div>
+            <div class="lg-line" style="--i:2"><span class="lg-vio">hook</span>   before quest_read</div>
+            <div class="lg-line" style="--i:3"><span class="lg-vio">hook</span>     ① record ✓  ② limit ✓  ③ policy ✓</div>
+            <div class="lg-line" style="--i:4"><span class="lg-vio">hook</span>   after quest_read</div>
+            <div class="lg-line" style="--i:5">agent  ← quest_read {"content":…}</div>
+            <div class="lg-line" style="--i:6"> </div>
+            <div class="lg-line" style="--i:7"><span class="lg-bad"># Record 끔</span></div>
+            <div class="lg-line" style="--i:8">agent  → quest_read {"path":"lab/input/orders.json"}</div>
+            <div class="lg-line" style="--i:9">agent  ← quest_read {"content":…}</div>
+            <div class="lg-line" style="--i:10"><span class="lg-dim">       hook 줄이 한 줄도 남지 않습니다</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="note autoshow fade-up" style="margin-top:0.9rem">Policy와 Limit은 여전히 동작할 수 있습니다. 다만 <b>왜 막혔는지, 무엇을 통과시켰는지</b>를 나중에 확인할 방법이 없어집니다.</p>
+    </section>
+
+    <!-- 25 · 기록 재생 -->
+    <section data-sec="4부 · 실험">
+      <div><span class="chip">4부 · 실험</span></div>
+      <h2>기록 재생</h2>
+      <p class="lg-sub">실제 OpenCode가 남긴 기록은 어떻게 다시 볼까요?</p>
+      <div class="lg-shotrow sim">
+        <div class="lg-shot">
+          <img src="lab-guide/img/o-replay.webp" alt="기록 재생 탭에서 정상 흐름 승인 거절 기록을 재생한 화면. Approval이 거절됨으로 표시">
+          <div class="lg-co" style="--i:0; left:1.5%; top:13%; width:15.6%; height:34.6%"><span class="lg-n">1</span></div>
+          <div class="lg-co v" style="--i:1; left:1.5%; top:51.6%; width:11%; height:2.4%"><span class="lg-n">2</span></div>
+          <div class="lg-co c" style="--i:2; left:40.5%; top:77.5%; width:15.3%; height:8.2%"><span class="lg-n">3</span></div>
+          <div class="lg-co a" style="--i:3; left:20.6%; top:1%; width:4.4%; height:2.4%"><span class="lg-n">4</span></div>
+        </div>
+        <ol class="lg-legend">
+          <li style="--i:0"><span class="lg-n">1</span><div><b>준비된 기록 다섯 개</b><small>승인 거절 · 승인 허용 · 허용되지 않은 도구 · 금지된 경로 쓰기 · 예산 초과입니다.</small></div></li>
+          <li style="--i:1"><span class="lg-n v">2</span><div><b>다른 기록</b><small>라이브 실습 폴더의 <code>.quest/events.jsonl</code>처럼 직접 고른 파일도 올릴 수 있습니다.</small></div></li>
+          <li style="--i:2"><span class="lg-n c">3</span><div><b>사람이 거절한 장면</b><small>합계 오류를 검증이 잡고, 고친 뒤 제출 단계에서 사람이 거절합니다.</small></div></li>
+          <li style="--i:3"><span class="lg-n a">4</span><div><b>실험으로 돌아가기</b><small>위쪽 <b>실험</b> 탭이나 "실험 테이프로 돌아가기"를 누릅니다.</small></div></li>
+        </ol>
+      </div>
+      <p class="note autoshow fade-up" style="margin-top:0.5rem">준비된 기록은 실제 OpenCode 1.19.4 실행기에서 남긴 것입니다. 모델 자리는 고정 응답기가 맡았습니다.</p>
+    </section>
+
+    <!-- 26 · 5부 간지 -->
+    <section class="section-opener" data-hero data-sec="5부 · 고급 미션">
+      <div class="autoshow fade-up"><span class="chip">5부</span></div>
+      <h1 class="autoshow fade-up">고급 미션</h1>
+      <p class="autoshow fade-up" style="font-size:1.45rem">이제 상자를 고르는 대신 <code class="lg-code">harness.js</code>를 빈 뼈대부터 직접 씁니다.</p>
+    </section>
+
+    <!-- 27 · 고급 과정 화면 -->
+    <section data-sec="5부 · 고급 미션">
+      <div><span class="chip">5부 · 고급 미션</span></div>
+      <h2>고급 과정</h2>
+      <p class="lg-sub">미션은 어디에서 보고, 코드는 어떻게 확인할까요?</p>
+      <div class="lg-shotrow sim">
+        <div class="lg-shot">
+          <img src="lab-guide/img/n-adv.webp" alt="고급 과정 화면. 왼쪽 위 미션 목록, 아래 코드 편집기와 검사하기 버튼">
+          <div class="lg-co v" style="--i:0; left:29.6%; top:3.9%; width:4.4%; height:2.8%"><span class="lg-n">1</span></div>
+          <div class="lg-co" style="--i:1; left:1.4%; top:12%; width:37.4%; height:20.6%"><span class="lg-n">2</span></div>
+          <div class="lg-co c" style="--i:2; left:1.9%; top:27%; width:21.2%; height:1.9%"><span class="lg-n">3</span></div>
+          <div class="lg-co" style="--i:3; left:1.4%; top:36.2%; width:36%; height:53.6%"><span class="lg-n">4</span></div>
+          <div class="lg-co a" style="--i:4; left:1.4%; top:90.8%; width:19.4%; height:3.6%"><span class="lg-n">5</span></div>
+        </div>
+        <ol class="lg-legend">
+          <li style="--i:0"><span class="lg-n v">1</span><div><b>고급 과정 탭</b><small>쓰던 코드는 브라우저에 저장됩니다.</small></div></li>
+          <li style="--i:1"><span class="lg-n">2</span><div><b>미션 목록</b><small>목표와 통과 개수(예: 1 / 8 통과)가 보입니다. 막히면 "예시 코드 보기"를 펼칩니다.</small></div></li>
+          <li style="--i:2"><span class="lg-n c">3</span><div><b>다음에 고칠 점</b><small>통과하지 못한 미션 아래에 이유가 빨갛게 나옵니다.</small></div></li>
+          <li style="--i:3"><span class="lg-n">4</span><div><b>편집기</b><small>"// 미션 2:"처럼 미션 번호가 적힌 자리를 채웁니다. Tab 키로 들여씁니다.</small></div></li>
+          <li style="--i:4"><span class="lg-n a">5</span><div><b>검사하기 · 기본 과정 코드 가져오기 · 처음 코드로</b><small>가져오기는 완성 예제를 편집기에 넣습니다.</small></div></li>
+        </ol>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:0.4rem"><button class="pill" onclick="simReplay(this)" style="cursor:pointer">↻ 다시 재생</button></div>
+    </section>
+
+    <!-- 28 · 미션 지도 -->
+    <section data-sec="5부 · 고급 미션">
+      <div><span class="chip">5부 · 고급 미션</span></div>
+      <h2>미션 8개</h2>
+      <p class="lg-sub">각 미션은 무엇을 만들고, 어떤 요청으로 확인할까요?</p>
+      <div class="lg-steps c4" style="margin-top:0.7rem; gap:0.75rem">
+        <div class="lg-cell autoshow fade-up"><div class="hd"><span class="lg-n v">1</span><b>Hook 등록</b></div><p>작업 도구와 before·after Hook을 OpenCode에 돌려줍니다.</p><span class="chk">확인: 아무 요청이나 보내 Hook 칸이 켜지는지 봅니다.</span></div>
+        <div class="lg-cell autoshow fade-up"><div class="hd"><span class="lg-n">2</span><b>Record</b></div><p>before와 after에서 <code>record()</code>로 사건을 남기고, <code>kit.log()</code>로 파일에 씁니다.</p><span class="chk">확인: 서랍 로그에 hook 줄이 쌓입니다.</span></div>
+        <div class="lg-cell autoshow fade-up"><div class="hd"><span class="lg-n c">3</span><b>Policy · 경로</b></div><p>쓰기는 <code>lab/output/</code>만, 읽기는 input·output·protected만 허용합니다. 비슷한 이름도 막습니다.</p><span class="chk">확인: 보호 파일 수정 → path denied</span></div>
+        <div class="lg-cell autoshow fade-up"><div class="hd"><span class="lg-n c">4</span><b>Policy · 도구</b></div><p><code>quest_probe</code>는 막고 업무 도구 다섯 개만 실행합니다.</p><span class="chk">확인: 금지 도구 시도 → tool denied</span></div>
+        <div class="lg-cell autoshow fade-up"><div class="hd"><span class="lg-n c">5</span><b>막은 이유 기록</b></div><p>throw하기 전에 <code>denied</code> 사건과 이유(<code>reason</code>)를 남깁니다.</p><span class="chk">확인: 막힌 뒤 로그에 denied 줄과 이유가 있습니다.</span></div>
+        <div class="lg-cell autoshow fade-up"><div class="hd"><span class="lg-n a">6</span><b>Limit</b></div><p>세션마다 8회까지 받고 9번째부터 막습니다. <code>quest_status</code>는 세지 않습니다.</p><span class="chk">확인: 예산 초과 → 9번째 시도에서 LIMIT</span></div>
+        <div class="lg-cell autoshow fade-up"><div class="hd"><span class="lg-n a">7</span><b>Validation</b></div><p>네 검사(schemaOK·sumOK·reportOK·originalsOK)가 모두 참일 때만 통과시킵니다.</p><span class="chk">확인: 합계 요청 → 첫 검증이 sumOK로 실패</span></div>
+        <div class="lg-cell autoshow fade-up"><div class="hd"><span class="lg-n a">8</span><b>제출 조건</b></div><p>검증 통과·같은 파일·아직 제출 안 함·검사 횟수 이내일 때만 제출을 받습니다.</p><span class="chk">확인: 합계 요청 → Approval까지 갑니다.</span></div>
+      </div>
+      <p class="note autoshow fade-up" style="margin-top:0.8rem">미션 1·2를 먼저 풀어야 나머지 결과가 화면에 보입니다. 3번부터는 순서를 바꿔도 됩니다.</p>
+    </section>
+
+    <!-- 29 · 미션 푸는 순환 -->
+    <section data-sec="5부 · 고급 미션">
+      <div><span class="chip">5부 · 고급 미션</span></div>
+      <h2>미션 하나를 푸는 순서</h2>
+      <p class="lg-sub">"검사하기"를 통과하면 정말 끝난 걸까요?</p>
+      <div class="lg-flow sim" style="margin-top:1.4rem; gap:0.6rem">
+        <div class="lg-fn agent" style="--i:0"><b>① 코드 쓰기</b><small>미션 번호가 적힌 자리를 채웁니다</small></div>
+        <div class="lg-fa" style="--i:1">→</div>
+        <div class="lg-fn run" style="--i:1"><b>② 검사하기</b><small>고정 입력으로 코드를 돌려 미션별 통과를 봅니다</small></div>
+        <div class="lg-fa" style="--i:2">→</div>
+        <div class="lg-fn user" style="--i:2"><b>③ 보내기</b><small>코드를 적용하고 확인 요청을 보냅니다</small></div>
+        <div class="lg-fa" style="--i:3">→</div>
+        <div class="lg-fn hook" style="--i:3"><b>④ 다이어그램 확인</b><small>기대한 칩에서 실제로 막히는지 봅니다</small></div>
+        <div class="lg-fa" style="--i:4">↺</div>
+        <div class="lg-fn agent" style="--i:4"><b>다음 미션</b><small>다르면 ①로 돌아가 고칩니다</small></div>
+      </div>
+      <div class="grid-2" style="margin-top:1.5rem">
+        <div class="panel autoshow fade-up" style="border-color:rgba(255,212,107,0.6)"><b class="accent4">검사는 실행을 대신하지 않습니다</b><p class="small dim" style="margin-top:0.5rem">검사하기는 고정 입력으로 돌려 보는 것입니다. 실제로 막히는지는 적용한 뒤 요청을 보내 머신에서 확인합니다. 예를 들어 Policy(경로)만 쓰고 적용하면 보호 파일 수정은 막히지만 <code class="lg-code">quest_probe</code>는 그대로 실행됩니다.</p></div>
+        <div class="panel autoshow fade-up"><b>머신은 내 코드를 읽어 그립니다</b><p class="small dim" style="margin-top:0.5rem">화면의 머신은 적용한 코드가 실제로 무엇을 하는지(Limit이 있는지, 몇 회에서 막는지 등)를 같은 검사로 알아내 그립니다. 그래서 칩이 흐리게 보이면 그 장치가 코드에 아직 없다는 뜻입니다.</p></div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:0.4rem"><button class="pill" onclick="simReplay(this)" style="cursor:pointer">↻ 다시 재생</button></div>
+    </section>
+
+    <!-- 30 · 막혔을 때 -->
+    <section data-sec="마무리">
+      <div><span class="chip">마무리</span></div>
+      <h2>막혔을 때</h2>
+      <p class="lg-sub">자주 만나는 증상은 어떻게 풀까요?</p>
+      <table class="risk-table autoshow fade-up" style="margin-top:0.7rem">
+        <tr class="rh"><th style="width:24rem">증상</th><th>확인하고 고칠 것</th></tr>
+        <tr><td>배지가 계속 "미리보기"입니다</td><td>파일을 직접 연 상태입니다. <code class="lg-code">node lab/server.mjs</code>를 띄운 뒤 <code class="lg-code">http://127.0.0.1:4300/</code>으로 엽니다.</td></tr>
+        <tr><td>로그인 오류가 나거나 브라우저 로그인 창이 필요합니다</td><td>OpenCode에서 로그인을 먼저 마치고, 같은 터미널에서 실험실을 다시 띄웁니다.</td></tr>
+        <tr><td>opencode를 찾지 못합니다</td><td><code class="lg-code">--opencode "실행 파일 경로"</code>로 지정합니다.</td></tr>
+        <tr><td>쓰던 모델이 목록에 없습니다</td><td><code class="lg-code">opencode models</code>로 이름을 확인하고, <code class="lg-code">--opencode-config</code>나 "직접 입력…"을 씁니다.</td></tr>
+        <tr><td>보내기를 눌러도 아무 일이 없습니다</td><td>코드에 문법 오류가 있으면 적용하지도 보내지도 않습니다. 요청 칸 아래 안내를 읽고 고칩니다.</td></tr>
+        <tr><td>화면이 실행보다 한참 뒤에 있습니다</td><td><b>LIVE</b>(<span class="lg-kbd">End</span>)로 실시간 위치로 가거나, "승인 단계로 가기"를 누릅니다.</td></tr>
+        <tr><td>지난 실험 결과가 섞입니다</td><td><b>새 세션</b>과 <b>파일 비우기</b>를 누른 뒤 다시 보냅니다.</td></tr>
+      </table>
+      <p class="note autoshow fade-up" style="margin-top:0.7rem">자세한 옵션과 Windows 실행 방식은 <code class="lg-code">lab/README.md</code>에 있습니다.</p>
+    </section>
+
+    <!-- 31 · 체크리스트 -->
+    <section data-sec="마무리">
+      <div><span class="chip">마무리</span></div>
+      <h2>학습 체크리스트</h2>
+      <p class="lg-sub">실험실을 다 돌고 나면 무엇을 설명할 수 있어야 할까요?</p>
+      <ul class="lg-check" style="margin-top:1.0rem">
+        <li class="autoshow fade-up">패킷 한 바퀴가 도구 호출 한 번이라는 것과, 막힐 때 패킷이 어디로 가는지 설명할 수 있습니다.</li>
+        <li class="autoshow fade-up">before Hook이 Record → Limit → Policy 순서로 무엇을 검사하는지 말할 수 있습니다.</li>
+        <li class="autoshow fade-up">보호 파일 수정과 금지 도구 시도가 어느 칩에서 어떤 메시지로 막히는지 보여 줄 수 있습니다.</li>
+        <li class="autoshow fade-up">Limit 숫자를 바꾸면 몇 번째 시도에서 막히는지 예측하고 확인할 수 있습니다.</li>
+        <li class="autoshow fade-up">검증 규칙이 느슨하면 틀린 결과가 왜 완료로 처리되는지 설명할 수 있습니다.</li>
+        <li class="autoshow fade-up">기록이 없을 때 잃는 것과, 사람 승인이 어디에 들어가는지 설명할 수 있습니다.</li>
+        <li class="autoshow fade-up">고급 과정 미션 8개를 직접 써서 통과시키고, 요청으로 실제 동작을 확인했습니다.</li>
+        <li class="autoshow fade-up">같은 실험을 라이브 모드의 실제 모델로 다시 해 보고, 미리보기와 다른 점을 찾았습니다.</li>
+      </ul>
+    </section>
+
+    <!-- 32 · 끝 -->
+    <section class="section-opener" data-hero data-sec="실험실 학습 가이드">
+      <div class="autoshow fade-up"><span class="chip">이제 직접 해 볼 차례입니다</span></div>
+      <h1 class="autoshow fade-up" style="font-size:3.8rem">실험실을 열고,<br><span class="grad">요청 하나부터 보내 보세요</span></h1>
+      <p class="autoshow fade-up" style="font-size:1.4rem; margin-top:1.0rem">처음 열면 <b>? 가이드</b>가 저절로 뜹니다. 가이드 마지막 장의 실험 다섯 가지가 이 슬라이드의 4부와 같습니다.</p>
+      <p class="mode-links autoshow fade-up" style="font-size:1.2rem"><a href="../lab/index.html">실험실 열기 (미리보기)</a> &nbsp;·&nbsp; <a href="../lab/README.md">실행 안내</a> &nbsp;·&nbsp; <a href="../docs/index.html">문서 허브</a></p>
+    </section>

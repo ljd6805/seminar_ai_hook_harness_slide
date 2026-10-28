@@ -69,6 +69,7 @@ node quest/cli.mjs check workshops/quest --evidence
 | [검증 결과](docs/harness-quest-validation.html) | 자동 검사 결과와 미확인 항목 |
 | [트러블슈팅](docs/harness-quest-troubleshooting.html) | 증상별 확인·복구 절차 |
 | [기획안 v0.2](docs/harness-quest-plan.html) | 구현 전 기획 기록. 실행 절차는 교재를 우선 |
+| [실험실 학습 가이드](slides/lab-guide.html) | Hook·Harness 실험실 사용법 32장: 준비·화면 읽기·첫 실행·실험 5가지·고급 미션 8개 |
 | [1차 슬라이드](slides/index.html) | 기존 21장, `?mode=presentation`으로 본편·데모 재생 |
 | [기존 시놉시스](docs/seminar-synopsis.md) | 1차 세션 구성의 기준 문서 |
 
